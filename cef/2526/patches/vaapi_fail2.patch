@@ -1,0 +1,62 @@
+--- content/common/sandbox_linux/bpf_gpu_policy_linux.cc	2016-02-05 17:53:40.293633684 +0100
++++ content/common/sandbox_linux/bpf_gpu_policy_linux.cc	2016-02-05 18:12:17.934572861 +0100
+@@ -308,27 +308,41 @@
+     // inside the sandbox, so preload them now.
+     if (IsAcceleratedVaapiVideoEncodeEnabled() ||
+         IsAcceleratedVideoDecodeEnabled()) {
+-      const char* I965DrvVideoPath = NULL;
+-      const char* I965HybridDrvVideoPath = NULL;
++      VLOG(1) << "Attempting to enable hardware video acceleration.";
++      StubPathMap paths;
++      paths[kModuleVa].push_back("libva.so.1");
++      paths[kModuleVa_x11].push_back("libva-x11.so.1");
++      if (!InitializeStubs(paths)) {
++        VLOG(1) << "Failed to initialize stubs";
++        return false;
++      }
+ 
+-      if (IsArchitectureX86_64()) {
+-        I965DrvVideoPath = "/usr/lib64/va/drivers/i965_drv_video.so";
+-        I965HybridDrvVideoPath = "/usr/lib64/va/drivers/hybrid_drv_video.so";
+-      } else if (IsArchitectureI386()) {
+-        I965DrvVideoPath = "/usr/lib/va/drivers/i965_drv_video.so";
++      // libva drivers won't get loaded even above two libraries get dlopened.
++      // Thus, libva calls will fail after post sandbox stage.
++      //
++      // To get the va driver loaded before sandboxing, upstream simply dlopen
++      // the hard-coded va driver path because ChromeOS is the only platform
++      // that Google want to support libva.
++      //
++      // While generic linux distros ship va driver as anywhere they want.
++      // Fortunately, the va driver will be loadded when vaInitialize() get
++      // called.
++      // So the following code is to call vaInitialize() before sandboxing.
++      Display* x_display = XOpenDisplay(NULL);
++      VADisplay va_display = vaGetDisplay(x_display);
++      if (!vaDisplayIsValid(va_display)) {
++        VLOG(1) << "Failed to call vaGetDisplay()";
++        return false;
+       }
+ 
+-      dlopen(I965DrvVideoPath, RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-      if (I965HybridDrvVideoPath)
+-        dlopen(I965HybridDrvVideoPath, RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-      dlopen("libva.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-#if defined(USE_OZONE)
+-      dlopen("libva-drm.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-#elif defined(USE_X11)
+-      dlopen("libva-x11.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-#endif
+-    }
+-  }
++      int major_version, minor_version;
++      if (vaInitialize(va_display, &major_version, &minor_version)
++          != VA_STATUS_SUCCESS) {
++        VLOG(1) << "Failed to call vaInitialize()";
++        return false;
++      }
++    }  // end of IsAcceleratedVaapiVideoEncodeEnabled() || IsAcceleratedVideoDecodeEnabled()
++  }  // end of IsArchitectureX86_64() || IsArchitectureI386()
+ 
+   return true;
+ }
