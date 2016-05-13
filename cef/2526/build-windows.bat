@@ -13,7 +13,7 @@ cd cef_%CEF_BRANCH%
 cd chromium\src
 cd cef
 
-cef_create_projects.bat
+cmd /C cef_create_projects.bat
 cd ..
 
 ninja -C out\Release cefclient
