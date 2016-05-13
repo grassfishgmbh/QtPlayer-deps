@@ -18,7 +18,7 @@
  
  using sandbox::arch_seccomp_data;
  using sandbox::bpf_dsl::Allow;
-@@ -40,6 +44,11 @@ using sandbox::syscall_broker::BrokerFil
+@@ -40,6 +44,11 @@ using sandbox::syscall_broker::BrokerFilePermission;
  using sandbox::syscall_broker::BrokerProcess;
  using sandbox::SyscallSets;
  
@@ -39,11 +39,18 @@
    const base::CommandLine& command_line =
        *base::CommandLine::ForCurrentProcess();
    accelerated_encode_enabled =
-@@ -299,23 +308,41 @@ bool GpuProcessPolicy::PreSandboxHook()
+@@ -299,27 +308,39 @@ bool GpuProcessPolicy::PreSandboxHook() {
      // inside the sandbox, so preload them now.
      if (IsAcceleratedVaapiVideoEncodeEnabled() ||
          IsAcceleratedVideoDecodeEnabled()) {
 -      const char* I965DrvVideoPath = NULL;
+-      const char* I965HybridDrvVideoPath = NULL;
+-
+-      if (IsArchitectureX86_64()) {
+-        I965DrvVideoPath = "/usr/lib64/va/drivers/i965_drv_video.so";
+-        I965HybridDrvVideoPath = "/usr/lib64/va/drivers/hybrid_drv_video.so";
+-      } else if (IsArchitectureI386()) {
+-        I965DrvVideoPath = "/usr/lib/va/drivers/i965_drv_video.so";
 +      VLOG(1) << "Attempting to enable hardware video acceleration.";
 +      StubPathMap paths;
 +      paths[kModuleVa].push_back("libva.so.1");
@@ -51,12 +58,19 @@
 +      if (!InitializeStubs(paths)) {
 +        VLOG(1) << "Failed to initialize stubs";
 +        return false;
-+      }
- 
--      if (IsArchitectureX86_64()) {
--        I965DrvVideoPath = "/usr/lib64/va/drivers/i965_drv_video.so";
--      } else if (IsArchitectureI386()) {
--        I965DrvVideoPath = "/usr/lib/va/drivers/i965_drv_video.so";
+       }
+-
+-      dlopen(I965DrvVideoPath, RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-      if (I965HybridDrvVideoPath)
+-        dlopen(I965HybridDrvVideoPath, RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-      dlopen("libva.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-#if defined(USE_OZONE)
+-      dlopen("libva-drm.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-#elif defined(USE_X11)
+-      dlopen("libva-x11.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-#endif
+-    }
+-  }
 +      // libva drivers won't get loaded even above two libraries get dlopened.
 +      // Thus, libva calls will fail after post sandbox stage.
 +      //
@@ -73,17 +87,7 @@
 +      if (!vaDisplayIsValid(va_display)) {
 +        VLOG(1) << "Failed to call vaGetDisplay()";
 +        return false;
-       }
- 
--      dlopen(I965DrvVideoPath, RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
--      dlopen("libva.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
--#if defined(USE_OZONE)
--      dlopen("libva-drm.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
--#elif defined(USE_X11)
--      dlopen("libva-x11.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
--#endif
--    }
--  }
++
 +      int major_version, minor_version;
 +      if (vaInitialize(va_display, &major_version, &minor_version)
 +          != VA_STATUS_SUCCESS) {
