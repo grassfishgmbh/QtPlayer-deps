@@ -13,7 +13,7 @@ if [ -d buildspace/overrides ]; then
     sudo chown 1000:1000 buildspace
 fi
 
-cp -r patches-linux/* buildspace/overrides || true
+cp -r patches-linux buildspace/overrides || true
 
 sudo umount chroot/run/shm || true
 sudo rm -rf chroot
