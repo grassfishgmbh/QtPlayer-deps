@@ -13,8 +13,6 @@ if [ -d buildspace/overrides ]; then
     sudo chown 1000:1000 buildspace
 fi
 
-cp -r patches-linux buildspace/overrides || true
-
 sudo umount chroot/run/shm || true
 sudo rm -rf chroot
 mkdir chroot
@@ -22,6 +20,8 @@ sudo debootstrap --variant=minbase --components=main,restricted,universe,multive
 sudo chroot chroot adduser --disabled-password --gecos "" ubuntu
 sudo chroot --userspec 1000:1000 chroot mkdir /home/ubuntu/buildspace
 sudo mount --bind buildspace chroot/home/ubuntu/buildspace
+
+cp -r patches-linux buildspace/overrides || true
 
 sudo chroot chroot <<EOF
 echo "ubuntu      ALL = NOPASSWD: ALL" >> /etc/sudoers
