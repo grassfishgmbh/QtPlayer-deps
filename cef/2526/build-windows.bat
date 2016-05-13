@@ -14,7 +14,7 @@ cmd /C xcopy /E /I /Y patches-windows D:\cefbuild\overrides
 cd D:\cefbuild
 cmd /C python automate-git.py --download-dir=cef_%CEF_BRANCH% --no-build --branch=%CEF_BRANCH%
 
-cmd /C xcopy /E /I /Y overrides\* cef_%CEF_BRANCH%\chromium\src\patch\
+cmd /C xcopy /E /I /Y overrides\* cef_%CEF_BRANCH%\chromium\src\cef\patch\
 
 cd cef_%CEF_BRANCH%
 cd chromium\src
