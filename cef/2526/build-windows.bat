@@ -16,6 +16,9 @@ cd cef
 cmd /C cef_create_projects.bat
 cd ..
 
+cmd /C python build/util/lastchange.py > build/util/LASTCHANGE
+cmd /C python build/util/lastchange.py > build/util/LASTCHANGE.blink
+
 ninja -C out\Release cefclient
 
 cd cef\tools
