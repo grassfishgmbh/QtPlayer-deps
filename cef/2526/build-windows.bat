@@ -3,6 +3,9 @@ set GYP_GENERATORS=ninja,msvs-ninja
 set GYP_MSVS_VERSION=2013
 set CEF_BRANCH=2526
 
+set IAMHEREDUDE=%cd%
+
+if exist binary_distrib rmdir /s /q binary_distrib
 if not exist D:\cefbuild mkdir D:\cefbuild
 if not exist D:\cefbuild\automate-git.py copy automate-git.py D:\cefbuild\
 if exist D:\cefbuild\overrides rmdir /s /q D:\cefbuild\overrides
@@ -28,4 +31,6 @@ ninja -C out\Release_x64 cefclient
 cd cef\tools
 make_distrib.bat --ninja-build --x64-build --allow-partial
 
+cd ..
 
+xcopy binary_distrib %IAMHEREDUDE%
