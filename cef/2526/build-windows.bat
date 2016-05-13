@@ -7,4 +7,16 @@ if not exist .\cef-buildspace mkdir .\cef-buildspace
 if not exist .\cef-buildspace\automate-git.py copy automate-git.py .\cef-buildspace\
 
 cd cef-buildspace
-python automate-git.py --download-dir=cef_$CEF_BRANCH --no-build --branch=%CEF_BRANCH%
+python automate-git.py --download-dir=cef_%CEF_BRANCH% --no-build --branch=%CEF_BRANCH%
+
+cd cef_%CEF_BRANCH%
+
+cd chromium\src
+cd cef
+cef_create_projects.bat
+cd ..
+
+ninja -C out\Release cefclient
+
+cd cef\tools
+make_distrib.bat --ninja-build --x64-build --allow-partial
