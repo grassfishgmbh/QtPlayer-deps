@@ -7,6 +7,14 @@ if [ ! -d buildspace ]; then
    	sudo chown 1000:1000 buildspace
 fi
 
+if [ -d buildspace/overrides ]; then
+    rm -rf buildspace/overrides
+    mkdir buildspace
+    sudo chown 1000:1000 buildspace
+fi
+
+cp -r patches-linux/* buildspace/overrides || true
+
 sudo umount chroot/run/shm || true
 sudo rm -rf chroot
 mkdir chroot
@@ -42,6 +50,9 @@ wget https://bitbucket.org/chromiumembedded/cef/raw/master/tools/automate/automa
 python2.7 automate-git.py --download-dir=/home/ubuntu/buildspace/cef_$CEF_BRANCH --depot-tools-dir=/home/ubuntu/buildspace/depot_tools --no-build --branch=$CEF_BRANCH 
 
 echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | debconf-set-selections
+
+cp -r overrides/* cef_$CEF_BRANCH/chromium/src/cef/patch/
+
 cd cef_$CEF_BRANCH
 cd chromium/src
 
