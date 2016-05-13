@@ -20,3 +20,4 @@ ninja -C out\Release cefclient
 
 cd cef\tools
 make_distrib.bat --ninja-build --x64-build --allow-partial
+
