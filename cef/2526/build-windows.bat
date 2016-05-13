@@ -3,10 +3,10 @@ set GYP_GENERATORS="ninja,msvs-ninja"
 set GYP_MSVS_VERSION="2013"
 set CEF_BRANCH="2526"
 
-if not exist .\cef-buildspace mkdir .\cef-buildspace
-if not exist .\cef-buildspace\automate-git.py copy automate-git.py .\cef-buildspace\
+if not exist D:\cefbuild mkdir D:\cefbuild
+if not exist D:\cefbuild\automate-git.py copy automate-git.py D:\cefbuild\
 
-cd cef-buildspace
+cd D:\cefbuild
 python automate-git.py --download-dir=cef_%CEF_BRANCH% --no-build --branch=%CEF_BRANCH%
 
 cd cef_%CEF_BRANCH%
