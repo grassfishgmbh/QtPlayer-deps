@@ -33,4 +33,4 @@ make_distrib.bat --ninja-build --x64-build --allow-partial
 
 cd ..
 
-xcopy binary_distrib %IAMHEREDUDE%
+cmd /C xcopy /E /I /Y binary_distrib %IAMHEREDUDE%
