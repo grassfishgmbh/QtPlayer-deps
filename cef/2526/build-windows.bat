@@ -29,7 +29,7 @@ cmd /C python build/util/lastchange.py > build/util/LASTCHANGE.blink
 ninja -C out\Release_x64 cefclient
 
 cd cef\tools
-make_distrib.bat --ninja-build --x64-build --allow-partial
+cmd /C make_distrib.bat --ninja-build --x64-build --allow-partial
 
 cd ..
 
