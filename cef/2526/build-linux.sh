@@ -29,7 +29,7 @@ echo "" >> /etc/fstab
 echo "none /dev/shm tmpfs rw,nosuid,nodev,noexec 0 0" >> /etc/fstab
 EOF
 
-sudo chroot --userspec 1000:1000 chroot <<EOF
+sudo chroot --userspec 1000:1000 chroot <<\EOF
 # print environment variables
 set
 sudo mount /dev/shm
