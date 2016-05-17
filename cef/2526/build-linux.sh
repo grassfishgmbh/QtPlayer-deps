@@ -72,6 +72,11 @@ build/util/lastchange.py > build/util/LASTCHANGE.blink
 rm -rf cef/binary_distrib/* || true
 
 ninja -C out/Release cefclient chrome_sandbox
+NINJAEXIT=$?
+if [ "$NINJAEXIT" != "0" ]; then
+    echo "Failed build with exit code $NINJAEXIT"
+    exit 1
+fi
 
 cd cef/tools
 ./make_distrib.sh --allow-partial --ninja-build
