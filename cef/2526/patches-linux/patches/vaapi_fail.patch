@@ -39,7 +39,7 @@
    const base::CommandLine& command_line =
        *base::CommandLine::ForCurrentProcess();
    accelerated_encode_enabled =
-@@ -299,27 +308,39 @@ bool GpuProcessPolicy::PreSandboxHook() {
+@@ -299,27 +308,40 @@ bool GpuProcessPolicy::PreSandboxHook() {
      // inside the sandbox, so preload them now.
      if (IsAcceleratedVaapiVideoEncodeEnabled() ||
          IsAcceleratedVideoDecodeEnabled()) {
@@ -58,19 +58,7 @@
 +      if (!InitializeStubs(paths)) {
 +        VLOG(1) << "Failed to initialize stubs";
 +        return false;
-       }
--
--      dlopen(I965DrvVideoPath, RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
--      if (I965HybridDrvVideoPath)
--        dlopen(I965HybridDrvVideoPath, RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
--      dlopen("libva.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
--#if defined(USE_OZONE)
--      dlopen("libva-drm.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
--#elif defined(USE_X11)
--      dlopen("libva-x11.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
--#endif
--    }
--  }
++      }
 +      // libva drivers won't get loaded even above two libraries get dlopened.
 +      // Thus, libva calls will fail after post sandbox stage.
 +      //
@@ -87,7 +75,19 @@
 +      if (!vaDisplayIsValid(va_display)) {
 +        VLOG(1) << "Failed to call vaGetDisplay()";
 +        return false;
-+
+       }
+ 
+-      dlopen(I965DrvVideoPath, RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-      if (I965HybridDrvVideoPath)
+-        dlopen(I965HybridDrvVideoPath, RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-      dlopen("libva.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-#if defined(USE_OZONE)
+-      dlopen("libva-drm.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-#elif defined(USE_X11)
+-      dlopen("libva-x11.so.1", RTLD_NOW|RTLD_GLOBAL|RTLD_NODELETE);
+-#endif
+-    }
+-  }
 +      int major_version, minor_version;
 +      if (vaInitialize(va_display, &major_version, &minor_version)
 +          != VA_STATUS_SUCCESS) {
