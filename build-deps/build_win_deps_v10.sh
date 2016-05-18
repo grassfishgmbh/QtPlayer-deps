@@ -86,7 +86,7 @@ function build_vlc_for_target_arch () {
     
     zip -r vlc-$ARCH.zip _win32/*
     
-    mv vlc-$ARCH.zip $BUILD_ROOT
+    mv vlc-$ARCH.zip $BUILD_ROOT/
     
     cd $ORIGINAL_PWD
 }
@@ -193,6 +193,14 @@ echo "Building Qt Installer Framework"
 i686-w64-mingw32.static-qmake-qt5 ../installer-framework/installerfw.pro
 make
 make install
+
+zip -r QtIFW_win32.zip bin lib
+
+if [ -e $BUILD_ROOT/QtIFW_win32.zip ]; then
+    rm -f $BUILD_ROOT/QtIFW_win32.zip
+fi
+
+mv QtIFW_win32.zip $BUILD_ROOT/
 
 echo "DONE building Qt Installer Framework"
 
