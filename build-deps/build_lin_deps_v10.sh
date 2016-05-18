@@ -31,6 +31,10 @@ sudo apt-get install -y libxcb1-dev \
 
 INSTALL_PREFIX=/opt/gf-builddeps
 
+if [ -d $INSTALL_PREFIX ]; then
+    sudo rm -rf $INSTALL_PREFIX
+fi
+
 export PKG_CONFIG_PATH=$INSTALL_PREFIX/lib/pkgconfig
 
 if [ ! -d deps-buildspace ]; then
@@ -38,6 +42,8 @@ if [ ! -d deps-buildspace ]; then
 fi
 
 cd deps-buildspace
+
+DEPS_BS_ROOT=`pwd`
 
 if [ ! -e ffmpeg-2.8.6.tar.bz2 ]; then
     wget http://ffmpeg.org/releases/ffmpeg-2.8.6.tar.bz2
@@ -86,3 +92,10 @@ cd vlc-2.2.2
 make -j`nproc`
 
 sudo make install
+
+if [ -e $DEPS_BS_ROOT/gf-builddeps.tar.gz ]; then
+    rm -rf $DEPS_BS_ROOT/gf-builddeps.tar.gz
+fi
+
+tar -cvfz gf-builddeps.tar.gz $INSTALL_PREFIX
+mv gf-builddeps.tar.gz $DEPS_BS_ROOT/
