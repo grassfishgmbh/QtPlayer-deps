@@ -5,7 +5,11 @@ set -e
 function build_vlc_for_target_arch () {
     ARCH=$1
     TRIPLET=$2
-
+    
+    if [ -e $BUILD_ROOT/vlc-$ARCH.zip ]; then
+        rm -f $BUILD_ROOT/vlc-$ARCH.zip
+    fi
+    
     mkdir -p contrib/$ARCH
     cd contrib/$ARCH
     ../bootstrap --host=$TRIPLET --disable-gpl --disable-qt4 --disable-qt \
@@ -79,6 +83,10 @@ function build_vlc_for_target_arch () {
     make -j`nproc`
 
     make install
+    
+    zip -r vlc-$ARCH.zip _win32/*
+    
+    mv vlc-$ARCH.zip $BUILD_ROOT
     
     cd $ORIGINAL_PWD
 }
