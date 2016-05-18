@@ -139,8 +139,9 @@ sudo cp ./pkg-config-crosswrapper-trusty-fixed /usr/share/pkg-config-crosswrappe
 sudo chown root:root /usr/share/pkg-config-crosswrapper
 sudo chmod 755 /usr/share/pkg-config-crosswrapper
 
-
-rm -rf deps-buildspace-win
+if [ -d deps-buildspace-win ]; then
+    sudo rm -rf deps-buildspace-win
+fi
 mkdir deps-buildspace-win
 
 cd deps-buildspace-win
