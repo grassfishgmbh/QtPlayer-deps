@@ -196,9 +196,8 @@ make install
 
 echo "DONE building Qt Installer Framework"
 
-
-build_shared_qt_for_target_arch "win64" "x86_64-w64-mingw32"
-build_shared_qt_for_target_arch "win32" "i686-w64-mingw32"
+#build_shared_qt_for_target_arch "win64" "x86_64-w64-mingw32"
+#build_shared_qt_for_target_arch "win32" "i686-w64-mingw32"
 
 echo "Build complete!"
 exit 0
