@@ -38,7 +38,7 @@ function create_vlc_blobs_for_arch () {
     rm libvlc.def.tmp
     
     MACHINE="/MACHINE:x86"
-    if [ $ARCH = "win64" ]; then
+    if [ $ARCH = "x86_64" ]; then
         MACHINE="/MACHINE:x64"
     fi
     
