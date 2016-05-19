@@ -97,5 +97,5 @@ if [ -e $DEPS_BS_ROOT/gf-builddeps.tar.gz ]; then
     rm -rf $DEPS_BS_ROOT/gf-builddeps.tar.gz
 fi
 
-tar -cvfz gf-builddeps.tar.gz $INSTALL_PREFIX
+tar cvzf gf-builddeps.tar.gz $INSTALL_PREFIX
 mv gf-builddeps.tar.gz $DEPS_BS_ROOT/
