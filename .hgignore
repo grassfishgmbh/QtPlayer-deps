@@ -1,0 +1,7 @@
+syntax: glob
+build-deps/deps-buildspace/ffmpeg-2.8.6
+build-deps/deps-buildspace/vlc-2.2.3
+build-deps/deps-buildspace/vlc-qt
+build-deps/deps-buildspace/vlc-2.2.3.tar.xz
+build-deps/deps-buildspace/gf-builddeps.tar.gz
+build-deps/deps-buildspace/ffmpeg-2.8.6.tar.bz2
