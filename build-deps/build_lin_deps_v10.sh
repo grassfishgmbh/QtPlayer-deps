@@ -59,7 +59,7 @@ fi
 if [ ! -e vlc-qt ]; then
     git clone git://github.com/vlc-qt/vlc-qt.git vlc-qt
     cd vlc-qt
-    git checkout tags/1.0.1
+    git checkout 0c235025eb3160c633799dc8430261b6c2a6949d
     git submodule init
     git submodule update
     cd ..
