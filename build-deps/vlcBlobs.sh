@@ -28,6 +28,7 @@ function create_vlc_blobs_for_arch () {
 
     cp ../_win32/bin/libvlc* ./
     cp -r ../_win32/lib/vlc/plugins plugins
+    cp -r ../_win32/include include
     
     rm -rf ../_win32
     
