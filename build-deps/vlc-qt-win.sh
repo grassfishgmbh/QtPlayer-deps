@@ -8,6 +8,10 @@ JOBROOT=`pwd`
 WD="$JOBROOT/VLC/$VERSION"
 VLCQT_WD="$JOBROOT/VLC-Qt"
 
+if [ -e VLC-Blobs-Qt.zip ]; then
+    rm -f VLC-Blobs-Qt.zip
+fi
+
 rm -rf $WD
 unzip VLC-Blobs.zip -d $JOBROOT
 mkdir -p $WD
