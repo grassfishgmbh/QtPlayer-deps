@@ -62,8 +62,8 @@ function create_vlc_qt_blobs_for_arch () {
     cmake .. -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX="../install-$ARCH/" \
         -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/$ARCH/libvlc.lib` \
-        -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/libvlccore.lib` \
-        -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/include`
+        -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/$ARCH/libvlccore.lib` \
+        -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/$ARCH/include`
     cmake --build .
 }
 
