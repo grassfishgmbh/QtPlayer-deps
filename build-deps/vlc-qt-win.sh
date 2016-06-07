@@ -64,7 +64,7 @@ function create_vlc_qt_blobs_for_arch () {
         -DCMAKE_INSTALL_PREFIX="../install-$ARCH/msvc64" \
         -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/$ARCH/libvlc.lib` \
         -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/$ARCH/libvlccore.lib` \
-        -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/$ARCH/include`
+        -DLIBVLC_INCLUDE_DIR=`cygpath -w -a ../libvlc-headers/include`
     #cmake --build .
     ninja
     ninja install
