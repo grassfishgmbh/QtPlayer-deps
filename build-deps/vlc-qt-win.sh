@@ -27,9 +27,8 @@ cd $JOBROOT
 
 function create_vlc_qt_blobs_for_arch () {
     ARCH=$1
-    SRCZIP=$2
     
-    cd $VLCQT_WD
+    cd $VLCQT_WD/vlc-qt
     
     MACHINE="/MACHINE:x86"
     if [ $ARCH = "x86_64" ]; then
@@ -50,8 +49,8 @@ function create_vlc_qt_blobs_for_arch () {
     rm -rf build
 }
 
-create_vlc_qt_blobs_for_arch "i686" "vlc-win32.zip"
-create_vlc_qt_blobs_for_arch "x86_64" "vlc-win64.zip"
+create_vlc_qt_blobs_for_arch "i686"
+create_vlc_qt_blobs_for_arch "x86_64"
 cd $JOBROOT
 
 zip -y -r VLC-Blobs-Qt.zip VLC
