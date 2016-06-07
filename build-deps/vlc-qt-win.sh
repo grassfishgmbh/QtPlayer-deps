@@ -7,6 +7,7 @@ fi
 JOBROOT=`pwd`
 WD="$JOBROOT/VLC/$VERSION"
 VLCQT_WD="$JOBROOT/VLC-Qt"
+OLDPATH=$PATH
 
 if [ -e VLC-Blobs-Qt.zip ]; then
     rm -f VLC-Blobs-Qt.zip
@@ -41,12 +42,12 @@ function create_vlc_qt_blobs_for_arch () {
     
     if [ $ARCH = "x86_64" ]; then
         MACHINE="/MACHINE:x64"
-        export PATH=/cygdrive/c/Qt/5.6/msvc2013_64/bin:$PATH
-        GENERATOR="Visual Studio 12 Win64"
+        export PATH=/cygdrive/c/Qt/5.6/msvc2013_64/bin:$OLDPATH
+        GENERATOR="Ninja"
     else
         MACHINE="/MACHINE:x86"
-        export PATH=/cygdrive/c/Qt/5.6/msvc2013/bin:$PATH
-        GENERATOR="Visual Studio 12"
+        export PATH=/cygdrive/c/Qt/5.6/msvc2013/bin:$OLDPATH
+        GENERATOR="Ninja"
     fi
     
     if [ -e build-$ARCH ]; then
@@ -64,7 +65,9 @@ function create_vlc_qt_blobs_for_arch () {
         -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/$ARCH/libvlc.lib` \
         -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/$ARCH/libvlccore.lib` \
         -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/$ARCH/include`
-    cmake --build .
+    #cmake --build .
+    ninja
+    ninja install
 }
 
 create_vlc_qt_blobs_for_arch "i686"
