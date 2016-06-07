@@ -1,0 +1,14 @@
+diff --git a/modules/video_output/vmem.c b/modules/video_output/vmem.c
+index c5d2314..3a540ad 100644
+--- a/modules/video_output/vmem.c
++++ b/modules/video_output/vmem.c
+@@ -150,7 +150,8 @@ static int Open(vlc_object_t *object)
+         memset(sys->pitches, 0, sizeof(sys->pitches));
+         memset(sys->lines, 0, sizeof(sys->lines));
+ 
+-        sys->count = setup(&sys->opaque, chroma, &fmt.i_width, &fmt.i_height,
++        sys->count = setup(&sys->opaque, chroma,
++                           &fmt.i_visible_width, &fmt.i_visible_height,
+                            sys->pitches, sys->lines);
+         if (sys->count == 0) {
+             msg_Err(vd, "video format setup failure (no pictures)");
