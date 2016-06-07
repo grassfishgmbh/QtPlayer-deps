@@ -2,6 +2,9 @@
 
 set -e
 
+# Use the latest custom build Qt framework (for VLC-Qt)
+export PATH=/opt/Qt/5.6.0/gcc_64/bin:$PATH
+
 sudo apt-get install -y libxcb1-dev \
                       libxcb-shm0-dev \
                       libxcb-composite0-dev \
@@ -49,12 +52,27 @@ if [ ! -e ffmpeg-2.8.6.tar.bz2 ]; then
     wget http://ffmpeg.org/releases/ffmpeg-2.8.6.tar.bz2
 fi
 
-if [ ! -e vlc-2.2.2.tar.xz ]; then
-    wget http://get.videolan.org/vlc/2.2.2/vlc-2.2.2.tar.xz
+if [ ! -e vlc-2.2.3.tar.xz ]; then
+    wget http://get.videolan.org/vlc/2.2.3/vlc-2.2.3.tar.xz
+fi
+
+if [ ! -e vlc-qt ]; then
+    git clone git://github.com/vlc-qt/vlc-qt.git vlc-qt
+    cd vlc-qt
+    git checkout tags/1.0.1
+    git submodule init
+    git submodule update
+    cd ..
 fi
 
 tar xvf ffmpeg-2.8.6.tar.bz2
-tar xvf vlc-2.2.2.tar.xz
+tar xvf vlc-2.2.3.tar.xz
+
+# APPLY NEEDED PATCHES
+cd vlc-2.2.3
+patch -p1 < ../../libvlc_vmem_visible_rect.patch
+patch -p1 < ../../libvlc_keep_aspect_info.patch
+cd -
 
 # BUILD FFMPEG
 cd ffmpeg-2.8.6
@@ -79,7 +97,7 @@ sudo make install
 cd ..
 
 # BUILD VLC
-cd vlc-2.2.2
+cd vlc-2.2.3
 
 ./configure --prefix=$INSTALL_PREFIX \
             --enable-x11 --enable-xvideo --disable-gtk \
@@ -92,6 +110,20 @@ cd vlc-2.2.2
 make -j`nproc`
 
 sudo make install
+
+# BUILD VLC-QT
+cd ..
+cd vlc-qt
+
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/gf-builddeps -DLIBVLC_INCLUDE_DIR=/opt/gf-builddeps/include
+make -j8
+sudo make install
+
+cd .. # vlc-qt
+cd .. # deps-buildspace
+
 
 if [ -e $DEPS_BS_ROOT/gf-builddeps.tar.gz ]; then
     rm -rf $DEPS_BS_ROOT/gf-builddeps.tar.gz
