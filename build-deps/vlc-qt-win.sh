@@ -12,6 +12,11 @@ rm -rf $WD
 unzip VLC-Blobs.zip -d $WD
 mkdir -p $WD
 
+if [ -e $VLCQT_WD ]; then
+    rm -rf $VLCQT_WD
+fi 
+
+mkdir $VLCQT_WD
 cd $VLCQT_WD
 
 if [ ! -e vlc-qt ]; then
