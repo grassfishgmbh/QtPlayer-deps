@@ -35,15 +35,20 @@ function create_vlc_qt_blobs_for_arch () {
     
     cd $VLCQT_WD/vlc-qt
     
-    MACHINE="/MACHINE:x86"
     if [ $ARCH = "x86_64" ]; then
         MACHINE="/MACHINE:x64"
+        export PATH=/cygdrive/c/Qt/5.6/msvc2013_64/bin:$PATH
+        GENERATOR="Visual Studio 12 Win64"
+    else
+        MACHINE="/MACHINE:x86"
+        export PATH=/cygdrive/c/Qt/5.6/msvc2013/bin:$PATH
+        GENERATOR="Visual Studio 12"
     fi
     
     mkdir build
     mkdir install-$ARCH
     cd build
-    cmake .. -GNinja -DCMAKE_BUILD_TYPE=Release \
+    cmake .. -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX="../install-$ARCH/" \
         -DLIBVLC_LIBRARY="$WD/$ARCH/libvlc.lib" \
         -DLIBVLCCORE_LIBRARY="$WD/$ARCH/libvlccore.lib" \
