@@ -54,13 +54,10 @@ function create_vlc_qt_blobs_for_arch () {
     cd build
     cmake .. -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX="../install-$ARCH/" \
-        -DLIBVLC_LIBRARY="$WD/$ARCH/libvlc.lib" \
-        -DLIBVLCCORE_LIBRARY="$WD/$ARCH/libvlccore.lib" \
-        -DLIBVLC_INCLUDE_DIR="$WD/$ARCH/include"
-    ninja
-    ninja install
-    cd ..
-    rm -rf build
+        -DLIBVLC_LIBRARY="$JOBROOT/VLC/$VERSION/$ARCH/libvlc.lib" \
+        -DLIBVLCCORE_LIBRARY="$JOBROOT/VLC/$VERSION/libvlccore.lib" \
+        -DLIBVLC_INCLUDE_DIR="$JOBROOT/VLC/$VERSION/include"
+    cmake --build .
 }
 
 create_vlc_qt_blobs_for_arch "i686"
