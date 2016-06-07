@@ -30,9 +30,6 @@ function create_vlc_qt_blobs_for_arch () {
     SRCZIP=$2
     
     cd $VLCQT_WD
-    unzip $JOBROOT/$SRCZIP
-    mkdir $ARCH 
-    cd $ARCH
     
     MACHINE="/MACHINE:x86"
     if [ $ARCH = "x86_64" ]; then
