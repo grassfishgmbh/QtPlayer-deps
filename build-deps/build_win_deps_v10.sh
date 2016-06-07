@@ -149,14 +149,21 @@ BUILD_ROOT=`pwd`
 
 echo "Fetch VLC source code..."
 
-if [ ! -e vlc-2.2.1.tar.xz ]; then
-    wget http://get.videolan.org/vlc/2.2.1/vlc-2.2.1.tar.xz
+if [ ! -e vlc-2.2.3.tar.xz ]; then
+    wget http://get.videolan.org/vlc/2.2.3/vlc-2.2.3.tar.xz
 fi
 
 echo "Building VLC..."
 
-tar xvf vlc-2.2.1.tar.xz
-cd vlc-2.2.1
+tar xvf vlc-2.2.3.tar.xz
+
+# APPLY NEEDED PATCHES
+cd vlc-2.2.3
+patch -p1 < ../../libvlc_vmem_visible_rect.patch
+patch -p1 < ../../libvlc_keep_aspect_info.patch
+cd -
+
+cd vlc-2.2.3
 
 #git clone http://git.videolan.org/git/vlc.git vlc
 #cd vlc
