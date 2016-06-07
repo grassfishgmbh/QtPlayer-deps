@@ -49,6 +49,13 @@ function create_vlc_qt_blobs_for_arch () {
         GENERATOR="Visual Studio 12"
     fi
     
+    if [ -e build-$ARCH ]; then
+        rm -rf build-$ARCH
+    fi
+    if [ -e install-$ARCH ]; then
+        rm -rf install-$ARCH
+    fi
+    
     mkdir build-$ARCH
     mkdir install-$ARCH
     cd build-$ARCH
