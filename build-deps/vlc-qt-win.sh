@@ -24,8 +24,8 @@ if [ ! -f "$BLOBZIP" ]; then
     echo "File for BLOBZIP does not exist"
 fi
 
-if [ -e VLC-Blobs-Qt.zip ]; then
-    rm -f VLC-Blobs-Qt.zip
+if [ -e VLC-Blobs-Qt-$ARCH.zip ]; then
+    rm -f VLC-Blobs-Qt-$ARCH.zip
 fi
 
 rm -rf $WD
@@ -56,11 +56,9 @@ function create_vlc_qt_blobs_for_arch () {
     cd $VLCQT_WD/vlc-qt
     
     if [ $ARCH = "x86_64" ]; then
-        MACHINE="/MACHINE:x64"
         export PATH=/cygdrive/c/Qt/5.6/msvc2013_64/bin:$OLDPATH
         GENERATOR="Ninja"
     else
-        MACHINE="/MACHINE:x86"
         export PATH=/cygdrive/c/Qt/5.6/msvc2013/bin:$OLDPATH
         GENERATOR="Ninja"
     fi
@@ -68,12 +66,12 @@ function create_vlc_qt_blobs_for_arch () {
     if [ -e build-$ARCH ]; then
         rm -rf build-$ARCH
     fi
-    if [ -e install-$ARCH ]; then
-        rm -rf install-$ARCH
+    if [ -e $JOBROOT/install-$ARCH ]; then
+        rm -rf $JOBROOT/install-$ARCH
     fi
     
     mkdir build-$ARCH
-    mkdir install-$ARCH
+    mkdir $JOBROOT/install-$ARCH
     cd build-$ARCH
     
     # copy dll's to include dir because cmake is batshit crazy
@@ -81,7 +79,7 @@ function create_vlc_qt_blobs_for_arch () {
     cp $JOBROOT/VLC/$VERSION/bin/libvlc.dll $JOBROOT/VLC/$VERSION/include/
     
     cmake .. -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX="../install-$ARCH/msvc64" \
+        -DCMAKE_INSTALL_PREFIX="$JOBROOT/install-$ARCH" \
         -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlc.lib` \
         -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlccore.lib` \
         -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/include`
@@ -91,6 +89,7 @@ function create_vlc_qt_blobs_for_arch () {
 }
 
 create_vlc_qt_blobs_for_arch $ARCH
-cd $JOBROOT
+cd $JOBROOT/install-$ARCH
 
-zip -y -r VLC-Blobs-Qt.zip VLC
+zip -y -r VLC-Blobs-Qt-$ARCH.zip *
+mv VLC-Blobs-Qt-$ARCH.zip $JOBROOT
