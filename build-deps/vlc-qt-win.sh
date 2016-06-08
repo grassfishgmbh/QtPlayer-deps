@@ -75,6 +75,11 @@ function create_vlc_qt_blobs_for_arch () {
     mkdir build-$ARCH
     mkdir install-$ARCH
     cd build-$ARCH
+    
+    # copy dll's to include dir because cmake is batshit crazy
+    cp $JOBROOT/VLC/$VERSION/bin/libvlccore.dll $JOBROOT/VLC/$VERSION/include/
+    cp $JOBROOT/VLC/$VERSION/bin/libvlc.dll $JOBROOT/VLC/$VERSION/include/
+    
     cmake .. -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Release \
         -DCMAKE_INSTALL_PREFIX="../install-$ARCH/msvc64" \
         -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlc.lib` \
