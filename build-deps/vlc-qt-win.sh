@@ -14,14 +14,22 @@ BLOBZIP=$2
 
 if [ "$ARCH" == "" ]; then
     echo "ARCH (first argument) is missing"
+    exit 1
 fi
 
 if [ "$BLOBZIP" == "" ]; then
     echo "BLOBZIP (second argument) is missing"
+    exit 1
 fi
 
 if [ ! -f "$BLOBZIP" ]; then
     echo "File for BLOBZIP does not exist"
+    exit 1
+fi
+
+
+if [ -d $JOBROOT/install-$ARCH ]; then
+    rm -rf $JOBROOT/install-$ARCH
 fi
 
 if [ -e VLC-Blobs-Qt-$ARCH.zip ]; then
@@ -71,7 +79,6 @@ function create_vlc_qt_blobs_for_arch () {
     fi
     
     mkdir build-$ARCH
-    mkdir $JOBROOT/install-$ARCH
     cd build-$ARCH
     
     # copy dll's to include dir because cmake is batshit crazy
@@ -79,13 +86,14 @@ function create_vlc_qt_blobs_for_arch () {
     cp $JOBROOT/VLC/$VERSION/bin/libvlc.dll $JOBROOT/VLC/$VERSION/include/
     
     cmake .. -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX="$JOBROOT/install-$ARCH" \
+        -DCMAKE_INSTALL_PREFIX="../install-$ARCH" \
         -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlc.lib` \
         -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlccore.lib` \
         -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/include`
     #cmake --build .
     ninja
     ninja install
+    mv ../install-$ARCH $JOBROOT/install-$ARCH
 }
 
 create_vlc_qt_blobs_for_arch $ARCH
