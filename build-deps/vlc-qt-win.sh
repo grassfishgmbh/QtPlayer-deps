@@ -9,13 +9,28 @@ WD="$JOBROOT/VLC/$VERSION"
 VLCQT_WD="$JOBROOT/VLC-Qt"
 OLDPATH=$PATH
 
+ARCH=$1
+BLOBZIP=$2
+
+if [ "$ARCH" == "" ]; then
+    echo "ARCH (first argument) is missing"
+fi
+
+if [ "$BLOBZIP" == "" ]; then
+    echo "BLOBZIP (second argument) is missing"
+fi
+
+if [ ! -f "$BLOBZIP" ]; then
+    echo "File for BLOBZIP does not exist"
+fi
+
 if [ -e VLC-Blobs-Qt.zip ]; then
     rm -f VLC-Blobs-Qt.zip
 fi
 
 rm -rf $WD
-unzip VLC-Blobs.zip -d $JOBROOT
 mkdir -p $WD
+unzip $BLOBZIP -d $WD
 
 if [ -e $VLCQT_WD ]; then
     rm -rf $VLCQT_WD
@@ -70,8 +85,7 @@ function create_vlc_qt_blobs_for_arch () {
     ninja install
 }
 
-create_vlc_qt_blobs_for_arch "i686"
-create_vlc_qt_blobs_for_arch "x86_64"
+create_vlc_qt_blobs_for_arch $ARCH
 cd $JOBROOT
 
 zip -y -r VLC-Blobs-Qt.zip VLC
