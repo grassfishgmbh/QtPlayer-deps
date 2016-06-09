@@ -93,6 +93,11 @@ function create_vlc_qt_blobs_for_arch () {
     #cmake --build .
     ninja
     ninja install
+    
+    cp -r $JOBROOT/VLC/$VERSION/lib/* ../install-$ARCH/lib/
+    mv $JOBROOT/VLC/$VERSION/bin/*.lib ../install-$ARCH/lib/
+    mv $JOBROOT/VLC/$VERSION/include/vlc ../install-$ARCH/include/
+    
     mv ../install-$ARCH $JOBROOT/install-$ARCH
 }
 
