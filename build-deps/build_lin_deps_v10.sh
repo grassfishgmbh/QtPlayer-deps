@@ -115,8 +115,13 @@ sudo make install
 cd ..
 cd vlc-qt
 
+if [ -e build ]; then
+    rm -rf build
+fi
 mkdir build
+
 cd build
+
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/gf-builddeps -DLIBVLC_INCLUDE_DIR=/opt/gf-builddeps/include
 make -j8
 sudo make install
