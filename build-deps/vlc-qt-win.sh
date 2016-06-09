@@ -8,6 +8,7 @@ JOBROOT=`pwd`
 WD="$JOBROOT/VLC/$VERSION"
 VLCQT_WD="$JOBROOT/VLC-Qt"
 OLDPATH=$PATH
+QTVERSION="5.6.0"
 
 ARCH=$1
 BLOBZIP=$2
@@ -63,14 +64,6 @@ function create_vlc_qt_blobs_for_arch () {
     
     cd $VLCQT_WD/vlc-qt
     
-    if [ $ARCH = "x86_64" ]; then
-        export PATH=/cygdrive/c/Qt/5.6/msvc2013_64/bin:$OLDPATH
-        GENERATOR="Ninja"
-    else
-        export PATH=/cygdrive/c/Qt/5.6/msvc2013/bin:$OLDPATH
-        GENERATOR="Ninja"
-    fi
-    
     if [ -e build-$ARCH ]; then
         rm -rf build-$ARCH
     fi
@@ -81,15 +74,32 @@ function create_vlc_qt_blobs_for_arch () {
     mkdir build-$ARCH
     cd build-$ARCH
     
-    # copy dll's to include dir because cmake is batshit crazy
-    cp $JOBROOT/VLC/$VERSION/bin/libvlccore.dll $JOBROOT/VLC/$VERSION/include/
-    cp $JOBROOT/VLC/$VERSION/bin/libvlc.dll $JOBROOT/VLC/$VERSION/include/
+    if [ `uname -o` == "Cygwin" ]; then
+        if [ $ARCH = "x86_64" ]; then
+            export PATH=/cygdrive/c/Qt/5.6/msvc2013_64/bin:$OLDPATH
+        else
+            export PATH=/cygdrive/c/Qt/5.6/msvc2013/bin:$OLDPATH
+        fi
     
-    cmake .. -G "$GENERATOR" -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX="../install-$ARCH" \
-        -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlc.lib` \
-        -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlccore.lib` \
-        -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/include`
+        # copy dll's to include dir because cmake is batshit crazy
+        cp $JOBROOT/VLC/$VERSION/bin/libvlccore.dll $JOBROOT/VLC/$VERSION/include/
+        cp $JOBROOT/VLC/$VERSION/bin/libvlc.dll $JOBROOT/VLC/$VERSION/include/
+        
+        cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="../install-$ARCH" \
+            -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlc.lib` \
+            -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlccore.lib` \
+            -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/include`
+    else
+        export PATH=/opt/Qt/$QTVERSION/gcc_64/bin:$OLDPATH
+        
+        cmake .. -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=/opt/gf-builddeps \
+            -DLIBVLC_INCLUDE_DIR=/opt/gf-builddeps/include
+        make -j`nproc`
+        sudo make install
+    fi
+    
     #cmake --build .
     ninja
     ninja install
