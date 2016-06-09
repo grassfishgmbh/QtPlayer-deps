@@ -135,4 +135,3 @@ if [ -e $DEPS_BS_ROOT/gf-builddeps.tar.gz ]; then
 fi
 
 tar cvzf gf-builddeps.tar.gz $INSTALL_PREFIX
-mv gf-builddeps.tar.gz $DEPS_BS_ROOT/
