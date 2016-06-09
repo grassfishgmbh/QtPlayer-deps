@@ -18,28 +18,30 @@ if [ "$ARCH" == "" ]; then
     exit 1
 fi
 
-if [ "$BLOBZIP" == "" ]; then
-    echo "BLOBZIP (second argument) is missing"
-    exit 1
+if [ `uname -o` == "Cygwin" ]; then
+    if [ "$BLOBZIP" == "" ]; then
+        echo "BLOBZIP (second argument) is missing"
+        exit 1
+    fi
+
+    if [ ! -f "$BLOBZIP" ]; then
+        echo "File for BLOBZIP does not exist"
+        exit 1
+    fi
+
+    if [ -d $JOBROOT/install-$ARCH ]; then
+        rm -rf $JOBROOT/install-$ARCH
+    fi
+
+    if [ -e VLC-Blobs-Qt-$ARCH.zip ]; then
+        rm -f VLC-Blobs-Qt-$ARCH.zip
+    fi
+    
+    rm -rf $WD
+    mkdir -p $WD
+    unzip $BLOBZIP -d $WD
 fi
 
-if [ ! -f "$BLOBZIP" ]; then
-    echo "File for BLOBZIP does not exist"
-    exit 1
-fi
-
-
-if [ -d $JOBROOT/install-$ARCH ]; then
-    rm -rf $JOBROOT/install-$ARCH
-fi
-
-if [ -e VLC-Blobs-Qt-$ARCH.zip ]; then
-    rm -f VLC-Blobs-Qt-$ARCH.zip
-fi
-
-rm -rf $WD
-mkdir -p $WD
-unzip $BLOBZIP -d $WD
 
 if [ -e $VLCQT_WD ]; then
     rm -rf $VLCQT_WD
@@ -90,6 +92,14 @@ function create_vlc_qt_blobs_for_arch () {
             -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlc.lib` \
             -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlccore.lib` \
             -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/include`
+        ninja
+        ninja install
+    
+        cp -r $JOBROOT/VLC/$VERSION/lib/* ../install-$ARCH/lib/
+        mv $JOBROOT/VLC/$VERSION/bin/*.lib ../install-$ARCH/lib/
+        mv $JOBROOT/VLC/$VERSION/include/vlc ../install-$ARCH/include/
+    
+        mv ../install-$ARCH $JOBROOT/install-$ARCH
     else
         export PATH=/opt/Qt/$QTVERSION/gcc_64/bin:$OLDPATH
         
@@ -99,20 +109,13 @@ function create_vlc_qt_blobs_for_arch () {
         make -j`nproc`
         sudo make install
     fi
-    
-    #cmake --build .
-    ninja
-    ninja install
-    
-    cp -r $JOBROOT/VLC/$VERSION/lib/* ../install-$ARCH/lib/
-    mv $JOBROOT/VLC/$VERSION/bin/*.lib ../install-$ARCH/lib/
-    mv $JOBROOT/VLC/$VERSION/include/vlc ../install-$ARCH/include/
-    
-    mv ../install-$ARCH $JOBROOT/install-$ARCH
 }
 
 create_vlc_qt_blobs_for_arch $ARCH
-cd $JOBROOT/install-$ARCH
 
-zip -y -r VLC-Blobs-Qt-$ARCH.zip *
-mv VLC-Blobs-Qt-$ARCH.zip $JOBROOT
+if [ `uname -o` == "Cygwin" ]; then
+    cd $JOBROOT/install-$ARCH
+
+    zip -y -r VLC-Blobs-Qt-$ARCH.zip *
+    mv VLC-Blobs-Qt-$ARCH.zip $JOBROOT
+fi
