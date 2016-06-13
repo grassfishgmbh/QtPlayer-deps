@@ -60,7 +60,7 @@ cd chromium/src
 yes | sudo build/install-build-deps.sh --no-arm --no-chromeos-fonts --no-nacl --no-prompt
 sudo apt-get -y install libtool libvdpau-dev libvdpau1 libva1 libva-dev
 
-export GYP_DEFINES="proprietary_codecs=1 ffmpeg_branding=Chrome clang=0 use_allocator=none buildtype=Official"
+export GYP_DEFINES="proprietary_codecs=1 ffmpeg_branding=Chrome clang=0 use_allocator=none"
 export GYP_GENERATORS="ninja"
 
 cd cef
