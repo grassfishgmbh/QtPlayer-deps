@@ -86,8 +86,8 @@ function build_vlc_for_target_arch () {
     
     # generate supporting lib file
     cd _win32
-    $TRIPLET-dlltool bin/libvlccore.dll -l bin/libvlccore.lib -d ../src/.libs/libvlccore.dll.def bin/libvlccore.dll
-    $TRIPLET-dlltool bin/libvlc.dll -l bin/libvlc.lib -d ../lib/.libs/libvlc.dll.def bin/libvlc.dll
+    $TRIPLET-dlltool -D libvlccore.dll -l bin/libvlccore.lib -d ../src/.libs/libvlccore.dll.def
+    $TRIPLET-dlltool -D libvlc.dll -l bin/libvlc.lib -d ../lib/.libs/libvlc.dll.def
     
     # archive
     zip -r vlc-$ARCH.zip *
