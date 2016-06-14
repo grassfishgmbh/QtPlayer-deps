@@ -69,10 +69,10 @@ tar xvf ffmpeg-2.8.6.tar.bz2
 tar xvf vlc-2.2.3.tar.xz
 
 # APPLY NEEDED PATCHES
-cd vlc-2.2.3
-patch -p1 < ../../libvlc_vmem_visible_rect.patch
-patch -p1 < ../../libvlc_keep_aspect_info.patch
-cd -
+#cd vlc-2.2.3
+#patch -p1 < ../../libvlc_vmem_visible_rect.patch
+#patch -p1 < ../../libvlc_keep_aspect_info.patch
+#cd -
 
 # BUILD FFMPEG
 cd ffmpeg-2.8.6
