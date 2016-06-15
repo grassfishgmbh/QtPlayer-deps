@@ -2,6 +2,8 @@
 
 set -e
 
+VLC_VERSION="2.2.1"
+
 function build_vlc_for_target_arch () {
     ARCH=$1
     TRIPLET=$2
@@ -154,21 +156,21 @@ BUILD_ROOT=`pwd`
 
 echo "Fetch VLC source code..."
 
-if [ ! -e vlc-2.2.3.tar.xz ]; then
-    wget http://get.videolan.org/vlc/2.2.3/vlc-2.2.3.tar.xz
+if [ ! -e vlc-$VLC_VERSION.tar.xz ]; then
+    wget http://get.videolan.org/vlc/$VLC_VERSION/vlc-$VLC_VERSION.tar.xz
 fi
 
 echo "Building VLC..."
 
-tar xvf vlc-2.2.3.tar.xz
+tar xvf vlc-$VLC_VERSION.tar.xz
 
 # APPLY NEEDED PATCHES
-#cd vlc-2.2.3
+#cd vlc-$VLC_VERSION
 #patch -p1 < ../../libvlc_vmem_visible_rect.patch
 #patch -p1 < ../../libvlc_keep_aspect_info.patch
 #cd -
 
-cd vlc-2.2.3
+cd vlc-$VLC_VERSION
 
 #git clone http://git.videolan.org/git/vlc.git vlc
 #cd vlc

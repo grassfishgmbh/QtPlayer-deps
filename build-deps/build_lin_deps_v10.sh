@@ -4,6 +4,7 @@ set -e
 
 # Use the latest custom build Qt framework (for VLC-Qt)
 export PATH=/opt/Qt/5.6.0/gcc_64/bin:$PATH
+VLC_VERSION="2.2.1"
 
 sudo apt-get install -y libxcb1-dev \
                       libxcb-shm0-dev \
@@ -52,8 +53,8 @@ if [ ! -e ffmpeg-2.8.6.tar.bz2 ]; then
     wget http://ffmpeg.org/releases/ffmpeg-2.8.6.tar.bz2
 fi
 
-if [ ! -e vlc-2.2.3.tar.xz ]; then
-    wget http://get.videolan.org/vlc/2.2.3/vlc-2.2.3.tar.xz
+if [ ! -e vlc-$VLC_VERSION.tar.xz ]; then
+    wget http://get.videolan.org/vlc/$VLC_VERSION/vlc-$VLC_VERSION.tar.xz
 fi
 
 if [ ! -e vlc-qt ]; then
@@ -66,10 +67,10 @@ if [ ! -e vlc-qt ]; then
 fi
 
 tar xvf ffmpeg-2.8.6.tar.bz2
-tar xvf vlc-2.2.3.tar.xz
+tar xvf vlc-$VLC_VERSION.tar.xz
 
 # APPLY NEEDED PATCHES
-#cd vlc-2.2.3
+#cd vlc-$VLC_VERSION
 #patch -p1 < ../../libvlc_vmem_visible_rect.patch
 #patch -p1 < ../../libvlc_keep_aspect_info.patch
 #cd -
@@ -97,7 +98,7 @@ sudo make install
 cd ..
 
 # BUILD VLC
-cd vlc-2.2.3
+cd vlc-$VLC_VERSION
 
 ./configure --prefix=$INSTALL_PREFIX \
             --enable-x11 --enable-xvideo --disable-gtk \
