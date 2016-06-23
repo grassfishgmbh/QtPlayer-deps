@@ -30,6 +30,10 @@ if [ -d QtAV ]; then
     rm -rf QtAV
 fi
 
+if [ -d build-QtAV ]; then
+    rm -rf build-QtAV
+fi
+
 git clone https://github.com/wang-bin/QtAV.git
 cd QtAV
 git checkout tags/v1.11.0
