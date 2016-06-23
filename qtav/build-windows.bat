@@ -6,4 +6,4 @@ rem build ffmpeg
 bash ffmpeg_msvc.sh x86_64
 
 rem build QtAV
-rem bash build-qtav.sh x86_64
+bash build-qtav.sh x86_64
