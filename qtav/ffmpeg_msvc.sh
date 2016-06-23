@@ -28,7 +28,6 @@ cd ffmpeg-2.8.6
             --enable-runtime-cpudetect \
             --enable-hwaccels --enable-shared --disable-static \
             --disable-postproc \
-            --extra-cflags=' -O3 ' \
             --extra-libs=' -lrt' \
             --prefix=$INSTALL_PREFIX
 
