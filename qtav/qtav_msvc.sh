@@ -23,8 +23,8 @@ INSTALL_PREFIX_WIN=`cygpath $INSTALL_PREFIX -a -w`
 
 # We require ffmpeg to already exist in the INSTALL_PREFIX
 # Now set the environment variables to allow linking to ffmpeg
-export INCLUDE=$INSTALL_PREFIX/include:$INCLUDE
-export LIB=$INSTALL_PREFIX/lib:$LIB
+export INCLUDE="$INSTALL_PREFIX_WIN"\\include:$INCLUDE
+export LIB="$INSTALL_PREFIX_WIN"\\lib:$LIB
 
 if [ -d QtAV ]; then
     rm -rf QtAV
