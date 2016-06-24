@@ -1,4 +1,9 @@
 rem bootstrap 64 bit build first
+
+
+
+set WORKSPACE_ROOT=%cd%
+
 set PATH=C:\cygwin64\bin;C:\Qt\5.6\msvc2013_64\bin;%PATH%
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
 
@@ -20,10 +25,13 @@ set LIB=%cd%\..\qtav-x86_64\lib;%cd%\..\qtav-x86_64\bin;%LIB%
 qmake ../QtAV/QtAV.pro
 jom -j8
 
+rem install QtAV into specific directory
+cd %WORKSPACE_ROOT%
+bash qtav_installation.sh x86_64
+
+rem reset environment variables
 set INCLUDE=%ARCHLESS_INCLUDE%
 set LIB=%ARCHLESS_LIB%
-
-cd ../..
 
 rem bootstrap 32 bit build now
 set PATH=C:\Qt\5.6\msvc2013\bin;%PATH%
@@ -44,7 +52,12 @@ set LIB=%cd%\..\qtav-i686\lib;%cd%\..\qtav-i686\bin;%LIB%
 qmake ../QtAV/QtAV.pro
 jom -j8
 
+rem install QtAV into specific directory
+cd %WORKSPACE_ROOT%
+bash qtav_installation.sh i686
+
 set INCLUDE=%ARCHLESS_INCLUDE%
 set LIB=%ARCHLESS_LIB%
 
-cd ../..
+rem package up the binaries
+bash qtav_package_win.sh
