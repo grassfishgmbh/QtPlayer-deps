@@ -24,6 +24,10 @@ if [ ! -e ffmpeg-2.8.6.tar.bz2 ]; then
     wget http://ffmpeg.org/releases/ffmpeg-2.8.6.tar.bz2
 fi
 
+if [ -e ffmpeg-2.8.6 ]; then
+    rm -rf ffmpeg-2.8.6
+fi
+
 tar xvf ffmpeg-2.8.6.tar.bz2
 
 # BUILD FFMPEG
