@@ -2,9 +2,15 @@
 
 set -e
 
-# Use the latest custom build Qt framework (for VLC-Qt)
-export PATH=/opt/Qt/5.6.0/gcc_64/bin:$PATH
+QT_VERSION="5.6.0"
+QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
 VLC_VERSION="2.2.1"
+QTAV_TAG="v1.11.0"
+INSTALL_PREFIX="/opt/gf-builddeps"
+
+# Use the latest custom build Qt framework (for VLC-Qt)
+export PATH=$QT_DIR/bin:$PATH
+
 
 sudo apt-get install -y libxcb1-dev \
                       libxcb-shm0-dev \
@@ -32,8 +38,6 @@ sudo apt-get install -y libxcb1-dev \
                       chrpath \
                       zip
 
-
-INSTALL_PREFIX=/opt/gf-builddeps
 
 if [ -d $INSTALL_PREFIX ]; then
     sudo rm -rf $INSTALL_PREFIX
@@ -112,7 +116,7 @@ make -j`nproc`
 
 sudo make install
 
-# BUILD VLC-QT
+# BUILD VLC-Qt
 cd ..
 cd vlc-qt
 
@@ -124,12 +128,51 @@ mkdir build
 cd build
 
 cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/gf-builddeps -DLIBVLC_INCLUDE_DIR=/opt/gf-builddeps/include
-make -j8
+make -j`nproc`
 sudo make install
 
 cd .. # vlc-qt
 cd .. # deps-buildspace
 
+# BUILD QtAV
+
+export CPATH=$INSTALL_PREFIX/include:$CPATH
+export LIBRARY_PATH=$INSTALL_PREFIX/lib:$LIBRARY_PATH
+export LD_LIBRARY_PATH=$LIBRARY_PATH:$LD_LIBRARY_PATH
+
+if [ -d QtAV ]; then
+    rm -rf QtAV
+fi
+
+if [ -d build-QtAV ]; then
+    rm -rf build-QtAV
+fi
+
+git clone https://github.com/wang-bin/QtAV.git
+cd QtAV
+git checkout tags/$QTAV_TAG
+
+cd ..
+mkdir build-QtAV
+cd build-QtAV
+
+qmake ../QtAV/QtAV.pro
+make -j`nproc`
+
+
+QT_DIR_ESCAPED=`echo $QT_DIR | sed s,/,\\\\\\\\\\/,g`
+INSTALL_PREFIX_ESCAPED=`echo $INSTALL_PREFIX | sed s,/,\\\\\\\\\\/,g`
+sed -i "s/$QT_DIR_ESCAPED/$INSTALL_PREFIX_ESCAPED/g" sdk_install.sh
+
+sudo mkdir -p $INSTALL_PREFIX/mkspecs/features
+sudo mkdir -p $INSTALL_PREFIX/mkspecs/modules
+chmod a+x sdk_install.sh
+sudo ./sdk_install.sh
+
+cd $INSTALL_PREFIX
+find -iname "*.pri" -type f -exec sed -i "s/$QT_DIR_ESCAPED/$INSTALL_PREFIX_ESCAPED/g" {} \;
+
+cd $DEPS_BS_ROOT
 
 if [ -e $DEPS_BS_ROOT/gf-builddeps.tar.gz ]; then
     rm -rf $DEPS_BS_ROOT/gf-builddeps.tar.gz
