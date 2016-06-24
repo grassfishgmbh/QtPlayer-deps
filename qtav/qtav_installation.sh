@@ -17,7 +17,7 @@ cd deps-buildspace/build-QtAV
 
 # fix the QtAV-generated install batch script to install into
 # the dedicated install target (which we zip up post build)
-sed -i 's/$OLD_INSTALL_TARGET/$NEW_INSTALL_TARGET/g' sdk_install.bat
+sed -i "s/$OLD_INSTALL_TARGET/$NEW_INSTALL_TARGET/g" sdk_install.bat
 
 # create additional directories usually found in a Qt target
 mkdir -p $NEW_INSTALL_TARGET/mkspecs/features
