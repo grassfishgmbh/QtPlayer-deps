@@ -13,7 +13,7 @@ fi
 
 NEW_INSTALL_TARGET=`cygpath -w -a $PWD`\\deps-buildspace\\qtav-$1
 
-cd deps-buildspace\build-QtAV
+cd deps-buildspace/build-QtAV
 
 # fix the QtAV-generated install batch script to install into
 # the dedicated install target (which we zip up post build)
