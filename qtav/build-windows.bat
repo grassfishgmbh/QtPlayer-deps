@@ -6,7 +6,7 @@ set ARCHLESS_INCLUDE=%INCLUDE%
 set ARCHLESS_LIB=%LIB%
 
 rem build ffmpeg
-rem bash ffmpeg_msvc.sh x86_64
+bash ffmpeg_msvc.sh x86_64
 
 rem fetch QtAV
 bash qtav_msvc.sh x86_64
