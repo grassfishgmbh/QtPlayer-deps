@@ -2,11 +2,7 @@
 
 set -e
 
-QT_VERSION="5.6.0"
-QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
-VLC_VERSION="2.2.1"
-QTAV_TAG="v1.11.0"
-INSTALL_PREFIX="/opt/gf-builddeps"
+source ../config.sh
 
 # Use the latest custom build Qt framework (for VLC-Qt)
 export PATH=$QT_DIR/bin:$PATH
@@ -53,8 +49,8 @@ cd deps-buildspace
 
 DEPS_BS_ROOT=`pwd`
 
-if [ ! -e ffmpeg-2.8.6.tar.bz2 ]; then
-    wget http://ffmpeg.org/releases/ffmpeg-2.8.6.tar.bz2
+if [ ! -e ffmpeg-$FFMPEG_VERSION.tar.bz2 ]; then
+    wget http://ffmpeg.org/releases/ffmpeg-$FFMPEG_VERSION.tar.bz2
 fi
 
 if [ ! -e vlc-$VLC_VERSION.tar.xz ]; then
@@ -70,7 +66,7 @@ if [ ! -e vlc-qt ]; then
     cd ..
 fi
 
-tar xvf ffmpeg-2.8.6.tar.bz2
+tar xvf ffmpeg-$FFMPEG_VERSION.tar.bz2
 tar xvf vlc-$VLC_VERSION.tar.xz
 
 # APPLY NEEDED PATCHES
@@ -80,7 +76,7 @@ tar xvf vlc-$VLC_VERSION.tar.xz
 #cd -
 
 # BUILD FFMPEG
-cd ffmpeg-2.8.6
+cd ffmpeg-$FFMPEG_VERSION
 ./configure --extra-version=Grassfish \
             --enable-pic \
             --enable-runtime-cpudetect \
