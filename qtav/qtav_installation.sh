@@ -13,11 +13,14 @@ fi
 
 NEW_INSTALL_TARGET=`cygpath -w -a $PWD`\\deps-buildspace\\qtav-$1
 
+OLD_INSTALL_TARGET_ESC=$(echo $OLD_INSTALL_TARGET | sed 's/\\/\\\\/g')
+NEW_INSTALL_TARGET_ESC=$(echo $NEW_INSTALL_TARGET | sed 's/\\/\\\\/g')
+
 cd deps-buildspace/build-QtAV
 
 # fix the QtAV-generated install batch script to install into
 # the dedicated install target (which we zip up post build)
-sed -i "s/$OLD_INSTALL_TARGET/$NEW_INSTALL_TARGET/g" sdk_install.bat
+sed -i "s/$OLD_INSTALL_TARGET_ESC/$NEW_INSTALL_TARGET_ESC/g" sdk_install.bat
 
 # create additional directories usually found in a Qt target
 mkdir -p $NEW_INSTALL_TARGET/mkspecs/features
