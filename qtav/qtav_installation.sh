@@ -3,9 +3,9 @@
 QT_VERSION="5.6"
 
 if [ "$1" == "x86_64" ]; then
-    OLD_INSTALL_TARGET="C:\Qt\$QT_VERSION\msvc2013_64"
+    OLD_INSTALL_TARGET="C:\Qt\\$QT_VERSION\msvc2013_64"
 elif [ "$1" == "i686" ]; then
-    OLD_INSTALL_TARGET="C:\Qt\$QT_VERSION\msvc2013"
+    OLD_INSTALL_TARGET="C:\Qt\\$QT_VERSION\msvc2013"
 else
     echo "No architecture provided as argument, bailing."
     exit 1
