@@ -1,6 +1,6 @@
 #!/bin/bash
 
-QT_VERSION="5.6.0"
+QT_VERSION="5.6.1-1"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
 
 VLC_VERSION="2.2.1"
