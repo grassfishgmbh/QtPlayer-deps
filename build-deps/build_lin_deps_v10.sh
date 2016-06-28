@@ -146,7 +146,11 @@ fi
 
 git clone https://github.com/wang-bin/QtAV.git
 cd QtAV
-git checkout tags/$QTAV_TAG
+if [ "$QTAV_DEVRELEASE" == "0" ]; then
+    git checkout tags/$QTAV_TAG
+else
+    git checkout $QTAV_TAG
+fi
 
 cd ..
 mkdir build-QtAV

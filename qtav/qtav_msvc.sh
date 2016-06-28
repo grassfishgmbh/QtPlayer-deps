@@ -10,6 +10,8 @@ else
     exit 1
 fi
 
+source ../config.sh
+
 if [ ! -d deps-buildspace ]; then
     mkdir deps-buildspace
 fi
@@ -36,7 +38,12 @@ fi
 
 git clone https://github.com/wang-bin/QtAV.git
 cd QtAV
-git checkout tags/v1.11.0
+
+if [ "$QTAV_DEVRELEASE" == "0" ]; then
+    git checkout tags/$QTAV_TAG
+else
+    git checkout $QTAV_TAG
+fi
 
 cd ..
 mkdir build-QtAV
