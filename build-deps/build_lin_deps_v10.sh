@@ -152,6 +152,10 @@ else
     git checkout $QTAV_TAG
 fi
 
+find $QTAV_PATCH_DIR -type f -iname "*.patch" -print0 | while IFS= read -r -d $'\0' patchfile; do
+    patch -p1 < $patchfile
+done
+
 cd ..
 mkdir build-QtAV
 cd build-QtAV
