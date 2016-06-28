@@ -113,24 +113,25 @@ make -j`nproc`
 sudo make install
 
 # BUILD VLC-Qt
-cd ..
-cd vlc-qt
-
-if [ -e build ]; then
-    rm -rf build
-fi
-mkdir build
-
-cd build
-
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/gf-builddeps -DLIBVLC_INCLUDE_DIR=/opt/gf-builddeps/include
-make -j`nproc`
-sudo make install
-
-cd .. # vlc-qt
-cd .. # deps-buildspace
+#cd $DEPS_BS_ROOT
+#cd vlc-qt
+#
+#if [ -e build ]; then
+#    rm -rf build
+#fi
+#mkdir build
+#
+#cd build
+#
+#cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/opt/gf-builddeps -DLIBVLC_INCLUDE_DIR=/opt/gf-builddeps/include
+#make -j`nproc`
+#sudo make install
+#
+#cd .. # vlc-qt
+#cd .. # deps-buildspace
 
 # BUILD QtAV
+cd $DEPS_BS_ROOT
 
 export CPATH=$INSTALL_PREFIX/include:$CPATH
 export LIBRARY_PATH=$INSTALL_PREFIX/lib:$LIBRARY_PATH
