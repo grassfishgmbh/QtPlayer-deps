@@ -1,0 +1,13 @@
+diff --git a/qml/QmlAVPlayer.cpp b/qml/QmlAVPlayer.cpp
+index 7382974..270eed2 100644
+--- a/qml/QmlAVPlayer.cpp
++++ b/qml/QmlAVPlayer.cpp
+@@ -74,6 +74,7 @@ void QmlAVPlayer::classBegin()
+     if (mpPlayer)
+         return;
+     mpPlayer = new AVPlayer(this);
++    mpPlayer->setMediaEndAction(MediaEndAction_KeepDisplay);
+     connect(mpPlayer, SIGNAL(internalSubtitleTracksChanged(QVariantList)), SIGNAL(internalSubtitleTracksChanged()));
+     connect(mpPlayer, SIGNAL(internalAudioTracksChanged(QVariantList)), SIGNAL(internalAudioTracksChanged()));
+     connect(mpPlayer, SIGNAL(externalAudioTracksChanged(QVariantList)), SIGNAL(externalAudioTracksChanged()));
+
