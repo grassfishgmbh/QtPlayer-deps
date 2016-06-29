@@ -1,0 +1,13 @@
+diff --git a/src/core/proxy_config_service_qt.cpp b/src/core/proxy_config_service_qt.cpp
+index fc0959e..5580b44 100644
+--- a/src/core/proxy_config_service_qt.cpp
++++ b/src/core/proxy_config_service_qt.cpp
+@@ -131,6 +131,8 @@ net::ProxyConfigService::ConfigAvailability ProxyConfigServiceQt::GetLatestProxy
+         qtRules.type = net::ProxyConfig::ProxyRules::TYPE_NO_RULES;
+     }
+ 
++    qtRules.bypass_rules.AddRuleToBypassLocal();
++
+     m_qtProxyConfig.proxy_rules() = qtRules;
+     *config = m_qtProxyConfig;
+     return CONFIG_VALID;
