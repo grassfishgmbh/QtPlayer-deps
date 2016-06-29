@@ -63,7 +63,6 @@ cd ..
 # init subsubrepos
 cd qtxmlpatterns; git submodule update --init; cd ..
 cd qtdeclarative; git submodule update --init; cd ..
-cd qtwebengine;   git submodule update --init; cd ..
 
 # apply proxy patch
 cd qtwebengine/
@@ -73,10 +72,10 @@ cd ..
 
 # apply in-process-gpu & vaapi patch
 cd qtwebengine/src/3rdparty/
-patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch" || true
+patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch"
 
 #enable proprietary codecs in webengine
-cd ../../../
+cd ../../
 grep use_proprietary_codecs .qmake.conf || echo "WEBENGINE_CONFIG+=use_proprietary_codecs">>.qmake.conf
 cd ..
 cd qtmultimedia
