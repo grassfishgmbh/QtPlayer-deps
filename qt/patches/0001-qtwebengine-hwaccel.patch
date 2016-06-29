@@ -1,0 +1,217 @@
+diff --git a/chromium/content/browser/gpu/gpu_data_manager_impl_private.cc b/chromium/content/browser/gpu/gpu_data_manager_impl_private.cc
+index 9e27201..666cbea 100644
+--- a/chromium/content/browser/gpu/gpu_data_manager_impl_private.cc
++++ b/chromium/content/browser/gpu/gpu_data_manager_impl_private.cc
+@@ -932,22 +932,8 @@ bool GpuDataManagerImplPrivate::ShouldDisableAcceleratedVideoDecode(
+   if (group_name == "Disabled")
+     return true;
+ 
+-  // Accelerated decode is never available with --disable-gpu. It is also
+-  // currently non-functional with --single-process and --in-process-gpu, but
+-  // these should be fixable. We set the --disable-accelerated-video-decode flag
+-  // in these cases so that the renderer can be aware. (Which is important on
+-  // Android where there is no fallback once WMPI is selected.)
+-  //
+-  // TODO(sandersd): Enable support for accelerated decode with
+-  // --in-process-gpu, at least on Android (necessary to support WebView).
+-  // http://crbug.com/574935.
+-  if (command_line->HasSwitch(switches::kDisableGpu) ||
+-      command_line->HasSwitch(switches::kSingleProcess) ||
+-      command_line->HasSwitch(switches::kInProcessGPU)) {
+-    return true;
+-  }
+-
+-  return false;
++  // Accelerated decode is never available with --disable-gpu.
++  return command_line->HasSwitch(switches::kDisableGpu);
+ }
+ 
+ void GpuDataManagerImplPrivate::GetDisabledExtensions(
+diff --git a/chromium/content/browser/renderer_host/media/video_capture_gpu_jpeg_decoder.cc b/chromium/content/browser/renderer_host/media/video_capture_gpu_jpeg_decoder.cc
+index c48181a..766413f 100644
+--- a/chromium/content/browser/renderer_host/media/video_capture_gpu_jpeg_decoder.cc
++++ b/chromium/content/browser/renderer_host/media/video_capture_gpu_jpeg_decoder.cc
+@@ -47,7 +47,7 @@ void VideoCaptureGpuJpegDecoder::Initialize() {
+ 
+   base::AutoLock lock(lock_);
+   bool is_platform_supported = false;
+-#if defined(OS_CHROMEOS)
++#if defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))
+   // Non-ChromeOS platforms do not support HW JPEG decode now. Do not establish
+   // gpu channel to avoid introducing overhead.
+   is_platform_supported = true;
+diff --git a/chromium/content/common/gpu/media/gpu_jpeg_decode_accelerator.cc b/chromium/content/common/gpu/media/gpu_jpeg_decode_accelerator.cc
+index 7408e46..0fa7004 100644
+--- a/chromium/content/common/gpu/media/gpu_jpeg_decode_accelerator.cc
++++ b/chromium/content/common/gpu/media/gpu_jpeg_decode_accelerator.cc
+@@ -22,7 +22,7 @@
+ #include "media/filters/jpeg_parser.h"
+ #include "ui/gfx/geometry/size.h"
+ 
+-#if defined(OS_CHROMEOS)
++#if defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))
+ #if defined(ARCH_CPU_X86_FAMILY)
+ #include "content/common/gpu/media/vaapi_jpeg_decode_accelerator.h"
+ #endif
+@@ -417,7 +417,7 @@ scoped_ptr<media::JpegDecodeAccelerator>
+ GpuJpegDecodeAccelerator::CreateVaapiJDA(
+     const scoped_refptr<base::SingleThreadTaskRunner>& io_task_runner) {
+   scoped_ptr<media::JpegDecodeAccelerator> decoder;
+-#if defined(OS_CHROMEOS) && defined(ARCH_CPU_X86_FAMILY)
++#if (defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))) && defined(ARCH_CPU_X86_FAMILY)
+   decoder.reset(new VaapiJpegDecodeAccelerator(io_task_runner));
+ #endif
+   return decoder;
+diff --git a/chromium/content/common/gpu/media/gpu_video_decode_accelerator.cc b/chromium/content/common/gpu/media/gpu_video_decode_accelerator.cc
+index 5424a5f..2f08356 100644
+--- a/chromium/content/common/gpu/media/gpu_video_decode_accelerator.cc
++++ b/chromium/content/common/gpu/media/gpu_video_decode_accelerator.cc
+@@ -34,7 +34,7 @@
+ #include "content/common/gpu/media/dxva_video_decode_accelerator_win.h"
+ #elif defined(OS_MACOSX)
+ #include "content/common/gpu/media/vt_video_decode_accelerator_mac.h"
+-#elif defined(OS_CHROMEOS)
++#elif defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))
+ #if defined(USE_V4L2_CODEC)
+ #include "content/common/gpu/media/v4l2_device.h"
+ #include "content/common/gpu/media/v4l2_slice_video_decode_accelerator.h"
+@@ -164,7 +164,7 @@ GpuVideoDecodeAccelerator::GetCapabilities() {
+ #if defined(OS_WIN)
+   capabilities.supported_profiles =
+       DXVAVideoDecodeAccelerator::GetSupportedProfiles();
+-#elif defined(OS_CHROMEOS)
++#elif defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))
+   media::VideoDecodeAccelerator::SupportedProfiles vda_profiles;
+ #if defined(USE_V4L2_CODEC)
+   vda_profiles = V4L2VideoDecodeAccelerator::GetSupportedProfiles();
+@@ -444,7 +444,7 @@ void GpuVideoDecodeAccelerator::BindImage(uint32_t client_texture_id,
+ scoped_ptr<media::VideoDecodeAccelerator>
+ GpuVideoDecodeAccelerator::CreateVaapiVDA() {
+   scoped_ptr<media::VideoDecodeAccelerator> decoder;
+-#if defined(OS_CHROMEOS) && defined(ARCH_CPU_X86_FAMILY)
++#if (defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))) && defined(ARCH_CPU_X86_FAMILY)
+   decoder.reset(new VaapiVideoDecodeAccelerator(
+       make_context_current_, base::Bind(&GpuVideoDecodeAccelerator::BindImage,
+                                         base::Unretained(this))));
+diff --git a/chromium/content/content_common.gypi b/chromium/content/content_common.gypi
+index f6ae799..2c96b9e 100644
+--- a/chromium/content/content_common.gypi
++++ b/chromium/content/content_common.gypi
+@@ -879,7 +879,7 @@
+         },
+       ],
+     }],
+-    ['chromeos==1', {
++    ['chromeos==1 or (OS=="linux" and use_qt==1)', {
+       'sources': [
+         'common/gpu/media/accelerated_video_decoder.h',
+         'common/gpu/media/gpu_arc_video_service.cc',
+@@ -937,7 +937,7 @@
+         'common/gpu/media/tegra_v4l2_device.h',
+       ],
+     }],
+-    ['target_arch != "arm" and chromeos == 1', {
++    ['target_arch != "arm" and (chromeos == 1 or (OS=="linux" and use_qt==1))', {
+       'dependencies': [
+         '../media/media.gyp:media',
+         '../third_party/libyuv/libyuv.gyp:libyuv',
+diff --git a/chromium/content/gpu/gpu_child_thread.cc b/chromium/content/gpu/gpu_child_thread.cc
+index ad4df13..5b4ff88 100644
+--- a/chromium/content/gpu/gpu_child_thread.cc
++++ b/chromium/content/gpu/gpu_child_thread.cc
+@@ -15,6 +15,8 @@
+ #include "content/child/thread_safe_sender.h"
+ #include "content/common/gpu/gpu_memory_buffer_factory.h"
+ #include "content/common/gpu/gpu_messages.h"
++#include "content/common/gpu/media/gpu_jpeg_decode_accelerator.h"
++#include "content/common/gpu/media/gpu_video_decode_accelerator.h"
+ #include "content/gpu/gpu_process_control_impl.h"
+ #include "content/gpu/gpu_watchdog_thread.h"
+ #include "content/public/common/content_client.h"
+@@ -177,6 +179,13 @@ GpuChildThread::GpuChildThread(
+          base::CommandLine::ForCurrentProcess()->HasSwitch(
+              switches::kInProcessGPU));
+ 
++  // Populate accelerator capabilities (normally done during GpuMain, which is
++  // not called for single process or in process gpu).
++  gpu_info_.video_decode_accelerator_capabilities =
++      content::GpuVideoDecodeAccelerator::GetCapabilities();
++  gpu_info_.jpeg_decode_accelerator_supported =
++      content::GpuJpegDecodeAccelerator::IsSupported();
++
+   if (!gfx::GLSurface::InitializeOneOff())
+     VLOG(1) << "gfx::GLSurface::InitializeOneOff failed";
+ 
+diff --git a/chromium/content/gpu/gpu_main.cc b/chromium/content/gpu/gpu_main.cc
+index b43581f..dec4102 100644
+--- a/chromium/content/gpu/gpu_main.cc
++++ b/chromium/content/gpu/gpu_main.cc
+@@ -76,7 +76,7 @@
+ #include "content/common/sandbox_mac.h"
+ #endif
+ 
+-#if defined(OS_CHROMEOS) && defined(ARCH_CPU_X86_FAMILY)
++#if (defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))) && defined(ARCH_CPU_X86_FAMILY)
+ #include "content/common/gpu/media/vaapi_wrapper.h"
+ #endif
+ 
+@@ -251,7 +251,7 @@ int GpuMain(const MainFunctionParams& parameters) {
+   GetGpuInfoFromCommandLine(gpu_info, command_line);
+   gpu_info.in_process_gpu = false;
+ 
+-#if defined(OS_CHROMEOS) && defined(ARCH_CPU_X86_FAMILY)
++#if (defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))) && defined(ARCH_CPU_X86_FAMILY)
+   VaapiWrapper::PreSandboxInitialization();
+ #endif
+ 
+diff --git a/chromium/content/public/common/content_switches.cc b/chromium/content/public/common/content_switches.cc
+index 094ecf1..5047ac8 100644
+--- a/chromium/content/public/common/content_switches.cc
++++ b/chromium/content/public/common/content_switches.cc
+@@ -944,7 +944,7 @@ const char kEnableAggressiveDOMStorageFlushing[] =
+ // Disable web audio API.
+ const char kDisableWebAudio[]               = "disable-webaudio";
+ 
+-#if defined(OS_CHROMEOS)
++#if defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))
+ // Disables panel fitting (used for mirror mode).
+ const char kDisablePanelFitting[]           = "disable-panel-fitting";
+ 
+diff --git a/chromium/content/public/common/content_switches.h b/chromium/content/public/common/content_switches.h
+index f45e539..01f297d 100644
+--- a/chromium/content/public/common/content_switches.h
++++ b/chromium/content/public/common/content_switches.h
+@@ -276,7 +276,7 @@ CONTENT_EXPORT extern const char kRendererWaitForJavaDebugger[];
+ 
+ CONTENT_EXPORT extern const char kDisableWebAudio[];
+ 
+-#if defined(OS_CHROMEOS)
++#if defined(OS_CHROMEOS) || (defined(OS_LINUX) && defined(TOOLKIT_QT))
+ CONTENT_EXPORT extern const char kDisablePanelFitting[];
+ CONTENT_EXPORT extern const char kDisableVaapiAcceleratedVideoEncode[];
+ #endif
+diff --git a/chromium/gpu/config/software_rendering_list_json.cc b/chromium/gpu/config/software_rendering_list_json.cc
+index 8465fc0..c12b1f5 100644
+--- a/chromium/gpu/config/software_rendering_list_json.cc
++++ b/chromium/gpu/config/software_rendering_list_json.cc
+@@ -481,17 +481,6 @@ const char kSoftwareRenderingListJson[] = LONG_STRING_CONST(
+       ]
+     },
+     {
+-      "id": 48,
+-      "description": "Accelerated video decode is unavailable on Linux",
+-      "cr_bugs": [137247],
+-      "os": {
+-        "type": "linux"
+-      },
+-      "features": [
+-        "accelerated_video_decode"
+-      ]
+-    },
+-    {
+       "id": 49,
+       "description": "NVidia GeForce GT 650M can cause the system to hang with flash 3D",
+       "cr_bugs": [140175],
+-- 
+2.7.4
+
