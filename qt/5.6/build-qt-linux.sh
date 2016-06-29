@@ -46,8 +46,16 @@ cd qt-src
 #perl init-repository --module-subset=default,-qtwebkit-examples,-qt3d,-qtactiveqt,-qtandroidextras,-qtcanvas3d,-qtpurchasing,-qtenginio,-qtmacextras,-qtpim,-qtfeedback,qtwebkit
 git submodule init qtbase qtconnectivity qtdeclarative qtdoc qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtqa 
 git submodule init qtquickcontrols qtquickcontrols2 qtrepotools qtscript qtsensors  qtserialbus qtserialport qtsvg qttools
-git submodule init qttranslations qtwayland qtwebchannel qtwebengine qtwebkit qtwebsockets qtwebview qtwinextras qtx11extras qtxmlpatterns
+git submodule init qttranslations qtwayland qtwebchannel qtwebkit qtwebsockets qtwebview qtwinextras qtx11extras qtxmlpatterns
 git submodule update
+
+# independently pull QtWebEngine based on the version defined in config.sh
+git clone https://github.com/qt/qtwebengine.git
+cd qtwebengine
+git checkout tags/v$QTWEBENGINE_VERSION
+git submodule update --init --recursive
+cd ..
+
 # init subsubrepos
 cd qtxmlpatterns; git submodule update --init; cd ..
 cd qtdeclarative; git submodule update --init; cd ..
