@@ -1,0 +1,35 @@
+diff --git a/src/quick/items/qquickwindow.cpp b/src/quick/items/qquickwindow.cpp
+index b06cfe5..a75fa93 100644
+--- a/src/quick/items/qquickwindow.cpp
++++ b/src/quick/items/qquickwindow.cpp
+@@ -458,7 +458,13 @@ void QQuickWindowPrivate::renderSceneGraph(const QSize &size)
+             renderer->setDeviceRect(rect);
+             renderer->setViewportRect(rect);
+         }
+-        renderer->setProjectionMatrixToRect(QRect(QPoint(0, 0), size));
++        QRectF projRect(QPoint(0, 0), size);
++        bool mirrorVertically = QOpenGLContext::currentContext()->format().orientationFlags() & QSurfaceFormat::MirrorVertically;
++        QRectF mirrored(projRect.left(),
++                        mirrorVertically ? projRect.bottom() : projRect.top(),
++                        projRect.width(),
++                        mirrorVertically ? -projRect.height() : projRect.height());
++        renderer->setProjectionMatrixToRect(mirrored);
+         renderer->setDevicePixelRatio(devicePixelRatio);
+ 
+         context->renderNextFrame(renderer, fboId);
+diff --git a/src/quick/scenegraph/qsgcontext.cpp b/src/quick/scenegraph/qsgcontext.cpp
+index 6572ceb..51f23dd 100644
+--- a/src/quick/scenegraph/qsgcontext.cpp
++++ b/src/quick/scenegraph/qsgcontext.cpp
+@@ -476,6 +476,8 @@ QSurfaceFormat QSGContext::defaultSurfaceFormat() const
+     static bool enableDebug = qEnvironmentVariableIsSet("QSG_OPENGL_DEBUG");
+     format.setDepthBufferSize(useDepth ? 24 : 0);
+     format.setStencilBufferSize(useStencil ? 8 : 0);
++    // XXX: Uncomment to enable application-side Y-coordinates-flipping by default
++    // format.setOption(QSurfaceFormat::UseOptimalOrientation);
+     if (enableDebug)
+         format.setOption(QSurfaceFormat::DebugContext);
+     if (QQuickWindow::hasDefaultAlphaBuffer())
+-- 
+1.9.5.msysgit.0
+
