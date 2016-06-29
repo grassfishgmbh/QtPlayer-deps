@@ -2,6 +2,8 @@
 
 BASEDIR=$(dirname "$0")
 
+source $BASEDIR/../../config.sh
+
 if [[ -z "$QT_VERSION" ]]; then
 	echo "QT_VERSION not set";
     exit -1
@@ -11,7 +13,6 @@ if [[ -z "$BUILD_VERSION" ]]; then
 	echo "BUILD_VERSION string not set";
     exit -1
 fi
-
 
 
 rm -f *.zip
@@ -37,10 +38,6 @@ sudo apt-get install -y libasound2-dev libgstreamer0.10-dev libgstreamer-plugins
 #webengine:
 sudo apt-get install -y libcap-dev libxrandr-dev libxcomposite-dev libxcursor-dev libxtst-dev libudev-dev libpci-dev libfontconfig1-dev libxss-dev
 
-# get vaapi patch for chromium
-# TODO: git clone https://github.com/fqj1994/chromium-vaapi.git
-
-
 # get Qt5 main repo
 git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION qt-src
 
@@ -58,13 +55,13 @@ cd qtwebengine;   git submodule update --init; cd ..
 
 # apply proxy patch
 cd qtwebengine/
-patch -f -Np1 -i "$BASEDIR/0002-disable-proxy-for-localhost.patch"
+patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
 cd ..
 
 
 # apply vaapi patch
 cd qtwebengine/src/3rdparty/chromium/
-# TODO: patch -f -Np1 -i ../../../../../chromium-vaapi/0001-enable-hardware-decoding-on-linux.patch || true
+patch -f -Np1 -i "$QT_PATCH_DIR/0001-enable-hardware-decoding-on-linux.patch" || true
 
 #enable proprietary codecs in webengine
 cd ../../../
