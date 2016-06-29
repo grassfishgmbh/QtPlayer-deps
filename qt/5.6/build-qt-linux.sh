@@ -71,9 +71,9 @@ patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
 cd ..
 
 
-# apply vaapi patch
-cd qtwebengine/src/3rdparty/chromium/
-patch -f -Np1 -i "$QT_PATCH_DIR/0001-enable-hardware-decoding-on-linux.patch" || true
+# apply in-process-gpu & vaapi patch
+cd qtwebengine/src/3rdparty/
+patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch" || true
 
 #enable proprietary codecs in webengine
 cd ../../../
