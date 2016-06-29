@@ -50,6 +50,10 @@ git submodule init qttranslations qtwayland qtwebchannel qtwebkit qtwebsockets q
 git submodule update
 
 # independently pull QtWebEngine based on the version defined in config.sh
+if [ -e qtwebengine ]; then
+    rm -rf qtwebengine
+fi
+
 git clone https://github.com/qt/qtwebengine.git
 cd qtwebengine
 git checkout tags/v$QTWEBENGINE_VERSION
