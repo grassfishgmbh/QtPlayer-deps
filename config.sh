@@ -4,6 +4,7 @@ CONFIG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 QT_VERSION="5.6.1-1"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
+QT_PATCH_DIR="$CONFIG_DIR/qt/patches"
 
 VLC_VERSION="2.2.1"
 
