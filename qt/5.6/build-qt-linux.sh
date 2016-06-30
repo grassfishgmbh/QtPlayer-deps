@@ -59,6 +59,10 @@ git submodule update
 cd qtxmlpatterns; git submodule update --init; cd ..
 cd qtdeclarative; git submodule update --init; cd ..
 
+# Enable GStreamer 1.0 support
+cd qtmultimedia
+grep GST_VERSION .qmake.conf || echo "GST_VERSION=1.0">>.qmake.conf
+cd ..
 
 # independently pull QtWebEngine based on the version defined in config.sh
 if [ -e qtwebengine-$QTWEBENGINE_VERSION ]; then
@@ -84,9 +88,6 @@ patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch"
 #enable proprietary codecs in webengine
 cd ../../
 grep use_proprietary_codecs .qmake.conf || echo "WEBENGINE_CONFIG+=use_proprietary_codecs">>.qmake.conf
-cd ..
-cd qtmultimedia
-grep GST_VERSION .qmake.conf || echo "GST_VERSION=1.0">>.qmake.conf
 cd ..
 
 # build qt
