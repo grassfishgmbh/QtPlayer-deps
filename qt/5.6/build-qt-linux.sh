@@ -55,29 +55,30 @@ git submodule init qtquickcontrols qtquickcontrols2 qtrepotools qtscript qtsenso
 git submodule init qttranslations qtwayland qtwebchannel qtwebkit qtwebsockets qtwebview qtwinextras qtx11extras qtxmlpatterns
 git submodule update
 
-# independently pull QtWebEngine based on the version defined in config.sh
-if [ -e qtwebengine ]; then
-    rm -rf qtwebengine
-fi
-
-git clone https://github.com/qt/qtwebengine.git
-cd qtwebengine
-git checkout tags/v$QTWEBENGINE_VERSION
-git submodule update --init --recursive
-cd ..
-
 # init subsubrepos
 cd qtxmlpatterns; git submodule update --init; cd ..
 cd qtdeclarative; git submodule update --init; cd ..
 
+
+# independently pull QtWebEngine based on the version defined in config.sh
+if [ -e qtwebengine-$QTWEBENGINE_VERSION ]; then
+    rm -rf qtwebengine-$QTWEBENGINE_VERSION
+fi
+
+git clone https://github.com/qt/qtwebengine.git qtwebengine-$QTWEBENGINE_VERSION
+cd qtwebengine-$QTWEBENGINE_VERSION
+git checkout tags/v$QTWEBENGINE_VERSION
+git submodule update --init --recursive
+cd ..
+
 # apply proxy patch
-cd qtwebengine/
+cd qtwebengine-$QTWEBENGINE_VERSION
 patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
 cd ..
 
 
 # apply in-process-gpu & vaapi patch
-cd qtwebengine/src/3rdparty/
+cd qtwebengine-$QTWEBENGINE_VERSION/src/3rdparty/
 patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch"
 
 #enable proprietary codecs in webengine
@@ -100,11 +101,21 @@ fi
 
 sudo make install
 
-
 #add lib icu
 wget http://download.icu-project.org/files/icu4c/52.1/icu4c-52_1-RHEL6-x64.tgz
 tar -xzf icu4c-52_1-RHEL6-x64.tgz
 sudo cp -r usr/local/lib/*.so* /opt/Qt/$QT_VERSION/gcc_64/lib
+
+# build patched WebEngine
+export PATH=$QT_DIR:$PATH
+
+mkdir build-qtwebengine-$QTWEBENGINE_VERSION
+cd build-qtwebengine-$QTWEBENGINE_VERSION
+qmake ../qtwebengine-$QTWEBENGINE_VERSION/qtwebengine.pro
+make -j`nproc`
+sudo make install
+cd ..
+
 
 # zip archive for dev usage
 zip -y --symlinks -r ../Qt-$QT_VERSION.zip /opt/Qt/$QT_VERSION/gcc_64
