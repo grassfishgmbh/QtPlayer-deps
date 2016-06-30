@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 BASEDIR=$(dirname "$0")
 
 source $BASEDIR/../../config.sh
@@ -90,7 +92,12 @@ cd ..
 #mkdir ../install
 #-prefix $WORKSPACE/install 
 ./configure -prefix /opt/Qt/$QT_VERSION/gcc_64 -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb
-make -j8
+make -j`nproc`
+
+if [ -e /opt/Qt/$QT_VERSION/ ]; then
+    rm -rf /opt/Qt/$QT_VERSION
+fi
+
 sudo make install
 
 
