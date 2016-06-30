@@ -73,10 +73,8 @@ git clone https://github.com/qt/qtwebengine.git qtwebengine-$QTWEBENGINE_VERSION
 cd qtwebengine-$QTWEBENGINE_VERSION
 git checkout tags/v$QTWEBENGINE_VERSION
 git submodule update --init --recursive
-cd ..
 
 # apply proxy patch
-cd qtwebengine-$QTWEBENGINE_VERSION
 patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
 cd ..
 
