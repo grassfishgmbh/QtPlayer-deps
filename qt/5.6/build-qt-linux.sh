@@ -95,7 +95,7 @@ cd ..
 make -j`nproc`
 
 if [ -e /opt/Qt/$QT_VERSION/ ]; then
-    rm -rf /opt/Qt/$QT_VERSION
+    sudo rm -rf /opt/Qt/$QT_VERSION
 fi
 
 sudo make install
@@ -106,7 +106,7 @@ tar -xzf icu4c-52_1-RHEL6-x64.tgz
 sudo cp -r usr/local/lib/*.so* /opt/Qt/$QT_VERSION/gcc_64/lib
 
 # build patched WebEngine
-export PATH=$QT_DIR:$PATH
+export PATH=$QT_DIR/bin:$PATH
 
 mkdir build-qtwebengine-$QTWEBENGINE_VERSION
 cd build-qtwebengine-$QTWEBENGINE_VERSION
