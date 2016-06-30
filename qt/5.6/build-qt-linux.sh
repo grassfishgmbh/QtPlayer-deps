@@ -37,7 +37,7 @@ sudo apt-get install -y libasound2-dev libgstreamer0.10-dev libgstreamer-plugins
 
 sudo add-apt-repository -y ppa:wsnipex/vaapi
 sudo apt-get update
-sudo apt-get install libva-dev
+sudo apt-get install -y libva-dev
 
 #webengine:
 sudo apt-get install -y libcap-dev libxrandr-dev libxcomposite-dev libxcursor-dev libxtst-dev libudev-dev libpci-dev libfontconfig1-dev libxss-dev
