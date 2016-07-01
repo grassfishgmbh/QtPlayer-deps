@@ -103,6 +103,9 @@ sed -i "s/$QT_DIR_ESCAPED/$INSTALL_PREFIX_ESCAPED/g" sdk_install.sh
 sudo mkdir -p $INSTALL_PREFIX/mkspecs/features
 sudo mkdir -p $INSTALL_PREFIX/mkspecs/modules
 chmod a+x sdk_install.sh
+if [ ! -e $INSTALL_PREFIX/qml/QtAV ]; then
+    sudo mkdir -p $INSTALL_PREFIX/qml/QtAV
+fi
 sudo ./sdk_install.sh
 
 cd $INSTALL_PREFIX
