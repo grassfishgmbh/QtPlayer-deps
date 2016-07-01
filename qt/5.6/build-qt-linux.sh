@@ -76,6 +76,9 @@ git submodule update --init --recursive
 
 # apply proxy patch
 patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
+
+# apply webchannel transport patch
+patch -f -Np1 -i "$QT_PATCH_DIR/0005-qtwebengine-5.7-reload-channel.patch"
 cd ..
 
 
