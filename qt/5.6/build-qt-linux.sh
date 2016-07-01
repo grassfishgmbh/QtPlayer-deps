@@ -64,6 +64,11 @@ cd qtmultimedia
 grep GST_VERSION .qmake.conf || echo "GST_VERSION=1.0">>.qmake.conf
 cd ..
 
+# apply patch: protection against accessing destroyed QDBusConnectionManager
+cd qtbase
+patch -f -Np1 -i "$QT_PATCH_DIR/0006-dbus-connectionmanager-destroy.patch"
+cd ..
+
 # independently pull QtWebEngine based on the version defined in config.sh
 if [ -e qtwebengine-$QTWEBENGINE_VERSION ]; then
     rm -rf qtwebengine-$QTWEBENGINE_VERSION
