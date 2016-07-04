@@ -34,17 +34,6 @@ wget http://download.icu-project.org/files/icu4c/52.1/icu4c-52_1-RHEL6-x64.tgz
 tar -xzf icu4c-52_1-RHEL6-x64.tgz
 sudo cp -r usr/local/lib/*.so* /opt/Qt/$QT_VERSION/gcc_64/lib
 
-# build patched WebEngine
-export PATH=$QT_DIR/bin:$PATH
-
-mkdir build-qtwebengine-$QTWEBENGINE_VERSION
-cd build-qtwebengine-$QTWEBENGINE_VERSION
-qmake ../qtwebengine-$QTWEBENGINE_VERSION/qtwebengine.pro
-make -j`nproc`
-sudo make install
-cd ..
-
-
 # zip archive for dev usage
 zip -y --symlinks -r ../Qt-$QT_VERSION.zip /opt/Qt/$QT_VERSION/gcc_64
 cd ..

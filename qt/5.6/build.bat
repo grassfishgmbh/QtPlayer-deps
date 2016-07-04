@@ -15,12 +15,6 @@ jom install
 rem build patched WebEngine
 set PATH=%QT_DIR%\bin;%PATH%
 
-mkdir build-qtwebengine-%QTWEBENGINE_VERSION%
-cd build-qtwebengine-%QTWEBENGINE_VERSION%
-qmake ../qtwebengine-%QTWEBENGINE_VERSION%/qtwebengine.pro
-jom
-jom install
-
 cd %CONFIG_DIR%\qt\5.6
 
 bash package-win.sh

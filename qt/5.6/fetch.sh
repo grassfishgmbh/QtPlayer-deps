@@ -59,12 +59,12 @@ patch -f -Np1 -i "$QT_PATCH_DIR/0006-dbus-connectionmanager-destroy.patch"
 cd ..
 
 # independently pull QtWebEngine based on the version defined in config.sh
-if [ -e qtwebengine-$QTWEBENGINE_VERSION ]; then
-    rm -rf qtwebengine-$QTWEBENGINE_VERSION
+if [ -e qtwebengine ]; then
+    rm -rf qtwebengine
 fi
 
-git clone https://github.com/qt/qtwebengine.git qtwebengine-$QTWEBENGINE_VERSION
-cd qtwebengine-$QTWEBENGINE_VERSION
+git clone https://github.com/qt/qtwebengine.git qtwebengine
+cd qtwebengine
 git checkout tags/v$QTWEBENGINE_VERSION
 git submodule update --init --recursive
 
@@ -77,7 +77,7 @@ cd ..
 
 
 # apply in-process-gpu & vaapi patch
-cd qtwebengine-$QTWEBENGINE_VERSION/src/3rdparty/
+cd qtwebengine/src/3rdparty/
 patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch"
 
 #enable proprietary codecs in webengine
