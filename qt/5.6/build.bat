@@ -20,11 +20,16 @@ cd build-qtwebengine-%QTWEBENGINE_VERSION%
 qmake ../qtwebengine-%QTWEBENGINE_VERSION%/qtwebengine.pro
 jom
 jom install
+
+rem go to qt-src
 cd ..
 
-rem zip archive for dev usage
-zip -y --symlinks -r ../Qt-%QT_VERSION%.zip %QT_DIR%
+rem to the build scripts
 cd ..
+
+bash package-win.sh
+
+cd %CONFIG_DIR%
 
 echo %BUILD_VERSION% > version.txt
 md5sum Qt-%QT_VERSION%.zip > qtframework.txt
