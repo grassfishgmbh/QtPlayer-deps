@@ -2,6 +2,10 @@
 
 CONFIG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+if [ `uname -o` != "GNU/Linux" ]; then
+    alias sudo=
+fi
+
 QT_VERSION="5.6.1-1"
 QTWEBENGINE_VERSION="5.7.0"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
