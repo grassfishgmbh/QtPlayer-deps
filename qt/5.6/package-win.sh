@@ -10,7 +10,7 @@ ZIPTARGET=`pwd`/../..
 
 # zip archive for dev usage
 QT_DIR_CYG=`cygpath -a $QT_DIR_WIN`
-cd $QT_DIR_CYG/../../..
-zip -y --symlinks -r Qt-$QT_VERSION.zip Qt
+cd $QT_DIR_CYG/../..
+zip -y --symlinks -r Qt-$QT_VERSION.zip $QT_VERSION
 mv Qt-$QT_VERSION.zip $ZIPTARGET
 

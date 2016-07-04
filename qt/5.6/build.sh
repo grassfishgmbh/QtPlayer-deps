@@ -15,7 +15,7 @@ if [[ -z "$BUILD_VERSION" ]]; then
     exit -1
 fi
 
-cd qt-src
+cd $QT_SRC_DIR
 
 # build qt
 #mkdir ../install

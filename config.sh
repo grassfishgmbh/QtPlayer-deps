@@ -10,10 +10,15 @@ QT_VERSION="5.6.1-1"
 QTWEBENGINE_VERSION="5.7.0"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
 QT_PATCH_DIR="$CONFIG_DIR/qt/patches"
+
 if [ "$GF_QT_IS_32_BIT_BUILD" == "" ]; then
     QT_DIR_WIN="C:\Qt\\$QT_VERSION\msvc2013_64"
 else
     QT_DIR_WIN="C:\Qt\\$QT_VERSION\msvc2013"
+fi
+
+if [ "$QT_SRC_DIR" == "" ]; then
+    QT_SRC_DIR="$CONFIG_DIR\qt\5.6\qt-src"
 fi
 
 VLC_VERSION="2.2.1"

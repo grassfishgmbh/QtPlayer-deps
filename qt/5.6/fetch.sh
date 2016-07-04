@@ -21,15 +21,21 @@ rm -f *.zip
 rm -rf qt-src
 rm -f *.txt
 
+
+CLONE_QT_SRC=qt-src
 if [ `uname -o` == "GNU/Linux" ]; then
     bash prepare.sh
 fi
 
+if [ `uname -o` == "Cygwin" ]; then
+    CLONE_QT_SRC=`cygpath -a $QT_SRC_DIR_WIN`
+fi
+
 # get Qt5 main repo
-git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION qt-src
+git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
 
 # init subrepos
-cd qt-src
+cd $CLONE_QT_SRC
 #perl init-repository --module-subset=default,-qtwebkit-examples,-qt3d,-qtactiveqt,-qtandroidextras,-qtcanvas3d,-qtpurchasing,-qtenginio,-qtmacextras,-qtpim,-qtfeedback,qtwebkit
 git submodule init qtbase qtconnectivity qtdeclarative qtdoc qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtqa 
 git submodule init qtquickcontrols qtquickcontrols2 qtrepotools qtscript qtsensors  qtserialbus qtserialport qtsvg qttools

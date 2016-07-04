@@ -2,7 +2,7 @@ set BASEDIR=%CD%
 
 CALL %BASEDIR%\..\..\config.bat
 
-cd qt-src
+cd %QT_SRC_DIR%
 
 rem build qt
 cmd /C configure -prefix %QT_DIR% -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -opengl dynamic
@@ -21,11 +21,7 @@ qmake ../qtwebengine-%QTWEBENGINE_VERSION%/qtwebengine.pro
 jom
 jom install
 
-rem go to qt-src
-cd ..
-
-rem to the build scripts
-cd ..
+cd %CONFIG_DIR%\qt\5.6
 
 bash package-win.sh
 
