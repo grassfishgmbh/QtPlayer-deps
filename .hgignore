@@ -1,5 +1,8 @@
 syntax: glob
 build-deps/deps-buildspace
 build-deps/deps-buildspace-win
-build-deps/lin/deps-buildspace/build-QtAV
-build-deps/lin/deps-buildspace/ffmpeg-*.tar.bz2
+build-deps/lin/deps-buildspace/
+qt/5.6/qt-src
+qt/5.6/Qt-5.6.1-1.zip
+qt/5.6/qtframework.txt
+qt/5.6/version.txt
