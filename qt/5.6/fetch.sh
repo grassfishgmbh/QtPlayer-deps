@@ -21,7 +21,9 @@ rm -f *.zip
 rm -rf qt-src
 rm -f *.txt
 
-bash prepare.sh
+if [ `uname -o` == "GNU/Linux" ]; then
+    bash prepare.sh
+fi
 
 # get Qt5 main repo
 git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION qt-src
