@@ -28,7 +28,7 @@ if [ `uname -o` == "GNU/Linux" ]; then
 fi
 
 if [ `uname -o` == "Cygwin" ]; then
-    CLONE_QT_SRC=`cygpath -a $QT_SRC_DIR_WIN`
+    CLONE_QT_SRC=`cygpath -a $QT_SRC_DIR`
 fi
 
 # get Qt5 main repo
