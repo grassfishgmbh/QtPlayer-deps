@@ -5,7 +5,7 @@ CALL %BASEDIR%\..\..\config.bat
 cd qt-src
 
 rem build qt
-configure -prefix %QT_DIR% -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -opengl dynamic
+cmd /C configure -prefix %QT_DIR% -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -opengl dynamic
 jom
 
 if exist %QT_DIR% rd /q /s %QT_DIR%
