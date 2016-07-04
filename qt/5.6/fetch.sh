@@ -17,11 +17,6 @@ if [[ -z "$BUILD_VERSION" ]]; then
 fi
 
 
-rm -f *.zip
-rm -rf qt-src
-rm -f *.txt
-
-
 CLONE_QT_SRC=qt-src
 if [ `uname -o` == "GNU/Linux" ]; then
     bash prepare.sh
@@ -30,6 +25,13 @@ fi
 if [ `uname -o` == "Cygwin" ]; then
     CLONE_QT_SRC=`cygpath -a $QT_SRC_DIR`
 fi
+
+# clean up
+rm -f *.zip
+if [ -e $CLONE_QT_SRC ]; then
+    rm -rf $CLONE_QT_SRC
+fi
+rm -f *.txt
 
 # get Qt5 main repo
 git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
