@@ -29,4 +29,7 @@ QTAV_PATCH_DIR="$CONFIG_DIR/qtav/patches"
 
 FFMPEG_VERSION="2.8.6"
 
+OPENSSL_VERSION="1.0.2h"
+OPENSSL_DIR=$CONFIG_DIR/openssl
+
 INSTALL_PREFIX="/opt/gf-builddeps"
