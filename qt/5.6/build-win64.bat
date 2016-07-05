@@ -7,7 +7,14 @@ set BUILD_NUMBER=1
 )
 
 set BUILD_VERSION=%QT_VERSION%-%BUILD_NUMBER%
+set BACK_TO_BASE=%CD%
 
+cd %OPENSSL_DIR%
+bash fetch.sh
+build.bat
+
+cd %BACK_TO_BASE%
+set INCLUDE=%OPENSSL_DIR%\inc32;%INCLUDE%
 if "%GF_QT_IS_32_BIT_BUILD%"=="" (CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64) else (CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64_x86)
 
 bash fetch.sh
