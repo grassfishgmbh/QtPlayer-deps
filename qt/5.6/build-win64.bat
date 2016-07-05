@@ -9,7 +9,7 @@ set BUILD_NUMBER=1
 set BUILD_VERSION=%QT_VERSION%-%BUILD_NUMBER%
 set BACK_TO_BASE=%CD%
 
-cd %OPENSSL_DIR%
+cd ..\..\openssl
 bash fetch.sh
 build.bat
 
