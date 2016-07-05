@@ -36,6 +36,10 @@ rm -f *.txt
 # get Qt5 main repo
 git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
 
+if [ `uname -o` == "Cygwin" ]; then
+    chmod -R a+rwx $CLONE_QT_SRC
+fi
+
 # init subrepos
 cd $CLONE_QT_SRC
 #perl init-repository --module-subset=default,-qtwebkit-examples,-qt3d,-qtactiveqt,-qtandroidextras,-qtcanvas3d,-qtpurchasing,-qtenginio,-qtmacextras,-qtpim,-qtfeedback,qtwebkit
