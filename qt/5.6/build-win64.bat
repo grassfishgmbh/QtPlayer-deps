@@ -11,7 +11,7 @@ set BACK_TO_BASE=%CD%
 
 cd ..\..\openssl
 bash fetch.sh
-build.bat
+cmd /C build.bat
 
 cd %BACK_TO_BASE%
 set INCLUDE=%OPENSSL_DIR%\inc32;%INCLUDE%
