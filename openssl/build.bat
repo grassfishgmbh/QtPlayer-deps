@@ -7,7 +7,7 @@ if "%GF_QT_IS_32_BIT_BUILD%"=="" (CALL "C:\Program Files (x86)\Microsoft Visual 
 cd openssl-%OPENSSL_VERSION%
 
 perl Configure enable-shared %OSSL_TARGET%
-set MAKEFLAGS=""
-set CXXFLAGS=""
+set MAKEFLAGS=
+set CXXFLAGS=
 cmd /C ms\%CONFIG_BATCH%
 nmake -f ms\ntdll.mak
