@@ -16,7 +16,6 @@ if [[ -z "$BUILD_VERSION" ]]; then
     exit -1
 fi
 
-
 CLONE_QT_SRC=qt-src
 if [ `uname -o` == "GNU/Linux" ]; then
     bash prepare.sh
@@ -28,9 +27,13 @@ fi
 
 # clean up
 rm -f *.zip
-if [ -e $CLONE_QT_SRC ]; then
-    rm -rf $CLONE_QT_SRC
+
+if [ "$QT_NO_CLEAN_SRC" != "1" ]; then
+    if [ -e $CLONE_QT_SRC ]; then
+        rm -rf $CLONE_QT_SRC
+    fi
 fi
+
 rm -f *.txt
 
 # get Qt5 main repo
@@ -42,15 +45,26 @@ fi
 
 # init subrepos
 cd $CLONE_QT_SRC
-#perl init-repository --module-subset=default,-qtwebkit-examples,-qt3d,-qtactiveqt,-qtandroidextras,-qtcanvas3d,-qtpurchasing,-qtenginio,-qtmacextras,-qtpim,-qtfeedback,qtwebkit
-git submodule init qtbase qtconnectivity qtdeclarative qtdoc qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtqa 
-git submodule init qtquickcontrols qtquickcontrols2 qtrepotools qtscript qtsensors  qtserialbus qtserialport qtsvg qttools
-git submodule init qttranslations qtwayland qtwebchannel qtwebkit qtwebsockets qtwebview qtwinextras qtx11extras qtxmlpatterns
-git submodule update
 
-# init subsubrepos
-cd qtxmlpatterns; git submodule update --init; cd ..
-cd qtdeclarative; git submodule update --init; cd ..
+if [ "$QT_NO_CLEAN_SRC" == "1" ]; then
+    git submodule foreach --recursive "git clean -dfx"
+else
+    git submodule init qtbase qtconnectivity qtdeclarative qtdoc qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtqa 
+    git submodule init qtquickcontrols qtquickcontrols2 qtrepotools qtscript qtsensors  qtserialbus qtserialport qtsvg qttools
+    git submodule init qttranslations qtwayland qtwebchannel qtwebkit qtwebsockets qtwebview qtwinextras qtx11extras qtxmlpatterns
+    git submodule update
+
+    # init subsubrepos
+    cd qtxmlpatterns; git submodule update --init; cd ..
+    cd qtdeclarative; git submodule update --init; cd ..
+    
+    # independently pull QtWebEngine based on the version defined in config.sh
+    if [ -e qtwebengine ]; then
+        rm -rf qtwebengine
+    fi
+
+    git clone https://github.com/qt/qtwebengine.git qtwebengine
+fi
 
 # Enable GStreamer 1.0 support
 cd qtmultimedia
@@ -62,12 +76,6 @@ cd qtbase
 patch -f -Np1 -i "$QT_PATCH_DIR/0006-dbus-connectionmanager-destroy.patch"
 cd ..
 
-# independently pull QtWebEngine based on the version defined in config.sh
-if [ -e qtwebengine ]; then
-    rm -rf qtwebengine
-fi
-
-git clone https://github.com/qt/qtwebengine.git qtwebengine
 cd qtwebengine
 git checkout tags/v$QTWEBENGINE_VERSION
 git submodule update --init --recursive
