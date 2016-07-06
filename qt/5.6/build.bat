@@ -8,6 +8,7 @@ if "%GF_QT_IS_32_BIT_BUILD%"=="" (set OSSL_PREFIX=C:\openssl64) else (set OSSL_P
 set LIB=%OSSL_PREFIX%\lib;%OSSL_PREFIX%\bin;%OSSL_PREFIX%;%LIB%
 set INCLUDE=%OSSL_PREFIX%;%OSSL_PREFIX%\include;%OSSL_PREFIX%\inc32;%INCLUDE%
 
+jom clean
 cmd /C configure -prefix %QT_DIR% -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -opengl dynamic
 jom
 
