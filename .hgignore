@@ -8,3 +8,5 @@ qt/5.6/qtframework.txt
 qt/5.6/version.txt
 openssl/openssl-*.tar.gz
 openssl/openssl-*/
+hwsupport/libva-*.tar.bz2
+hwsupport/libva-*/
