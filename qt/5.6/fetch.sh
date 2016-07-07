@@ -17,9 +17,6 @@ if [[ -z "$BUILD_VERSION" ]]; then
 fi
 
 CLONE_QT_SRC=qt-src
-if [ `uname -o` == "GNU/Linux" ]; then
-    bash prepare.sh
-fi
 
 if [ `uname -o` == "Cygwin" ]; then
     CLONE_QT_SRC=`cygpath -a $QT_SRC_DIR`
