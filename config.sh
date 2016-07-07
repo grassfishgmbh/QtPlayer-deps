@@ -6,7 +6,7 @@ QT_VERSION="5.6.1-1"
 QTWEBENGINE_VERSION="5.7.0"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
 QT_PATCH_DIR="$CONFIG_DIR/qt/patches"
-QT_NO_CLEAN_SRC=1
+QT_NO_CLEAN_SRC=0
 
 if [ `uname -o` != "GNU/Linux" ]; then
     alias sudo=
