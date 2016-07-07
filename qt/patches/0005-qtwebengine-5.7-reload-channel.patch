@@ -35,7 +35,7 @@ index d1e5f22..6bbbe28 100644
 +void WebChannelIPCTransport::DidCreateDocumentElement(blink::WebLocalFrame* frame)
 +{
 +    blink::WebFrame* main_frame = render_view()->GetWebView()->mainFrame();
-+    if (m_installed && frame == main_frame)
++    if (frame == main_frame)
 +        WebChannelTransport::Install(frame, m_installedWorldId);
 +}
 +
