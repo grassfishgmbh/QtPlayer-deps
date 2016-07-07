@@ -21,6 +21,6 @@ rm -f *.zip
 rm -rf qt-src
 rm -f *.txt
 
-bash prepare.sh
-bash fetch.sh
-bash build.sh
+bash $BASEDIR/prepare.sh
+bash $BASEDIR/fetch.sh
+bash $BASEDIR/build.sh
