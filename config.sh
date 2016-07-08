@@ -20,7 +20,7 @@ if [ `uname -o` != "GNU/Linux" ]; then
 fi
 
 if [ "$QT_SRC_DIR" == "" ]; then
-    QT_SRC_DIR="$CONFIG_DIR\qt\5.6\qt-src"
+    QT_SRC_DIR="$CONFIG_DIR/qt/5.6/qt-src"
 fi
 
 VLC_VERSION="2.2.1"
