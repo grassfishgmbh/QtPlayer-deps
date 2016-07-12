@@ -22,7 +22,7 @@ cd deps-buildspace\build-QtAV
 set INCLUDE=%cd%\..\qtav-x86_64\include;%INCLUDE%
 set LIB=%cd%\..\qtav-x86_64\lib;%cd%\..\qtav-x86_64\bin;%LIB%
 
-qmake ../QtAV/QtAV.pro
+qmake ../QtAV/QtAV.pro CONFIG+=release
 jom -j8
 
 rem install QtAV into specific directory
@@ -49,7 +49,7 @@ rem cd deps-buildspace\build-QtAV
 rem set INCLUDE=%cd%\..\qtav-i686\include;%INCLUDE%
 rem set LIB=%cd%\..\qtav-i686\lib;%cd%\..\qtav-i686\bin;%LIB%
 
-rem qmake ../QtAV/QtAV.pro
+rem qmake ../QtAV/QtAV.pro CONFIG+=release
 rem jom -j8
 
 rem install QtAV into specific directory
