@@ -113,6 +113,14 @@ find -iname "*.pri" -type f -exec sed -i "s/$QT_DIR_ESCAPED/$INSTALL_PREFIX_ESCA
 
 cd $DEPS_BS_ROOT
 
+cd gtkglext
+export LDFLAGS="-lm -lGL "`pkg-config --libs-only-l gmodule-2.0 gtk+-2.0 gthread-2.0`
+autoreconf --install
+./configure --prefix=$INSTALL_PREFIX --disable-static --disable-gtk-doc
+make -j`nproc`
+sudo make install
+cd $DEPS_BS_ROOT
+
 if [ -e $DEPS_BS_ROOT/gf-builddeps.tar.gz ]; then
     rm -rf $DEPS_BS_ROOT/gf-builddeps.tar.gz
 fi

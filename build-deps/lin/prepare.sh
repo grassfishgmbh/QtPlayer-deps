@@ -24,5 +24,7 @@ sudo apt-get install -y libxcb1-dev \
                       libatk1.0-0 \
                       libxcursor1 \
                       chrpath \
-                      zip
+                      zip \
+                      gtk-doc-tools \
+                      gobject-introspection
 

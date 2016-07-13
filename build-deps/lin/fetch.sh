@@ -37,4 +37,14 @@ if [ "$QTAV_DEVRELEASE" == "0" ]; then
 else
     git checkout $QTAV_TAG
 fi
+cd ..
+
+if [ -d gtkglext ]; then
+    rm -rf gtkglext
+fi
+
+git clone git://git.gnome.org/gtkglext
+cd gtkglext
+git checkout $GTKGLEXT_VERSION
+cd ..
 
