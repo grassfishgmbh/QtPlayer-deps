@@ -26,5 +26,6 @@ sudo apt-get install -y libxcb1-dev \
                       chrpath \
                       zip \
                       gtk-doc-tools \
-                      gobject-introspection
+                      gobject-introspection \
+                      libgtk2.0-dev
 
