@@ -91,10 +91,10 @@ index 3a400fc..f6b59a8 100644
      void stepFinished();
      void internalSubtitlePacketRead(int index, const QtAV::Packet& packet);
 diff --git a/src/AVPlayer.cpp b/src/AVPlayer.cpp
-index 417e3eb..df377e8 100644
+index 417e3eb..11bfc25 100644
 --- a/src/AVPlayer.cpp
 +++ b/src/AVPlayer.cpp
-@@ -84,11 +84,14 @@ AVPlayer::AVPlayer(QObject *parent) :
+@@ -84,11 +84,13 @@ AVPlayer::AVPlayer(QObject *parent) :
      connect(&d->demuxer, SIGNAL(loaded()), this, SIGNAL(loaded()));
      connect(&d->demuxer, SIGNAL(seekableChanged()), this, SIGNAL(seekableChanged()));
      d->read_thread = new AVDemuxThread(this);
@@ -104,12 +104,11 @@ index 417e3eb..df377e8 100644
      connect(d->read_thread, SIGNAL(finished()), this, SLOT(stopFromDemuxerThread()), Qt::DirectConnection);
      connect(d->read_thread, SIGNAL(requestClockPause(bool)), masterClock(), SLOT(pause(bool)), Qt::DirectConnection);
      connect(d->read_thread, SIGNAL(mediaStatusChanged(QtAV::MediaStatus)), this, SLOT(updateMediaStatus(QtAV::MediaStatus)));
-+    //connect(d->read_thread, SIGNAL(bufferingFinished()), this, SLOT(stopFromDemuxerThread()), Qt::DirectConnection);
 +    connect(d->read_thread, SIGNAL(bufferingFinished()), this, SIGNAL(bufferingFinished()));
      connect(d->read_thread, SIGNAL(bufferProgressChanged(qreal)), this, SIGNAL(bufferProgressChanged(qreal)));
      connect(d->read_thread, SIGNAL(seekFinished(qint64)), this, SLOT(onSeekFinished(qint64)), Qt::DirectConnection);
      connect(d->read_thread, SIGNAL(internalSubtitlePacketRead(int, QtAV::Packet)), this, SIGNAL(internalSubtitlePacketRead(int, QtAV::Packet)), Qt::DirectConnection);
-@@ -111,6 +114,105 @@ AVPlayer::~AVPlayer()
+@@ -111,6 +113,103 @@ AVPlayer::~AVPlayer()
      }
  }
  
@@ -119,8 +118,6 @@ index 417e3eb..df377e8 100644
 +    Q_UNUSED(lock);
 +    if (!d->demuxer.isLoaded())
 +        return;
-+
-+    stopFromDemuxerThread();
 +
 +    d->start_position_norm = normalizedPosition(d->start_position);
 +    d->stop_position_norm = normalizedPosition(d->stop_position);
@@ -215,7 +212,7 @@ index 417e3eb..df377e8 100644
  AVClock* AVPlayer::masterClock()
  {
      return d->clock;
-@@ -618,6 +720,19 @@ bool AVPlayer::isAutoLoad() const
+@@ -618,6 +717,19 @@ bool AVPlayer::isAutoLoad() const
      return d->auto_load;
  }
  
