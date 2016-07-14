@@ -1,0 +1,56 @@
+diff --git a/src/output/audio/AudioOutputPulse.cpp b/src/output/audio/AudioOutputPulse.cpp
+index a468e35..006cfe4 100644
+--- a/src/output/audio/AudioOutputPulse.cpp
++++ b/src/output/audio/AudioOutputPulse.cpp
+@@ -432,6 +432,12 @@ int AudioOutputPulse::getWritableBytes()
+ 
+ bool AudioOutputPulse::write(const QByteArray &data)
+ {
++    //return writable_size;
++    if (!loop || !stream) {
++        qWarning("pulseaudio is not open");
++        return false;
++    }
++
+     ScopedPALocker palock(loop);
+     Q_UNUSED(palock);
+     PA_ENSURE_TRUE(pa_stream_write(stream, data.constData(), data.size(), NULL, 0LL, PA_SEEK_RELATIVE) >= 0, false);
+@@ -446,6 +452,12 @@ bool AudioOutputPulse::play()
+ 
+ bool AudioOutputPulse::setVolume(qreal value)
+ {
++    //return writable_size;
++    if (!loop || !stream) {
++        qWarning("pulseaudio is not open");
++        return false;
++    }
++
+     ScopedPALocker palock(loop);
+     Q_UNUSED(palock);
+     uint32_t stream_idx = pa_stream_get_index(stream);
+@@ -460,6 +472,12 @@ bool AudioOutputPulse::setVolume(qreal value)
+ 
+ qreal AudioOutputPulse::getVolume() const
+ {
++    //return writable_size;
++    if (!loop || !stream) {
++        qWarning("pulseaudio is not open");
++        return 0.0;
++    }
++
+     ScopedPALocker palock(loop);
+     Q_UNUSED(palock);
+     uint32_t stream_idx = pa_stream_get_index(stream);
+@@ -469,6 +487,12 @@ qreal AudioOutputPulse::getVolume() const
+ 
+ bool AudioOutputPulse::setMute(bool value)
+ {
++    //return writable_size;
++    if (!loop || !stream) {
++        qWarning("pulseaudio is not open");
++        return false;
++    }
++
+     ScopedPALocker palock(loop);
+     Q_UNUSED(palock);
+     uint32_t stream_idx = pa_stream_get_index(stream);
