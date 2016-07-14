@@ -64,14 +64,14 @@ index 7382974..b1e1be0 100644
  {
      AudioOutput *ao = mpPlayer->audio();
 diff --git a/src/AVDemuxThread.cpp b/src/AVDemuxThread.cpp
-index 84aa526..36d3858 100644
+index 84aa526..33c710c 100644
 --- a/src/AVDemuxThread.cpp
 +++ b/src/AVDemuxThread.cpp
 @@ -334,6 +334,10 @@ void AVDemuxThread::updateBufferState()
      if (m_buffering == m_buffer->isBuffering())
          return;
      m_buffering = m_buffer->isBuffering();
-+    if (!m_buffering) {
++    if (!m_buffering && m_buffer->bufferProgress() >= 1.0) {
 +        qDebug() << "FR3DL: baffad";
 +        Q_EMIT bufferingFinished();
 +    }
@@ -91,10 +91,10 @@ index 3a400fc..f6b59a8 100644
      void stepFinished();
      void internalSubtitlePacketRead(int index, const QtAV::Packet& packet);
 diff --git a/src/AVPlayer.cpp b/src/AVPlayer.cpp
-index 417e3eb..160fdf5 100644
+index 417e3eb..df377e8 100644
 --- a/src/AVPlayer.cpp
 +++ b/src/AVPlayer.cpp
-@@ -84,11 +84,13 @@ AVPlayer::AVPlayer(QObject *parent) :
+@@ -84,11 +84,14 @@ AVPlayer::AVPlayer(QObject *parent) :
      connect(&d->demuxer, SIGNAL(loaded()), this, SIGNAL(loaded()));
      connect(&d->demuxer, SIGNAL(seekableChanged()), this, SIGNAL(seekableChanged()));
      d->read_thread = new AVDemuxThread(this);
@@ -104,11 +104,12 @@ index 417e3eb..160fdf5 100644
      connect(d->read_thread, SIGNAL(finished()), this, SLOT(stopFromDemuxerThread()), Qt::DirectConnection);
      connect(d->read_thread, SIGNAL(requestClockPause(bool)), masterClock(), SLOT(pause(bool)), Qt::DirectConnection);
      connect(d->read_thread, SIGNAL(mediaStatusChanged(QtAV::MediaStatus)), this, SLOT(updateMediaStatus(QtAV::MediaStatus)));
++    //connect(d->read_thread, SIGNAL(bufferingFinished()), this, SLOT(stopFromDemuxerThread()), Qt::DirectConnection);
 +    connect(d->read_thread, SIGNAL(bufferingFinished()), this, SIGNAL(bufferingFinished()));
      connect(d->read_thread, SIGNAL(bufferProgressChanged(qreal)), this, SIGNAL(bufferProgressChanged(qreal)));
      connect(d->read_thread, SIGNAL(seekFinished(qint64)), this, SLOT(onSeekFinished(qint64)), Qt::DirectConnection);
      connect(d->read_thread, SIGNAL(internalSubtitlePacketRead(int, QtAV::Packet)), this, SIGNAL(internalSubtitlePacketRead(int, QtAV::Packet)), Qt::DirectConnection);
-@@ -111,6 +113,103 @@ AVPlayer::~AVPlayer()
+@@ -111,6 +114,105 @@ AVPlayer::~AVPlayer()
      }
  }
  
@@ -117,7 +118,9 @@ index 417e3eb..160fdf5 100644
 +    QMutexLocker lock(&d->load_mutex);
 +    Q_UNUSED(lock);
 +    if (!d->demuxer.isLoaded())
-+            return;
++        return;
++
++    stopFromDemuxerThread();
 +
 +    d->start_position_norm = normalizedPosition(d->start_position);
 +    d->stop_position_norm = normalizedPosition(d->stop_position);
@@ -212,11 +215,68 @@ index 417e3eb..160fdf5 100644
  AVClock* AVPlayer::masterClock()
  {
      return d->clock;
+@@ -618,6 +720,19 @@ bool AVPlayer::isAutoLoad() const
+     return d->auto_load;
+ }
+ 
++void AVPlayer::setAutoBuffer(bool value)
++{
++    if (d->auto_buffer == value)
++        return;
++    d->auto_buffer = value;
++    Q_EMIT autoLoadChanged();
++}
++
++bool AVPlayer::isAutoBuffer() const
++{
++    return d->auto_buffer;
++}
++
+ void AVPlayer::setAsyncLoad(bool value)
+ {
+     if (d->async_load == value)
+diff --git a/src/AVPlayerPrivate.h b/src/AVPlayerPrivate.h
+index 61fa0a3..1a4a01e 100644
+--- a/src/AVPlayerPrivate.h
++++ b/src/AVPlayerPrivate.h
+@@ -101,6 +101,7 @@ public:
+     }
+ 
+     bool auto_load;
++    bool auto_buffer;
+     bool async_load;
+     // can be QString, QIODevice*
+     QVariant current_source, pendding_source;
 diff --git a/src/QtAV/AVPlayer.h b/src/QtAV/AVPlayer.h
-index 9c58821..1984ab1 100644
+index 9c58821..6a4fec2 100644
 --- a/src/QtAV/AVPlayer.h
 +++ b/src/QtAV/AVPlayer.h
-@@ -512,6 +512,8 @@ public slots:
+@@ -64,6 +64,7 @@ class Q_AV_EXPORT AVPlayer : public QObject
+     Q_OBJECT
+     Q_PROPERTY(bool relativeTimeMode READ relativeTimeMode WRITE setRelativeTimeMode NOTIFY relativeTimeModeChanged)
+     Q_PROPERTY(bool autoLoad READ isAutoLoad WRITE setAutoLoad NOTIFY autoLoadChanged)
++    Q_PROPERTY(bool autoBuffer READ isAutoBuffer WRITE setAutoBuffer NOTIFY autoBufferChanged)
+     Q_PROPERTY(bool asyncLoad READ isAsyncLoad WRITE setAsyncLoad NOTIFY asyncLoadChanged)
+     Q_PROPERTY(qreal bufferProgress READ bufferProgress NOTIFY bufferProgressChanged)
+     Q_PROPERTY(bool seekable READ isSeekable NOTIFY seekableChanged)
+@@ -145,6 +146,16 @@ public:
+     void setAutoLoad(bool value = true); // NOT implemented
+     bool isAutoLoad() const; // NOT implemented
+ 
++    /*!
++     * \brief setAutoBuffer
++     * true: current media source changed immediatly and stop current playback if new media source is set.
++     * status becomes LoadingMedia=>LoadedMedia before play( and BufferedMedia when playing?)
++     * false:
++     * Default is false
++     */
++    void setAutoBuffer(bool value = true); // NOT implemented
++    bool isAutoBuffer() const; // NOT implemented
++
+     MediaStatus mediaStatus() const;
+     // TODO: add hasAudio, hasVideo, isMusic(has pic)
+     /*!
+@@ -512,10 +523,13 @@ public slots:
      void setHue(int val);  //not implemented
      void setSaturation(int val);
  
@@ -225,7 +285,12 @@ index 9c58821..1984ab1 100644
  Q_SIGNALS:
      void bufferProgressChanged(qreal);
      void relativeTimeModeChanged();
-@@ -571,6 +573,9 @@ Q_SIGNALS:
+     void autoLoadChanged();
++    void autoBufferChanged();
+     void asyncLoadChanged();
+     void muteChanged();
+     void sourceChanged();
+@@ -571,6 +585,9 @@ Q_SIGNALS:
       */
      void internalSubtitleHeaderRead(const QByteArray& codec, const QByteArray& data);
      void internalSubtitlePacketRead(int track, const QtAV::Packet& packet);
@@ -235,3 +300,78 @@ index 9c58821..1984ab1 100644
  private Q_SLOTS:
      void loadInternal(); // simply load
      void playInternal(); // simply play
+diff --git a/src/output/audio/AudioOutputPulse.cpp b/src/output/audio/AudioOutputPulse.cpp
+index a468e35..006cfe4 100644
+--- a/src/output/audio/AudioOutputPulse.cpp
++++ b/src/output/audio/AudioOutputPulse.cpp
+@@ -432,6 +432,12 @@ int AudioOutputPulse::getWritableBytes()
+ 
+ bool AudioOutputPulse::write(const QByteArray &data)
+ {
++    //return writable_size;
++    if (!loop || !stream) {
++        qWarning("pulseaudio is not open");
++        return false;
++    }
++
+     ScopedPALocker palock(loop);
+     Q_UNUSED(palock);
+     PA_ENSURE_TRUE(pa_stream_write(stream, data.constData(), data.size(), NULL, 0LL, PA_SEEK_RELATIVE) >= 0, false);
+@@ -446,6 +452,12 @@ bool AudioOutputPulse::play()
+ 
+ bool AudioOutputPulse::setVolume(qreal value)
+ {
++    //return writable_size;
++    if (!loop || !stream) {
++        qWarning("pulseaudio is not open");
++        return false;
++    }
++
+     ScopedPALocker palock(loop);
+     Q_UNUSED(palock);
+     uint32_t stream_idx = pa_stream_get_index(stream);
+@@ -460,6 +472,12 @@ bool AudioOutputPulse::setVolume(qreal value)
+ 
+ qreal AudioOutputPulse::getVolume() const
+ {
++    //return writable_size;
++    if (!loop || !stream) {
++        qWarning("pulseaudio is not open");
++        return 0.0;
++    }
++
+     ScopedPALocker palock(loop);
+     Q_UNUSED(palock);
+     uint32_t stream_idx = pa_stream_get_index(stream);
+@@ -469,6 +487,12 @@ qreal AudioOutputPulse::getVolume() const
+ 
+ bool AudioOutputPulse::setMute(bool value)
+ {
++    //return writable_size;
++    if (!loop || !stream) {
++        qWarning("pulseaudio is not open");
++        return false;
++    }
++
+     ScopedPALocker palock(loop);
+     Q_UNUSED(palock);
+     uint32_t stream_idx = pa_stream_get_index(stream);
+diff --git a/src/vaapi/SurfaceInteropVAAPI.cpp b/src/vaapi/SurfaceInteropVAAPI.cpp
+index d70a0b7..7bf898f 100644
+--- a/src/vaapi/SurfaceInteropVAAPI.cpp
++++ b/src/vaapi/SurfaceInteropVAAPI.cpp
+@@ -401,13 +401,13 @@ bool X11InteropResource::map(const surface_ptr& surface, GLuint tex, int w, int
+     if (!ensurePixmaps(w, h)) //pixmap with frame size
+         return false;
+     VAWARN(vaSyncSurface(surface->vadisplay(), surface->get()));
++    XSync((::Display*)xdisplay, False);
+     // FIXME: invalid surface at the first time vaPutSurface is called. If return false, vaPutSurface will always fail, why?
+     VAWARN(vaPutSurface(surface->vadisplay(), surface->get(), x11->pixmap
+                                 , 0, 0, w, h
+                                 , 0, 0, w, h
+                                 , NULL, 0, VA_FRAME_PICTURE | surface->colorSpace())
+                    );
+-    XSync((::Display*)xdisplay, False);
+     DYGL(glBindTexture(GL_TEXTURE_2D, tex));
+     x11->bindTexture();
+     DYGL(glBindTexture(GL_TEXTURE_2D, 0));
