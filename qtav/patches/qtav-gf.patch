@@ -27,7 +27,7 @@ index 9e83391..7ff8235 100644
  private Q_SLOTS:
      void applyVolume();
 diff --git a/qml/QmlAVPlayer.cpp b/qml/QmlAVPlayer.cpp
-index 7382974..b1e1be0 100644
+index 82b57c2..bd887e4 100644
 --- a/qml/QmlAVPlayer.cpp
 +++ b/qml/QmlAVPlayer.cpp
 @@ -74,6 +74,11 @@ void QmlAVPlayer::classBegin()
@@ -35,14 +35,14 @@ index 7382974..b1e1be0 100644
          return;
      mpPlayer = new AVPlayer(this);
 +    mpPlayer->setMediaEndAction(MediaEndAction_KeepDisplay);
-+    mpPlayer->setAsyncLoad(true);
++    //mpPlayer->setAsyncLoad(true);
 +
 +    //connect(mpPlayer, SIGNAL(mediaStatusChanged(QtAV::MediaStatus)), this, SLOT(_q_prebuffer(QtAV::MediaStatus)), Qt::DirectConnection);
 +    connect(mpPlayer, SIGNAL(bufferingFinished()), this, SIGNAL(bufferingFinished()), Qt::DirectConnection);
      connect(mpPlayer, SIGNAL(internalSubtitleTracksChanged(QVariantList)), SIGNAL(internalSubtitleTracksChanged()));
      connect(mpPlayer, SIGNAL(internalAudioTracksChanged(QVariantList)), SIGNAL(internalAudioTracksChanged()));
      connect(mpPlayer, SIGNAL(externalAudioTracksChanged(QVariantList)), SIGNAL(externalAudioTracksChanged()));
-@@ -850,6 +855,20 @@ void QmlAVPlayer::_q_stopped()
+@@ -852,6 +857,20 @@ void QmlAVPlayer::_q_stopped()
      Q_EMIT playbackStateChanged();
  }
  
@@ -64,10 +64,10 @@ index 7382974..b1e1be0 100644
  {
      AudioOutput *ao = mpPlayer->audio();
 diff --git a/src/AVDemuxThread.cpp b/src/AVDemuxThread.cpp
-index 84aa526..33c710c 100644
+index 4d6c835..ab02004 100644
 --- a/src/AVDemuxThread.cpp
 +++ b/src/AVDemuxThread.cpp
-@@ -334,6 +334,10 @@ void AVDemuxThread::updateBufferState()
+@@ -344,6 +344,10 @@ void AVDemuxThread::updateBufferState()
      if (m_buffering == m_buffer->isBuffering())
          return;
      m_buffering = m_buffer->isBuffering();
@@ -79,10 +79,10 @@ index 84aa526..33c710c 100644
      // state change to buffering, report progress immediately. otherwise we have to wait to read 1 packet.
      if (m_buffering) {
 diff --git a/src/AVDemuxThread.h b/src/AVDemuxThread.h
-index 3a400fc..f6b59a8 100644
+index 41dc053..41770ac 100644
 --- a/src/AVDemuxThread.h
 +++ b/src/AVDemuxThread.h
-@@ -62,6 +62,7 @@ Q_SIGNALS:
+@@ -63,6 +63,7 @@ Q_SIGNALS:
      void requestClockPause(bool value);
      void mediaStatusChanged(QtAV::MediaStatus);
      void bufferProgressChanged(qreal);
@@ -91,7 +91,7 @@ index 3a400fc..f6b59a8 100644
      void stepFinished();
      void internalSubtitlePacketRead(int index, const QtAV::Packet& packet);
 diff --git a/src/AVPlayer.cpp b/src/AVPlayer.cpp
-index 417e3eb..11bfc25 100644
+index e012fd5..437ab6b 100644
 --- a/src/AVPlayer.cpp
 +++ b/src/AVPlayer.cpp
 @@ -84,11 +84,13 @@ AVPlayer::AVPlayer(QObject *parent) :
@@ -122,7 +122,7 @@ index 417e3eb..11bfc25 100644
 +    d->start_position_norm = normalizedPosition(d->start_position);
 +    d->stop_position_norm = normalizedPosition(d->stop_position);
 +    // FIXME: if call play() frequently playInternal may not be called if disconnect here
-+    disconnect(this, SIGNAL(loaded()), this, SLOT(playInternal()));
++    //disconnect(this, SIGNAL(loaded()), this, SLOT(playInternal()));
 +    if (!d->setupAudioThread(this)) {
 +        d->read_thread->setAudioThread(0); //set 0 before delete. ptr is used in demux thread when set 0
 +        if (d->athread) {
@@ -205,7 +205,7 @@ index 417e3eb..11bfc25 100644
 +        d->read_thread->start();
 +        d->read_thread->waitForStarted();
 +    }*/
-+    d->read_thread->seek(0, QtAV::SeekType::AnyFrameSeek);
++    d->read_thread->seek(0, QtAV::SeekType::KeyFrameSeek);
 +    d->read_thread->pause(true, true);
 +}
 +
@@ -245,7 +245,7 @@ index 61fa0a3..1a4a01e 100644
      // can be QString, QIODevice*
      QVariant current_source, pendding_source;
 diff --git a/src/QtAV/AVPlayer.h b/src/QtAV/AVPlayer.h
-index 9c58821..6a4fec2 100644
+index c6e1b17..f449340 100644
 --- a/src/QtAV/AVPlayer.h
 +++ b/src/QtAV/AVPlayer.h
 @@ -64,6 +64,7 @@ class Q_AV_EXPORT AVPlayer : public QObject
@@ -273,7 +273,7 @@ index 9c58821..6a4fec2 100644
      MediaStatus mediaStatus() const;
      // TODO: add hasAudio, hasVideo, isMusic(has pic)
      /*!
-@@ -512,10 +523,13 @@ public slots:
+@@ -516,10 +527,13 @@ public Q_SLOTS:
      void setHue(int val);  //not implemented
      void setSaturation(int val);
  
@@ -287,7 +287,7 @@ index 9c58821..6a4fec2 100644
      void asyncLoadChanged();
      void muteChanged();
      void sourceChanged();
-@@ -571,6 +585,9 @@ Q_SIGNALS:
+@@ -575,6 +589,9 @@ Q_SIGNALS:
       */
      void internalSubtitleHeaderRead(const QByteArray& codec, const QByteArray& data);
      void internalSubtitlePacketRead(int track, const QtAV::Packet& packet);
