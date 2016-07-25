@@ -27,7 +27,7 @@ index 9e83391..7ff8235 100644
  private Q_SLOTS:
      void applyVolume();
 diff --git a/qml/QmlAVPlayer.cpp b/qml/QmlAVPlayer.cpp
-index 82b57c2..bd887e4 100644
+index 82b57c2..228d612 100644
 --- a/qml/QmlAVPlayer.cpp
 +++ b/qml/QmlAVPlayer.cpp
 @@ -74,6 +74,11 @@ void QmlAVPlayer::classBegin()
@@ -79,10 +79,32 @@ index 4d6c835..ab02004 100644
      // state change to buffering, report progress immediately. otherwise we have to wait to read 1 packet.
      if (m_buffering) {
 diff --git a/src/AVDemuxThread.h b/src/AVDemuxThread.h
-index 41dc053..41770ac 100644
+index 41dc053..a11de66 100644
 --- a/src/AVDemuxThread.h
 +++ b/src/AVDemuxThread.h
-@@ -63,6 +63,7 @@ Q_SIGNALS:
+@@ -46,7 +46,6 @@ public:
+     AVThread* videoThread();
+     void stepForward(); // show next video frame and pause
+     void stepBackward();
+-    void seek(qint64 pos, SeekType type); //ms
+     //AVDemuxer* demuxer
+     bool isPaused() const;
+     bool isEnd() const;
+@@ -54,15 +53,20 @@ public:
+     PacketBuffer* buffer();
+     void updateBufferState();
+     void stop(); //TODO: remove it?
+-    void pause(bool p, bool wait = false);
+ 
+     MediaEndAction mediaEndAction() const;
+     void setMediaEndAction(MediaEndAction value);
+     bool waitForStarted(int msec = -1);
++
++public Q_SLOTS:
++    void pause(bool p, bool wait = false);
++    void seek(qint64 pos, SeekType type); //ms
++
+ Q_SIGNALS:
      void requestClockPause(bool value);
      void mediaStatusChanged(QtAV::MediaStatus);
      void bufferProgressChanged(qreal);
@@ -91,7 +113,7 @@ index 41dc053..41770ac 100644
      void stepFinished();
      void internalSubtitlePacketRead(int index, const QtAV::Packet& packet);
 diff --git a/src/AVPlayer.cpp b/src/AVPlayer.cpp
-index e012fd5..437ab6b 100644
+index e012fd5..280cdf1 100644
 --- a/src/AVPlayer.cpp
 +++ b/src/AVPlayer.cpp
 @@ -84,11 +84,13 @@ AVPlayer::AVPlayer(QObject *parent) :
@@ -108,7 +130,7 @@ index e012fd5..437ab6b 100644
      connect(d->read_thread, SIGNAL(bufferProgressChanged(qreal)), this, SIGNAL(bufferProgressChanged(qreal)));
      connect(d->read_thread, SIGNAL(seekFinished(qint64)), this, SLOT(onSeekFinished(qint64)), Qt::DirectConnection);
      connect(d->read_thread, SIGNAL(internalSubtitlePacketRead(int, QtAV::Packet)), this, SIGNAL(internalSubtitlePacketRead(int, QtAV::Packet)), Qt::DirectConnection);
-@@ -111,6 +113,103 @@ AVPlayer::~AVPlayer()
+@@ -111,6 +113,87 @@ AVPlayer::~AVPlayer()
      }
  }
  
@@ -158,8 +180,19 @@ index e012fd5..437ab6b 100644
 +        }
 +    }
 +    masterClock()->setInitialValue((double)absoluteMediaStartPosition()/1000.0);
++
++    d->read_thread->setMediaEndAction(mediaEndAction());
++
++    // Pause the AVDemuxer thread (and all other related threads)
++    // as soon as buffering is complete
++    connect(d->read_thread, SIGNAL(bufferingFinished()), this, SLOT(handlePrebufferDone()), Qt::QueuedConnection);
++
++    /// demux thread not started, seek tasks will be cleared
++    d->read_thread->start();
++    d->read_thread->waitForStarted();
++
 +    // from previous play()
-+    if (d->demuxer.audioCodecContext() && d->athread) {
++    /*if (d->demuxer.audioCodecContext() && d->athread) {
 +        qDebug("Starting audio thread...");
 +        d->athread->start();
 +    }
@@ -168,43 +201,16 @@ index e012fd5..437ab6b 100644
 +        d->vthread->start();
 +    }
 +
-+    d->read_thread->setMediaEndAction(mediaEndAction());
-+    d->read_thread->start();
-+
 +    if (d->demuxer.audioCodecContext() && d->athread)
 +        d->athread->waitForStarted();
 +    if (d->demuxer.videoCodecContext() && d->vthread)
-+        d->vthread->waitForStarted();
-+    /// demux thread not started, seek tasks will be cleared
-+    d->read_thread->waitForStarted();
++        d->vthread->waitForStarted();*/
++}
 +
-+    /*if (!d->demuxer.isLoaded())
-+        return;
-+    d->start_position_norm = normalizedPosition(d->start_position);
-+    d->stop_position_norm = normalizedPosition(d->stop_position);
-+    // FIXME: if call play() frequently playInternal may not be called if disconnect here
-+    disconnect(this, SIGNAL(loaded()), this, SLOT(playInternal()));
-+    if (!d->setupAudioThread(this)) {
-+        d->read_thread->setAudioThread(0); //set 0 before delete. ptr is used in demux thread when set 0
-+        if (d->athread) {
-+            qDebug("release audio thread.");
-+            delete d->athread;
-+            d->athread = 0;//shared ptr?
-+        }
-+    }
-+    if (!d->setupVideoThread(this)) {
-+        d->read_thread->setVideoThread(0); //set 0 before delete. ptr is used in demux thread when set 0
-+        if (d->vthread) {
-+            qDebug("release video thread.");
-+            delete d->vthread;
-+            d->vthread = 0;//shared ptr?
-+        }
-+    }
-+
-+    if (!d->read_thread->isRunning()) {
-+        d->read_thread->start();
-+        d->read_thread->waitForStarted();
-+    }*/
++void AVPlayer::handlePrebufferDone()
++{
++    qDebug() << Q_FUNC_INFO;
++    disconnect(d->read_thread, SIGNAL(bufferingFinished()), this, SLOT(handlePrebufferDone()));
 +    d->read_thread->seek(0, QtAV::SeekType::KeyFrameSeek);
 +    d->read_thread->pause(true, true);
 +}
@@ -212,7 +218,7 @@ index e012fd5..437ab6b 100644
  AVClock* AVPlayer::masterClock()
  {
      return d->clock;
-@@ -618,6 +717,19 @@ bool AVPlayer::isAutoLoad() const
+@@ -618,6 +701,19 @@ bool AVPlayer::isAutoLoad() const
      return d->auto_load;
  }
  
@@ -245,7 +251,7 @@ index 61fa0a3..1a4a01e 100644
      // can be QString, QIODevice*
      QVariant current_source, pendding_source;
 diff --git a/src/QtAV/AVPlayer.h b/src/QtAV/AVPlayer.h
-index c6e1b17..f449340 100644
+index c6e1b17..8fd3479 100644
 --- a/src/QtAV/AVPlayer.h
 +++ b/src/QtAV/AVPlayer.h
 @@ -64,6 +64,7 @@ class Q_AV_EXPORT AVPlayer : public QObject
@@ -297,6 +303,14 @@ index c6e1b17..f449340 100644
  private Q_SLOTS:
      void loadInternal(); // simply load
      void playInternal(); // simply play
+@@ -587,6 +604,7 @@ private Q_SLOTS:
+     void updateMediaStatus(QtAV::MediaStatus status);
+     void onSeekFinished(qint64 value);
+     void tryClearVideoRenderers();
++    void handlePrebufferDone();
+ protected:
+     // TODO: set position check timer interval
+     virtual void timerEvent(QTimerEvent *);
 diff --git a/src/output/audio/AudioOutputPulse.cpp b/src/output/audio/AudioOutputPulse.cpp
 index a468e35..006cfe4 100644
 --- a/src/output/audio/AudioOutputPulse.cpp
