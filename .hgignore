@@ -11,3 +11,5 @@ openssl/openssl-*/
 hwsupport/libva-*.tar.bz2
 hwsupport/libva-*/
 gf-hwsupport.tar.gz
+*.iso
+networkmanager-qt/buildspace
