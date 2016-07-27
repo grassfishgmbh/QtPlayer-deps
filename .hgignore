@@ -13,3 +13,4 @@ hwsupport/libva-*/
 gf-hwsupport.tar.gz
 *.iso
 networkmanager-qt/buildspace
+create-iso/buildspace
