@@ -14,3 +14,4 @@ gf-hwsupport.tar.gz
 *.iso
 networkmanager-qt/buildspace
 create-iso/buildspace
+build-deps/lin/gf-builddeps.tar.gz
