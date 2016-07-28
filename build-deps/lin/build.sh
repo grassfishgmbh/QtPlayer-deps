@@ -92,7 +92,7 @@ cd ..
 mkdir build-QtAV
 cd build-QtAV
 
-qmake ../QtAV/QtAV.pro CONFIG+=debug
+qmake ../QtAV/QtAV.pro
 make -j`nproc`
 
 
