@@ -44,6 +44,7 @@ BASE_OS_VERSION="14.04.4"
 BASE_ISO_FILE="lubuntu-$BASE_OS_VERSION-desktop-amd64.iso"
 BASE_OS_SHA256="94fb8266b60e98421c512aef8162d803e67c6ae640dd76e305c9ec339677ceee"
 ISO_BUILDSPACE=$CONFIG_DIR/create-iso/buildspace
+ISO_CUSTOMIZATION_PATH=$CONFIG_DIR/create-iso/custom
 ISO_MOUNT=/mnt/gf_iso_mount
 
 INSTALL_PREFIX="/opt/gf-builddeps"
