@@ -40,11 +40,14 @@ GTKGLEXT_VERSION="04131c5f69070b2f194f02edd45b0622ca03793c"
 
 NM_QT_VERSION="v5.20.0"
 
-BASE_OS_VERSION="14.04.4"
-BASE_ISO_FILE="lubuntu-$BASE_OS_VERSION-desktop-amd64.iso"
-BASE_OS_SHA256="94fb8266b60e98421c512aef8162d803e67c6ae640dd76e305c9ec339677ceee"
+BASE_OS_VERSION="14.04.1"
+BASE_ISO_FILE="lubuntu-$BASE_OS_VERSION-alternate-amd64.iso"
+BASE_OS_SHA256="c3a015512faa9712b2f7e519405c0f90e3c85775af738da3dda42a3573c20419"
+APT_CACHE_PATH=/var/cache/apt-cacher-ng
 ISO_BUILDSPACE=$CONFIG_DIR/create-iso/buildspace
 ISO_CUSTOMIZATION_PATH=$CONFIG_DIR/create-iso/custom
 ISO_MOUNT=/mnt/gf_iso_mount
+ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
+ISO_ADDITIONAL_PKGS='linux-generic-lts-xenial xserver-xorg-core-lts-xenial xserver-xorg-lts-xenial xserver-xorg-video-all-lts-xenial xserver-xorg-input-all-lts-xenial libwayland-egl1-mesa-lts-xenial'
 
 INSTALL_PREFIX="/opt/gf-builddeps"
