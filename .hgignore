@@ -16,3 +16,5 @@ networkmanager-qt/buildspace
 create-iso/buildspace
 build-deps/lin/gf-builddeps.tar.gz
 create-iso/custom
+create-iso/ubuntu-keyring-*/
+create-iso/ubuntu-keyring_*.*
