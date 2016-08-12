@@ -46,6 +46,9 @@ BASE_OS_SHA256="c3a015512faa9712b2f7e519405c0f90e3c85775af738da3dda42a3573c20419
 APT_CACHE_PATH=/var/cache/apt-cacher-ng
 ISO_BUILDSPACE=$CONFIG_DIR/create-iso/buildspace
 ISO_CUSTOMIZATION_PATH=$CONFIG_DIR/create-iso/custom
+if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
+    source $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh
+fi
 UPDATE_ZIP_PATH=$CONFIG_DIR/create-iso/update
 ISO_MOUNT=/mnt/gf_iso_mount
 ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
