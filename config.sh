@@ -53,5 +53,8 @@ ISO_DESKTOP_SESSION=Lubuntu
 ISO_ADDITIONAL_PKGS='linux-generic-lts-xenial xserver-xorg-core-lts-xenial xserver-xorg-lts-xenial xserver-xorg-video-all-lts-xenial xserver-xorg-input-all-lts-xenial libwayland-egl1-mesa-lts-xenial openssh-server libxss1 lm-sensors pavucontrol'
 ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker'
 
+if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
+    source $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh
+fi
 
 INSTALL_PREFIX="/opt/gf-builddeps"
