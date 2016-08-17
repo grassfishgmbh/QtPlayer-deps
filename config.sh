@@ -43,14 +43,15 @@ NM_QT_VERSION="v5.20.0"
 BASE_OS_VERSION="14.04.5"
 BASE_ISO_FILE="lubuntu-$BASE_OS_VERSION-desktop-amd64.iso"
 BASE_OS_SHA256="c05f756554ec4e546bfa130215ec1cbe3905fb6b43db41c6da967d96419bce9b"
-APT_CACHE_PATH=/var/cache/apt-cacher-ng
 ISO_BUILDSPACE=$CONFIG_DIR/create-iso/buildspace
+UPDEBS_CHROOT=$ISO_BUILDSPACE/chroot
 ISO_CUSTOMIZATION_PATH=$CONFIG_DIR/create-iso/custom
 UPDATE_ZIP_PATH=$CONFIG_DIR/create-iso/update
 ISO_MOUNT=/mnt/gf_iso_mount
 ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
 ISO_DESKTOP_SESSION=Lubuntu
-ISO_ADDITIONAL_PKGS='linux-generic-lts-xenial linux-image-4.4.0-34-generic xserver-xorg-core-lts-xenial xserver-xorg-lts-xenial xserver-xorg-video-all-lts-xenial xserver-xorg-input-all-lts-xenial libwayland-egl1-mesa-lts-xenial openssh-server libxss1 lm-sensors pavucontrol'
+
+ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pavucontrol'
 ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker'
 
 if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
