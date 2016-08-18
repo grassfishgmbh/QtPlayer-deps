@@ -51,7 +51,7 @@ ISO_MOUNT=/mnt/gf_iso_mount
 ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
 ISO_DESKTOP_SESSION=Lubuntu
 
-ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pavucontrol'
+ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0c2a libgtkmm-3.0-1 '
 ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker'
 
 if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
