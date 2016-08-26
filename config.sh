@@ -50,6 +50,7 @@ UPDATE_ZIP_PATH=$CONFIG_DIR/create-iso/update
 ISO_MOUNT=/mnt/gf_iso_mount
 ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
 ISO_DESKTOP_SESSION=Lubuntu
+ISO_KERNEL_FLAGS="quiet splash i915.enable_psr=0 i915.enable_fbc=0 intel_pstate=disable"
 
 ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0c2a libgtkmm-3.0-1 '
 ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker'
