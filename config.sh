@@ -46,6 +46,7 @@ BASE_OS_SHA256="c05f756554ec4e546bfa130215ec1cbe3905fb6b43db41c6da967d96419bce9b
 ISO_BUILDSPACE=$CONFIG_DIR/create-iso/buildspace
 ISO_CASPER_DIR=$ISO_BUILDSPACE/newIso/casper
 UPDEBS_CHROOT=$ISO_BUILDSPACE/chroot
+ISO_GENERIC_MODS_PATH=$CONFIG_DIR/create-iso/generic
 ISO_CUSTOMIZATION_PATH=$CONFIG_DIR/create-iso/custom
 UPDATE_ZIP_PATH=$CONFIG_DIR/create-iso/update
 ISO_MOUNT=/mnt/gf_iso_mount
@@ -53,7 +54,7 @@ ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
 ISO_DESKTOP_SESSION=Lubuntu
 ISO_KERNEL_FLAGS="quiet splash i915.enable_psr=0 i915.enable_fbc=0 intel_pstate=disable"
 
-ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0c2a libgtkmm-3.0-1 xserver-xorg-video-intel-lts-xenial ubuntu-restricted-extras'
+ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0c2a libgtkmm-3.0-1 xserver-xorg-video-intel-lts-xenial ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver'
 ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker'
 
 if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
