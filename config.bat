@@ -1,6 +1,6 @@
 set CONFIG_DIR=%CD%
 
-set QT_VERSION=5.6.1-1
+set QT_VERSION=5.7.0
 set QTWEBENGINE_VERSION=5.7.0
 set QT_PATCH_DIR=%CONFIG_DIR%\qt\patches
 if "%QT_SRC_DIR%"=="" (set QT_SRC_DIR=%CONFIG_DIR%\qt\5.6\qt-src)
