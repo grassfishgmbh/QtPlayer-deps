@@ -18,3 +18,4 @@ build-deps/lin/gf-builddeps.tar.gz
 create-iso/custom
 create-iso/ubuntu-keyring-*/
 create-iso/ubuntu-keyring_*.*
+qt/5.6/Qt-5.7.0.zip
