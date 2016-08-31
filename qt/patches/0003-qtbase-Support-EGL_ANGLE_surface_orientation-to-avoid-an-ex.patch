@@ -1,0 +1,163 @@
+diff --git a/src/gui/kernel/qsurfaceformat.cpp b/src/gui/kernel/qsurfaceformat.cpp
+index d7dc0fa..32f101c 100644
+--- a/src/gui/kernel/qsurfaceformat.cpp
++++ b/src/gui/kernel/qsurfaceformat.cpp
+@@ -108,6 +108,7 @@ public:
+     int major;
+     int minor;
+     int swapInterval;
++    QSurfaceFormat::OrientationFlags orientationFlags;
+ };
+ 
+ /*!
+@@ -734,6 +735,16 @@ int QSurfaceFormat::swapInterval() const
+     return d->swapInterval;
+ }
+ 
++QSurfaceFormat::OrientationFlags QSurfaceFormat::orientationFlags() const
++{
++    return d->orientationFlags;
++}
++
++void QSurfaceFormat::setOrientationFlags(QSurfaceFormat::OrientationFlags orientationFlags)
++{
++    d->orientationFlags = orientationFlags;
++}
++
+ Q_GLOBAL_STATIC(QSurfaceFormat, qt_default_surface_format)
+ 
+ /*!
+diff --git a/src/gui/kernel/qsurfaceformat.h b/src/gui/kernel/qsurfaceformat.h
+index 9e8bcc9..6b86615 100644
+--- a/src/gui/kernel/qsurfaceformat.h
++++ b/src/gui/kernel/qsurfaceformat.h
+@@ -55,7 +55,8 @@ public:
+         StereoBuffers            = 0x0001,
+         DebugContext             = 0x0002,
+         DeprecatedFunctions      = 0x0004,
+-        ResetNotification        = 0x0008
++        ResetNotification        = 0x0008,
++        UseOptimalOrientation    = 0x0010
+     };
+     Q_DECLARE_FLAGS(FormatOptions, FormatOption)
+ 
+@@ -79,6 +80,11 @@ public:
+         CompatibilityProfile
+     };
+ 
++    enum OrientationFlag {
++        MirrorVertically = 0x0001,
++    };
++    Q_DECLARE_FLAGS(OrientationFlags, OrientationFlag)
++
+     QSurfaceFormat();
+     /*implicit*/ QSurfaceFormat(FormatOptions options);
+     QSurfaceFormat(const QSurfaceFormat &other);
+@@ -139,6 +145,9 @@ public:
+     int swapInterval() const;
+     void setSwapInterval(int interval);
+ 
++    QSurfaceFormat::OrientationFlags orientationFlags() const;
++    void setOrientationFlags(QSurfaceFormat::OrientationFlags orientationFlags);
++
+     static void setDefaultFormat(const QSurfaceFormat &format);
+     static QSurfaceFormat defaultFormat();
+ 
+diff --git a/src/plugins/platforms/windows/qwindowseglcontext.cpp b/src/plugins/platforms/windows/qwindowseglcontext.cpp
+index a3f9f0b..cb60e51 100644
+--- a/src/plugins/platforms/windows/qwindowseglcontext.cpp
++++ b/src/plugins/platforms/windows/qwindowseglcontext.cpp
+@@ -282,11 +282,25 @@ QWindowsOpenGLContext *QWindowsEGLStaticContext::createContext(QOpenGLContext *c
+     return new QWindowsEGLContext(this, context->format(), context->shareHandle());
+ }
+ 
+-void *QWindowsEGLStaticContext::createWindowSurface(void *nativeWindow, void *nativeConfig, int *err)
++void *QWindowsEGLStaticContext::createWindowSurface(void *nativeWindow, void *nativeConfig, const QSurfaceFormat format, int *err)
+ {
+     *err = 0;
++
++    std::vector<EGLint> attrib_list;
++#ifdef EGL_ANGLE_surface_orientation
++    if (format.testOption(QSurfaceFormat::UseOptimalOrientation)) {
++        EGLint surfaceOrientation = 0;
++        libEGL.eglGetConfigAttrib(m_display, nativeConfig, EGL_OPTIMAL_SURFACE_ORIENTATION_ANGLE, &surfaceOrientation);
++        if (surfaceOrientation & EGL_SURFACE_ORIENTATION_INVERT_Y_ANGLE) {
++            attrib_list.push_back(EGL_SURFACE_ORIENTATION_ANGLE);
++            attrib_list.push_back(EGL_SURFACE_ORIENTATION_INVERT_Y_ANGLE);
++        }
++    }
++#endif
++    attrib_list.push_back(EGL_NONE);
+     EGLSurface surface = libEGL.eglCreateWindowSurface(m_display, nativeConfig,
+-                                                       static_cast<EGLNativeWindowType>(nativeWindow), 0);
++                                                       static_cast<EGLNativeWindowType>(nativeWindow),
++                                                       &attrib_list[0]);
+     if (surface == EGL_NO_SURFACE) {
+         *err = libEGL.eglGetError();
+         qWarning("%s: Could not create the EGL window surface: 0x%x", __FUNCTION__, *err);
+@@ -335,6 +349,14 @@ QSurfaceFormat QWindowsEGLStaticContext::formatFromConfig(EGLDisplay display, EG
+     format.setStereo(false);
+     format.setSwapInterval(referenceFormat.swapInterval());
+ 
++#ifdef EGL_ANGLE_surface_orientation
++    if (referenceFormat.testOption(QSurfaceFormat::UseOptimalOrientation)) {
++        EGLint surfaceOrientation = 0;
++        libEGL.eglGetConfigAttrib(display, config, EGL_OPTIMAL_SURFACE_ORIENTATION_ANGLE, &surfaceOrientation);
++        format.setOrientationFlags((surfaceOrientation & EGL_SURFACE_ORIENTATION_INVERT_Y_ANGLE) ? QSurfaceFormat::MirrorVertically : QSurfaceFormat::OrientationFlags());
++    }
++#endif
++
+     // Clear the EGL error state because some of the above may
+     // have errored out because the attribute is not applicable
+     // to the surface type.  Such errors don't matter.
+@@ -430,7 +452,7 @@ QWindowsEGLContext::QWindowsEGLContext(QWindowsEGLStaticContext *staticContext,
+             }
+         }
+         m_format.setProfile(QSurfaceFormat::NoProfile);
+-        m_format.setOptions(QSurfaceFormat::FormatOptions());
++        m_format.setOptions(m_format.options() & QSurfaceFormat::UseOptimalOrientation);
+         QWindowsEGLStaticContext::libEGL.eglMakeCurrent(prevDisplay, prevSurfaceDraw, prevSurfaceRead, prevContext);
+     }
+     QWindowsEGLStaticContext::libEGL.eglDestroySurface(m_eglDisplay, pbuffer);
+diff --git a/src/plugins/platforms/windows/qwindowseglcontext.h b/src/plugins/platforms/windows/qwindowseglcontext.h
+index c7f7cee..1623b09 100644
+--- a/src/plugins/platforms/windows/qwindowseglcontext.h
++++ b/src/plugins/platforms/windows/qwindowseglcontext.h
+@@ -121,7 +121,7 @@ public:
+     void *moduleHandle() const Q_DECL_OVERRIDE { return libGLESv2.moduleHandle(); }
+     QOpenGLContext::OpenGLModuleType moduleType() const Q_DECL_OVERRIDE { return QOpenGLContext::LibGLES; }
+ 
+-    void *createWindowSurface(void *nativeWindow, void *nativeConfig, int *err) Q_DECL_OVERRIDE;
++    void *createWindowSurface(void *nativeWindow, void *nativeConfig, const QSurfaceFormat format, int *err) Q_DECL_OVERRIDE;
+     void destroyWindowSurface(void *nativeSurface) Q_DECL_OVERRIDE;
+ 
+     QSurfaceFormat formatFromConfig(EGLDisplay display, EGLConfig config, const QSurfaceFormat &referenceFormat);
+diff --git a/src/plugins/platforms/windows/qwindowsopenglcontext.h b/src/plugins/platforms/windows/qwindowsopenglcontext.h
+index 85f4f71..af2f695 100644
+--- a/src/plugins/platforms/windows/qwindowsopenglcontext.h
++++ b/src/plugins/platforms/windows/qwindowsopenglcontext.h
+@@ -62,7 +62,7 @@ public:
+ 
+     // If the windowing system interface needs explicitly created window surfaces (like EGL),
+     // reimplement these.
+-    virtual void *createWindowSurface(void * /*nativeWindow*/, void * /*nativeConfig*/, int * /*err*/) { return 0; }
++    virtual void *createWindowSurface(void * /*nativeWindow*/, void * /*nativeConfig*/, const QSurfaceFormat /*format*/, int * /*err*/) { return 0; }
+     virtual void destroyWindowSurface(void * /*nativeSurface*/) { }
+ 
+ private:
+diff --git a/src/plugins/platforms/windows/qwindowswindow.cpp b/src/plugins/platforms/windows/qwindowswindow.cpp
+index f76b3bb..543217b 100644
+--- a/src/plugins/platforms/windows/qwindowswindow.cpp
++++ b/src/plugins/platforms/windows/qwindowswindow.cpp
+@@ -2458,7 +2458,7 @@ void *QWindowsWindow::surface(void *nativeConfig, int *err)
+ #else
+     if (!m_surface) {
+         if (QWindowsStaticOpenGLContext *staticOpenGLContext = QWindowsIntegration::staticOpenGLContext())
+-            m_surface = staticOpenGLContext->createWindowSurface(m_data.hwnd, nativeConfig, err);
++            m_surface = staticOpenGLContext->createWindowSurface(m_data.hwnd, nativeConfig, m_format, err);
+     }
+ 
+     return m_surface;
+-- 
+1.9.5.msysgit.0
+

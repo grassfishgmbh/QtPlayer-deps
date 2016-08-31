@@ -1,0 +1,13 @@
+diff --git a/src/video_output/display.c b/src/video_output/display.c
+index bbf174c..e8c1de7 100644
+--- a/src/video_output/display.c
++++ b/src/video_output/display.c
+@@ -107,8 +107,6 @@ static vout_display_t *vout_display_New(vlc_object_t *obj,
+ 
+     /* Picture buffer does not have the concept of aspect ratio */
+     video_format_Copy(&vd->fmt, fmt);
+-    vd->fmt.i_sar_num = 0;
+-    vd->fmt.i_sar_den = 0;
+ 
+     vd->info.is_slow = false;
+     vd->info.has_double_click = false;

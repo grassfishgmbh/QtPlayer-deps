@@ -1,0 +1,639 @@
+From 780cb7a956f5ca17a5f02f460724adeb0fab1761 Mon Sep 17 00:00:00 2001
+From: Alexandre Pia <alex@middlevr.com>
+Date: Thu, 10 Dec 2015 13:52:57 +0100
+Subject: [PATCH] Add Touch Events support to OSR CEF 3.2526
+
+---
+ include/capi/cef_browser_capi.h               |   8 ++
+ include/cef_browser.h                         |   6 ++
+ include/internal/cef_types.h                  |  94 ++++++++++++++++++++++++
+ include/internal/cef_types_wrappers.h         |  50 +++++++++++++
+ libcef/browser/browser_host_impl.cc           | 102 ++++++++++++++++++++++++++
+ libcef/browser/browser_host_impl.h            |   5 ++
+ libcef/browser/prefs/renderer_prefs.cc        |   3 +
+ libcef/browser/render_widget_host_view_osr.cc |  70 ++++++++++++++++++
+ libcef/browser/render_widget_host_view_osr.h  |  12 +++
+ libcef_dll/cpptoc/browser_host_cpptoc.cc      |  23 ++++++
+ libcef_dll/ctocpp/browser_host_ctocpp.cc      |  12 +++
+ libcef_dll/ctocpp/browser_host_ctocpp.h       |   1 +
+ 12 files changed, 386 insertions(+)
+
+diff --git a/include/capi/cef_browser_capi.h b/include/capi/cef_browser_capi.h
+index 5307498..4587d9c 100644
+--- include/capi/cef_browser_capi.h
++++ include/capi/cef_browser_capi.h
+@@ -519,6 +519,14 @@ typedef struct _cef_browser_host_t {
+       const struct _cef_mouse_event_t* event, int deltaX, int deltaY);
+ 
+   ///
++  // Send a touch event to the browser.
++  ///
++  void (CEF_CALLBACK *send_touch_event)(struct _cef_browser_host_t* self,
++      const struct _cef_touch_event_t* event);
++
++  ///
++
++  ///
+   // Send a focus event to the browser.
+   ///
+   void (CEF_CALLBACK *send_focus_event)(struct _cef_browser_host_t* self,
+diff --git a/include/cef_browser.h b/include/cef_browser.h
+index b27709e..1964a58 100644
+--- include/cef_browser.h
++++ include/cef_browser.h
+@@ -565,6 +565,12 @@ class CefBrowserHost : public virtual CefBase {
+                                    int deltaX, int deltaY) =0;
+ 
+   ///
++  // Send a touch event to the browser.
++  ///
++  /*--cef()--*/
++  virtual void SendTouchEvent(const CefTouchEvent& event) =0;
++
++  ///
+   // Send a focus event to the browser.
+   ///
+   /*--cef()--*/
+diff --git a/include/internal/cef_types.h b/include/internal/cef_types.h
+index 356b332..8993c86 100644
+--- include/internal/cef_types.h
++++ include/internal/cef_types.h
+@@ -1514,6 +1514,100 @@ typedef struct _cef_mouse_event_t {
+ } cef_mouse_event_t;
+ 
+ ///
++// Touch points states types.
++///
++enum cef_touch_point_type_t {
++  TPT_UNDEFINED = 0,
++  TPT_RELEASED,
++  TPT_PRESSED,
++  TPT_MOVED,
++  TPT_STATIONARY,
++  TPT_CANCELLED
++};
++
++///
++// Structure representing touch point information.
++///
++typedef struct _cef_touch_point_t {
++  ///
++  // System touch point id.
++  ///
++  int id;
++
++  ///
++  // X coordinate relative to the left side of the view.
++  ///
++  float x;
++
++  ///
++  // Y coordinate relative to the top side of the view.
++  ///
++  float y;
++
++  ///
++  // X coordinate relative to the left side of the screen.
++  ///
++  float screen_x;
++
++  ///
++  // Y coordinate relative to the top side of the screen.
++  ///
++  float screen_y;
++
++  ///
++  // X radius.
++  ///
++  float radius_x;
++
++  ///
++  // Y radius.
++  ///
++  float radius_y;
++
++  ///
++  // angle.
++  ///
++  float rotation_angle;
++
++  ///
++  // force.
++  ///
++  float force;
++
++  ///
++  // The state of the touchpoint
++  ///
++  cef_touch_point_type_t type;
++} cef_touch_point_t;
++
++///
++// Structure representing touch event information.
++///
++typedef struct _cef_touch_event_t {
++  ///
++  // Number of touch points in this event. Should be less or equal to 16.
++  ///
++  uint32 count;
++
++  ///
++  // List of touch points. WebKit supports a maximum of 16 simultaneous touch
++  // points, see WebInputEvent class in WebTouchEvent.h
++  ///
++  cef_touch_point_t points[16];
++
++  ///
++  // Bit flags describing any pressed modifier keys. See
++  // cef_event_flags_t for values.
++  ///
++  uint32 modifiers;
++
++  ///
++  // Time since epoch
++  ///
++  double timestamp_seconds;
++} cef_touch_event_t;
++
++///
+ // Paint element types.
+ ///
+ typedef enum {
+diff --git a/include/internal/cef_types_wrappers.h b/include/internal/cef_types_wrappers.h
+index 83dae76..a850542 100644
+--- include/internal/cef_types_wrappers.h
++++ include/internal/cef_types_wrappers.h
+@@ -402,6 +402,56 @@ struct CefMouseEventTraits {
+ ///
+ typedef CefStructBase<CefMouseEventTraits> CefMouseEvent;
+ 
++ 
++struct CefTouchPointTraits {
++  typedef cef_touch_point_t struct_type;
++
++  static inline void init(struct_type* s) {}
++
++  static inline void clear(struct_type* s) {}
++
++  static inline void set(const struct_type* src, struct_type* target,
++    bool copy) {
++    target->id = src->id;
++    target->x = src->x;
++    target->y = src->y;
++    target->screen_x = src->screen_x;
++    target->screen_y = src->screen_y;
++    target->radius_x = src->radius_x;
++    target->radius_y = src->radius_y;
++    target->rotation_angle = src->rotation_angle;
++    target->force = src->force;
++    target->type = src->type;
++  }
++};
++
++///
++// Class representing a touch point.
++///
++typedef CefStructBase<CefTouchPointTraits> CefTouchPoint;
++
++struct CefTouchEventTraits {
++  typedef cef_touch_event_t struct_type;
++
++  static inline void init(struct_type* s) {}
++
++  static inline void clear(struct_type* s) {}
++
++  static inline void set(const struct_type* src, struct_type* target,
++    bool copy) {
++    target->count = src->count;
++    target->modifiers = src->modifiers;
++    target->timestamp_seconds = src->timestamp_seconds;
++    for (uint32 cpt = 0; cpt < src->count; ++cpt)
++      target->points[cpt] = src->points[cpt];
++  }
++};
++
++///
++// Class representing a touch event.
++///
++typedef CefStructBase<CefTouchEventTraits> CefTouchEvent;
++
+ 
+ struct CefPopupFeaturesTraits {
+   typedef cef_popup_features_t struct_type;
+diff --git a/libcef/browser/browser_host_impl.cc b/libcef/browser/browser_host_impl.cc
+index 61ac473..effaf49 100644
+--- libcef/browser/browser_host_impl.cc
++++ libcef/browser/browser_host_impl.cc
+@@ -59,6 +59,7 @@
+ #include "content/public/common/file_chooser_params.h"
+ #include "net/base/directory_lister.h"
+ #include "third_party/WebKit/public/web/WebFindOptions.h"
++#include "ui/events/base_event_utils.h"
+ #include "ui/shell_dialogs/selected_file_info.h"
+ 
+ #if defined(OS_LINUX) || defined(OS_ANDROID)
+@@ -1241,6 +1242,107 @@ void CefBrowserHostImpl::SendMouseWheelEvent(const CefMouseEvent& event,
+   }
+ }
+ 
++void CefBrowserHostImpl::TranslateTouchEvent(blink::WebTouchEvent& result,
++                                             const CefTouchEvent& touch_event) {
++  // note, we are using this data to drive ui:MotionEvents
++  result.cancelable = true;
++  result.uniqueTouchEventId = ui::GetNextTouchEventId();
++  result.touchesLength = touch_event.count;
++  result.causesScrollingIfUncanceled = true;
++
++  // modifiers
++  result.modifiers |= TranslateModifiers(touch_event.modifiers);
++
++  // timestamp
++  result.timeStampSeconds = touch_event.timestamp_seconds;
++
++  // convert touch points
++  bool touch_start = false;
++  bool touch_moved = false;
++  bool touch_end = false;
++  bool touch_cancel = false;
++  for (size_t i=0; i<touch_event.count; ++i) {
++    // set point state
++    switch (touch_event.points[i].type) {
++      case TPT_UNDEFINED:
++        result.touches[i].state = blink::WebTouchPoint::StateUndefined;
++        break;
++      case TPT_RELEASED:
++        touch_end = true;
++        result.touches[i].state = blink::WebTouchPoint::StateReleased;
++        break;
++      case TPT_PRESSED:
++        touch_start = true;
++        result.touches[i].state = blink::WebTouchPoint::StatePressed;
++        break;
++      case TPT_MOVED:
++        touch_moved = true;
++        result.touches[i].state = blink::WebTouchPoint::StateMoved;
++        break;
++      case TPT_STATIONARY:
++        result.touches[i].state = blink::WebTouchPoint::StateStationary;
++        break;
++      case TPT_CANCELLED:
++        touch_cancel = true;
++        result.touches[i].state = blink::WebTouchPoint::StateCancelled;
++        break;
++    }
++
++    // id
++    result.touches[i].id = touch_event.points[i].id;
++
++    // local coords
++    result.touches[i].position.x = touch_event.points[i].x;
++    result.touches[i].position.y = touch_event.points[i].y;
++
++    // screen coords
++    result.touches[i].screenPosition.x = touch_event.points[i].screen_x;
++    result.touches[i].screenPosition.y = touch_event.points[i].screen_y;
++
++    // radius
++    result.touches[i].radiusX = touch_event.points[i].radius_x;
++    result.touches[i].radiusY = touch_event.points[i].radius_y;
++
++    // force & angle
++    result.touches[i].force = touch_event.points[i].force;
++    result.touches[i].rotationAngle = touch_event.points[i].rotation_angle;
++  }
++
++  // set event type
++  if (touch_cancel) {
++    result.type = blink::WebInputEvent::TouchCancel;
++  } else if (touch_start) {
++    result.type = blink::WebInputEvent::TouchStart;
++  } else if (touch_end) {
++    result.type = blink::WebInputEvent::TouchEnd;
++  } else if (touch_moved) {
++    result.type = blink::WebInputEvent::TouchMove;
++  }
++}
++
++void CefBrowserHostImpl::SendTouchEvent(const CefTouchEvent& event) {
++  if (!CEF_CURRENTLY_ON_UIT()) {
++    CEF_POST_TASK(CEF_UIT,
++      base::Bind(&CefBrowserHostImpl::SendTouchEvent, this, event));
++    return;
++  }
++
++
++  if (!IsWindowless())
++    // there is no API exposed to support this
++    return;
++
++  if (!web_contents())
++    return;
++
++  blink::WebTouchEvent web_event;
++  TranslateTouchEvent(web_event, event);
++
++  CefRenderWidgetHostViewOSR* view = GetOSRHostView(web_contents());
++  if (view)
++    view->SendTouchEvent(web_event);
++}
++
+ int CefBrowserHostImpl::TranslateModifiers(uint32 cef_modifiers) {
+   int webkit_modifiers = 0;
+   // Set modifiers based on key state.
+diff --git a/libcef/browser/browser_host_impl.h b/libcef/browser/browser_host_impl.h
+index d8b671f..92c17b4 100644
+--- libcef/browser/browser_host_impl.h
++++ libcef/browser/browser_host_impl.h
+@@ -48,6 +48,7 @@ namespace blink {
+ class WebMouseEvent;
+ class WebMouseWheelEvent;
+ class WebInputEvent;
++class WebTouchEvent;
+ }
+ 
+ namespace net {
+@@ -194,6 +195,7 @@ class CefBrowserHostImpl : public CefBrowserHost,
+                           bool mouseLeave) override;
+   void SendMouseWheelEvent(const CefMouseEvent& event,
+                            int deltaX, int deltaY) override;
++  void SendTouchEvent(const CefTouchEvent& event) override;
+   void SendFocusEvent(bool setFocus) override;
+   void SendCaptureLostEvent() override;
+   void NotifyMoveOrResizeStarted() override;
+@@ -587,6 +589,9 @@ class CefBrowserHostImpl : public CefBrowserHost,
+ 
+   void PlatformNotifyMoveOrResizeStarted();
+ 
++  void TranslateTouchEvent(blink::WebTouchEvent& result,
++                           const CefTouchEvent& touch_event);
++
+   int TranslateModifiers(uint32 cefKeyStates);
+   void SendMouseEvent(const blink::WebMouseEvent& web_event);
+ 
+diff --git a/libcef/browser/prefs/renderer_prefs.cc b/libcef/browser/prefs/renderer_prefs.cc
+index aa75b48..bc72eb5 100644
+--- libcef/browser/prefs/renderer_prefs.cc
++++ libcef/browser/prefs/renderer_prefs.cc
+@@ -111,6 +111,9 @@ void SetChromePrefs(CefBrowserContext* profile,
+       prefs->GetBoolean(prefs::kWebKitDomPasteEnabled);
+   web.tabs_to_links = prefs->GetBoolean(prefs::kWebkitTabsToLinks);
+ 
++  // we always want to be able to trigger touch events
++  web.touch_enabled = true;
++
+   if (!prefs->GetBoolean(prefs::kWebKitJavascriptEnabled))
+     web.javascript_enabled = false;
+   if (!prefs->GetBoolean(prefs::kWebKitWebSecurityEnabled))
+diff --git a/libcef/browser/render_widget_host_view_osr.cc b/libcef/browser/render_widget_host_view_osr.cc
+index 512f305..55fc1ce 100644
+--- libcef/browser/render_widget_host_view_osr.cc
++++ libcef/browser/render_widget_host_view_osr.cc
+@@ -17,6 +17,7 @@
+ #include "content/browser/compositor/image_transport_factory.h"
+ #include "content/browser/compositor/resize_lock.h"
+ #include "content/browser/renderer_host/dip_util.h"
++#include "content/browser/renderer_host/input/motion_event_web.h"
+ #include "content/browser/renderer_host/render_widget_host_impl.h"
+ #include "content/common/gpu/client/gl_helper.h"
+ #include "content/common/view_messages.h"
+@@ -26,6 +27,9 @@
+ #include "content/public/browser/render_widget_host_view_frame_subscriber.h"
+ #include "content/public/common/content_switches.h"
+ #include "third_party/WebKit/public/platform/WebScreenInfo.h"
++#include "ui/events/blink/blink_event_util.h"
++#include "ui/events/gesture_detection/gesture_provider_config_helper.h"
++#include "ui/events/gesture_detection/motion_event.h"
+ #include "ui/gfx/geometry/dip_util.h"
+ #include "ui/gfx/geometry/size_conversions.h"
+ #include "ui/gfx/image/image_skia_operations.h"
+@@ -434,6 +438,28 @@ class CefBeginFrameTimer : public cc::DelayBasedTimeSourceClient {
+   DISALLOW_COPY_AND_ASSIGN(CefBeginFrameTimer);
+ };
+ 
++ui::GestureProvider::Config CreateGestureProviderConfig() {
++  ui::GestureProvider::Config config = ui::GetGestureProviderConfig(
++      ui::GestureProviderConfigType::CURRENT_PLATFORM);
++  // config.disable_click_delay = true;
++  return config;
++}
++
++ui::LatencyInfo CreateLatencyInfo(const blink::WebInputEvent& event) {
++  ui::LatencyInfo latency_info;
++  // The latency number should only be added if the timestamp is valid.
++  if (event.timeStampSeconds) {
++    const int64 time_micros = static_cast<int64>(
++        event.timeStampSeconds * base::Time::kMicrosecondsPerSecond);
++    latency_info.AddLatencyNumberWithTimestamp(
++        ui::INPUT_EVENT_LATENCY_ORIGINAL_COMPONENT,
++        0,
++        0,
++        base::TimeTicks() + base::TimeDelta::FromMicroseconds(time_micros),
++        1);
++  }
++  return latency_info;
++}
+ 
+ CefRenderWidgetHostViewOSR::CefRenderWidgetHostViewOSR(
+     content::RenderWidgetHost* widget,
+@@ -453,6 +479,7 @@ CefRenderWidgetHostViewOSR::CefRenderWidgetHostViewOSR(
+       is_showing_(!render_widget_host_->is_hidden()),
+       is_destroyed_(false),
+       is_scroll_offset_changed_pending_(false),
++      gesture_provider_(CreateGestureProviderConfig(), this),
+ #if defined(OS_MACOSX)
+       text_input_context_osr_mac_(NULL),
+ #endif
+@@ -785,6 +812,9 @@ void CefRenderWidgetHostViewOSR::UpdateCursor(
+ }
+ 
+ void CefRenderWidgetHostViewOSR::SetIsLoading(bool is_loading) {
++  if (!is_loading) return;
++  // make sure gesture detection is fresh
++  gesture_provider_.ResetDetection();
+ }
+ 
+ #if !defined(OS_MACOSX)
+@@ -1001,6 +1031,27 @@ CefRenderWidgetHostViewOSR::CreateSoftwareOutputDevice(
+   return make_scoped_ptr<cc::SoftwareOutputDevice>(software_output_device_);
+ }
+ 
++void CefRenderWidgetHostViewOSR::ProcessAckedTouchEvent(const content::TouchEventWithLatencyInfo& touch,
++    content::InputEventAckState ack_result) {
++  const bool event_consumed = ack_result ==  content::INPUT_EVENT_ACK_STATE_CONSUMED;
++  gesture_provider_.OnTouchEventAck(touch.event.uniqueTouchEventId, event_consumed);
++}
++
++void CefRenderWidgetHostViewOSR::OnGestureEvent(
++  const ui::GestureEventData& gesture) {
++
++  blink::WebGestureEvent web_event =
++      ui::CreateWebGestureEventFromGestureEventData(gesture);
++
++  // without this check, forwarding gestures does not work!
++  if (web_event.type == blink::WebInputEvent::Undefined)
++    return;
++
++  render_widget_host_->ForwardGestureEventWithLatencyInfo(web_event,
++    CreateLatencyInfo(web_event));
++}
++
++
+ ui::Layer* CefRenderWidgetHostViewOSR::DelegatedFrameHostGetLayer() const {
+   return root_layer_.get();
+ }
+@@ -1187,6 +1238,25 @@ void CefRenderWidgetHostViewOSR::SendMouseWheelEvent(
+   render_widget_host_->ForwardWheelEvent(event);
+ }
+ 
++void CefRenderWidgetHostViewOSR::SendTouchEvent(
++    const blink::WebTouchEvent& event) {
++  TRACE_EVENT0("libcef", "CefRenderWidgetHostViewOSR::SendTouchEvent");
++
++  content::MotionEventWeb touch_event(event);
++  ui::FilteredGestureProvider::TouchHandlingResult result =
++      gesture_provider_.OnTouchEvent(touch_event);
++
++  if (!result.succeeded)
++    return;
++
++  blink::WebTouchEvent web_event =
++      ui::CreateWebTouchEventFromMotionEvent(touch_event, result.did_generate_scroll);
++
++  if (render_widget_host_)
++    render_widget_host_->ForwardTouchEventWithLatencyInfo(web_event,
++        CreateLatencyInfo(web_event));
++}
++
+ void CefRenderWidgetHostViewOSR::SendFocusEvent(bool focus) {
+   if (!render_widget_host_)
+     return;
+diff --git a/libcef/browser/render_widget_host_view_osr.h b/libcef/browser/render_widget_host_view_osr.h
+index 80195ba..2912209 100644
+--- libcef/browser/render_widget_host_view_osr.h
++++ libcef/browser/render_widget_host_view_osr.h
+@@ -17,6 +17,7 @@
+ #include "content/browser/compositor/delegated_frame_host.h"
+ #include "content/browser/renderer_host/render_widget_host_view_base.h"
+ #include "ui/compositor/compositor.h"
++#include "ui/events/gesture_detection/filtered_gesture_provider.h"
+ 
+ #if defined(OS_MACOSX)
+ #include "content/browser/compositor/browser_compositor_view_mac.h"
+@@ -77,6 +78,7 @@ class CefRenderWidgetHostViewOSR
+       public ui::AcceleratedWidgetMacNSView,
+ #endif
+       public ui::CompositorDelegate,
++      public ui::GestureProviderClient,
+       public content::DelegatedFrameHostClient {
+  public:
+   CefRenderWidgetHostViewOSR(content::RenderWidgetHost* widget,
+@@ -210,6 +212,12 @@ class CefRenderWidgetHostViewOSR
+   scoped_ptr<cc::SoftwareOutputDevice> CreateSoftwareOutputDevice(
+       ui::Compositor* compositor) override;
+ 
++  // ui::GestureProviderClient implementation.
++  void ProcessAckedTouchEvent(const content::TouchEventWithLatencyInfo& touch,
++                              content::InputEventAckState ack_result) override;
++  void OnGestureEvent(const ui::GestureEventData& gesture) override;
++
++
+   // DelegatedFrameHostClient implementation.
+   ui::Layer* DelegatedFrameHostGetLayer() const override;
+   bool DelegatedFrameHostIsVisible() const override;
+@@ -237,6 +245,7 @@ class CefRenderWidgetHostViewOSR
+   void SendKeyEvent(const content::NativeWebKeyboardEvent& event);
+   void SendMouseEvent(const blink::WebMouseEvent& event);
+   void SendMouseWheelEvent(const blink::WebMouseWheelEvent& event);
++  void SendTouchEvent(const blink::WebTouchEvent& event);
+   void SendFocusEvent(bool focus);
+   void UpdateFrameRate();
+ 
+@@ -382,6 +391,9 @@ class CefRenderWidgetHostViewOSR
+   gfx::Vector2dF last_scroll_offset_;
+   bool is_scroll_offset_changed_pending_;
+ 
++  // ui::GestureProviderClient implementation.
++  ui::FilteredGestureProvider gesture_provider_;
++  
+ #if defined(OS_MACOSX)
+   NSTextInputContext* text_input_context_osr_mac_;
+ 
+diff --git a/libcef_dll/cpptoc/browser_host_cpptoc.cc b/libcef_dll/cpptoc/browser_host_cpptoc.cc
+index 70f832c..f7ab1b7 100644
+--- libcef_dll/cpptoc/browser_host_cpptoc.cc
++++ libcef_dll/cpptoc/browser_host_cpptoc.cc
+@@ -670,6 +670,28 @@ void CEF_CALLBACK browser_host_send_mouse_wheel_event(
+       deltaY);
+ }
+ 
++void CEF_CALLBACK browser_host_send_touch_event(
++    struct _cef_browser_host_t* self, const struct _cef_touch_event_t* event) {
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  DCHECK(self);
++  if (!self)
++    return;
++  // Verify param: event; type: struct_byref_const
++  DCHECK(event);
++  if (!event)
++    return;
++
++  // Translate param: event; type: struct_byref_const
++  CefTouchEvent eventObj;
++  if (event)
++    eventObj.Set(*event, false);
++
++  // Execute
++  CefBrowserHostCppToC::Get(self)->SendTouchEvent(
++      eventObj);
++}
++
+ void CEF_CALLBACK browser_host_send_focus_event(
+     struct _cef_browser_host_t* self, int setFocus) {
+   // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
+@@ -935,6 +957,7 @@ CefBrowserHostCppToC::CefBrowserHostCppToC() {
+   GetStruct()->send_mouse_click_event = browser_host_send_mouse_click_event;
+   GetStruct()->send_mouse_move_event = browser_host_send_mouse_move_event;
+   GetStruct()->send_mouse_wheel_event = browser_host_send_mouse_wheel_event;
++  GetStruct()->send_touch_event = browser_host_send_touch_event;
+   GetStruct()->send_focus_event = browser_host_send_focus_event;
+   GetStruct()->send_capture_lost_event = browser_host_send_capture_lost_event;
+   GetStruct()->notify_move_or_resize_started =
+diff --git a/libcef_dll/ctocpp/browser_host_ctocpp.cc b/libcef_dll/ctocpp/browser_host_ctocpp.cc
+index 6d7e047..7128797 100644
+--- libcef_dll/ctocpp/browser_host_ctocpp.cc
++++ libcef_dll/ctocpp/browser_host_ctocpp.cc
+@@ -552,6 +552,18 @@ void CefBrowserHostCToCpp::SendMouseWheelEvent(const CefMouseEvent& event,
+       deltaY);
+ }
+ 
++void CefBrowserHostCToCpp::SendTouchEvent(const CefTouchEvent& event) {
++  cef_browser_host_t* _struct = GetStruct();
++  if (CEF_MEMBER_MISSING(_struct, send_touch_event))
++    return;
++
++  // AUTO-GENERATED CONTENT - DELETE THIS COMMENT BEFORE MODIFYING
++
++  // Execute
++  _struct->send_touch_event(_struct,
++      &event);
++}
++
+ void CefBrowserHostCToCpp::SendFocusEvent(bool setFocus) {
+   cef_browser_host_t* _struct = GetStruct();
+   if (CEF_MEMBER_MISSING(_struct, send_focus_event))
+diff --git a/libcef_dll/ctocpp/browser_host_ctocpp.h b/libcef_dll/ctocpp/browser_host_ctocpp.h
+index 6cdff7e..3224169 100644
+--- libcef_dll/ctocpp/browser_host_ctocpp.h
++++ libcef_dll/ctocpp/browser_host_ctocpp.h
+@@ -76,6 +76,7 @@ class CefBrowserHostCToCpp
+   void SendMouseMoveEvent(const CefMouseEvent& event, bool mouseLeave) OVERRIDE;
+   void SendMouseWheelEvent(const CefMouseEvent& event, int deltaX,
+       int deltaY) OVERRIDE;
++  void SendTouchEvent(const CefTouchEvent& event) OVERRIDE;
+   void SendFocusEvent(bool setFocus) OVERRIDE;
+   void SendCaptureLostEvent() OVERRIDE;
+   void NotifyMoveOrResizeStarted() OVERRIDE;
+-- 
+2.6.2.windows.1
+

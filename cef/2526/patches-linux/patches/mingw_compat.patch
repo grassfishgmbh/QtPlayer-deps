@@ -1,0 +1,46 @@
+diff -pru cef_binary_3.2171.1949_windows32/include/base/cef_atomicops.h b/include/base/cef_atomicops.h
+--- include/base/cef_atomicops.h	2014-12-05 12:37:01.000000000 -0200
++++ include/base/cef_atomicops.h	2014-12-08 23:18:42.026691700 -0200
+@@ -177,7 +177,7 @@ Atomic64 Release_Load(volatile const Ato
+ }  // namespace base
+ 
+ // Include our platform specific implementation.
+-#if defined(OS_WIN) && defined(COMPILER_MSVC) && defined(ARCH_CPU_X86_FAMILY)
++#if defined(OS_WIN) && defined(ARCH_CPU_X86_FAMILY)
+ #include "include/base/internal/cef_atomicops_x86_msvc.h"
+ #elif defined(OS_MACOSX)
+ #include "include/base/internal/cef_atomicops_mac.h"
+diff -pru cef_binary_3.2171.1949_windows32/include/base/internal/cef_atomicops_x86_msvc.h b/include/base/internal/cef_atomicops_x86_msvc.h
+--- include/base/internal/cef_atomicops_x86_msvc.h	2014-12-05 12:40:30.000000000 -0200
++++ include/base/internal/cef_atomicops_x86_msvc.h	2014-12-08 23:23:02.036706766 -0200
+@@ -81,7 +81,12 @@ inline Atomic32 NoBarrier_AtomicIncremen
+   return Barrier_AtomicIncrement(ptr, increment);
+ }
+ 
+-#if !(defined(_MSC_VER) && _MSC_VER >= 1400)
++/*
++ * MINGW could use gcc-compatible semantics too. But having it use
++ * win32 keeps things simpler here: as chromium and cef are compiled
++ * that way, even an eventual gain would be marginal on the wrappers.
++ */
++#if !(defined(_MSC_VER) && _MSC_VER >= 1400) && !defined(__MINGW32__)
+ #error "We require at least vs2005 for MemoryBarrier"
+ #endif
+ inline void MemoryBarrier() {
+diff -pru cef_binary_3.2171.1949_windows32/include/internal/cef_export.h b/include/internal/cef_export.h
+--- include/internal/cef_export.h	2014-12-05 12:37:02.000000000 -0200
++++ include/internal/cef_export.h	2014-12-08 23:27:47.080056617 -0200
+@@ -34,7 +34,12 @@
+ 
+ #include "include/base/cef_build.h"
+ 
+-#if defined(COMPILER_MSVC)
++/*
++ * It's reasonable to assume that when targetting windows, whatever the compiler is, it must obey it's
++ * ABI semantics. At least mingw and mingw-w64 won't interoperate with CEF (which
++ * itself is compiled on MSVC) without this.
++ */
++#if defined(OS_WIN)
+ 
+ #ifdef BUILDING_CEF_SHARED
+ #define CEF_EXPORT __declspec(dllexport)

@@ -1,0 +1,9 @@
+#! /bin/sh
+# pkg-config wrapper for cross-building
+# Sets pkg-config search path to target arch path only.
+
+triplet=`basename $0 | sed -e 's:-pkg-config::'`
+if [ -n "$PKG_CONFIG_PATH" ]; then
+    EXISTING=":$PKG_CONFIG_PATH"
+fi
+PKG_CONFIG_PATH=/usr/lib/${triplet}/pkgconfig:/usr/${triplet}/lib/pkgconfig${EXISTING} pkg-config $@

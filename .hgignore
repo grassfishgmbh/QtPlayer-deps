@@ -1,0 +1,20 @@
+syntax: glob
+build-deps/deps-buildspace
+build-deps/deps-buildspace-win
+build-deps/lin/deps-buildspace/
+qt/5.6/qt-src
+qt/5.6/Qt-5.6.1-1.zip
+qt/5.6/qtframework.txt
+qt/5.6/version.txt
+openssl/openssl-*.tar.gz
+openssl/openssl-*/
+hwsupport/libva-*.tar.bz2
+hwsupport/libva-*/
+gf-hwsupport.tar.gz
+*.iso
+networkmanager-qt/buildspace
+create-iso/buildspace
+build-deps/lin/gf-builddeps.tar.gz
+create-iso/custom
+create-iso/ubuntu-keyring-*/
+create-iso/ubuntu-keyring_*.*

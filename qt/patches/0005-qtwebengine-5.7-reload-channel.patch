@@ -1,0 +1,125 @@
+diff --git a/src/core/renderer/web_channel_ipc_transport.cpp b/src/core/renderer/web_channel_ipc_transport.cpp
+index d1e5f22..6bbbe28 100644
+--- a/src/core/renderer/web_channel_ipc_transport.cpp
++++ b/src/core/renderer/web_channel_ipc_transport.cpp
+@@ -153,6 +153,8 @@ content::RenderView *WebChannelTransport::GetRenderView(v8::Isolate *isolate)
+ 
+ WebChannelIPCTransport::WebChannelIPCTransport(content::RenderView *renderView)
+     : content::RenderViewObserver(renderView)
++    , m_installed(false)
++    , m_installedWorldId(0)
+ {
+ }
+ 
+@@ -162,6 +164,8 @@ void WebChannelIPCTransport::installWebChannel(uint worldId)
+     if (!webView)
+         return;
+     WebChannelTransport::Install(webView->mainFrame(), worldId);
++    m_installed = true;
++    m_installedWorldId = worldId;
+ }
+ 
+ void WebChannelIPCTransport::uninstallWebChannel(uint worldId)
+@@ -170,6 +174,7 @@ void WebChannelIPCTransport::uninstallWebChannel(uint worldId)
+     if (!webView)
+         return;
+     WebChannelTransport::Uninstall(webView->mainFrame(), worldId);
++    m_installed = false;
+ }
+ 
+ void WebChannelIPCTransport::dispatchWebChannelMessage(const std::vector<char> &binaryJSON, uint worldId)
+@@ -217,6 +222,13 @@ void WebChannelIPCTransport::dispatchWebChannelMessage(const std::vector<char> &
+     frame->callFunctionEvenIfScriptDisabled(callback, webChannelObjectValue->ToObject(), argc, argv);
+ }
+ 
++void WebChannelIPCTransport::DidCreateDocumentElement(blink::WebLocalFrame* frame)
++{
++    blink::WebFrame* main_frame = render_view()->GetWebView()->mainFrame();
++    if (frame == main_frame)
++        WebChannelTransport::Install(frame, m_installedWorldId);
++}
++
+ bool WebChannelIPCTransport::OnMessageReceived(const IPC::Message &message)
+ {
+     bool handled = true;
+diff --git a/src/core/renderer/web_channel_ipc_transport.h b/src/core/renderer/web_channel_ipc_transport.h
+index f799f47..fcee13b 100644
+--- a/src/core/renderer/web_channel_ipc_transport.h
++++ b/src/core/renderer/web_channel_ipc_transport.h
+@@ -58,7 +58,11 @@ private:
+     void dispatchWebChannelMessage(const std::vector<char> &binaryJSON, uint worldId);
+     void installWebChannel(uint worldId);
+     void uninstallWebChannel(uint worldId);
++    virtual void DidCreateDocumentElement(blink::WebLocalFrame* frame) override;
+     virtual bool OnMessageReceived(const IPC::Message &message) Q_DECL_OVERRIDE;
++
++    bool m_installed;
++    uint m_installedWorldId;
+ };
+ 
+ } // namespace
+diff --git a/tests/auto/widgets/qwebenginescript/tst_qwebenginescript.cpp b/tests/auto/widgets/qwebenginescript/tst_qwebenginescript.cpp
+index ad10234..d5ecd88 100644
+--- a/tests/auto/widgets/qwebenginescript/tst_qwebenginescript.cpp
++++ b/tests/auto/widgets/qwebenginescript/tst_qwebenginescript.cpp
+@@ -37,6 +37,7 @@ private Q_SLOTS:
+     void scriptModifications();
+     void webChannel_data();
+     void webChannel();
++    void noTransportWithoutWebChannel();
+ };
+ 
+ void tst_QWebEngineScript::domEditing()
+@@ -180,13 +181,17 @@ private:
+ void tst_QWebEngineScript::webChannel_data()
+ {
+     QTest::addColumn<int>("worldId");
+-    QTest::newRow("MainWorld") << static_cast<int>(QWebEngineScript::MainWorld);
+-    QTest::newRow("ApplicationWorld") << static_cast<int>(QWebEngineScript::ApplicationWorld);
++    QTest::addColumn<bool>("reloadFirst");
++    QTest::newRow("MainWorld") << static_cast<int>(QWebEngineScript::MainWorld) << false;
++    QTest::newRow("ApplicationWorld") << static_cast<int>(QWebEngineScript::ApplicationWorld) << false;
++    QTest::newRow("MainWorldWithReload") << static_cast<int>(QWebEngineScript::MainWorld) << true;
++    QTest::newRow("ApplicationWorldWithReload") << static_cast<int>(QWebEngineScript::ApplicationWorld) << true;
+ }
+ 
+ void tst_QWebEngineScript::webChannel()
+ {
+     QFETCH(int, worldId);
++    QFETCH(bool, reloadFirst);
+     QWebEnginePage page;
+     TestObject testObject;
+     QScopedPointer<QWebChannel> channel(new QWebChannel(this));
+@@ -205,6 +210,11 @@ void tst_QWebEngineScript::webChannel()
+     page.scripts().insert(script);
+     page.setHtml(QStringLiteral("<html><body></body></html>"));
+     waitForSignal(&page, SIGNAL(loadFinished(bool)));
++    if (reloadFirst) {
++        // Check that the transport is also reinstalled on navigation
++        page.triggerAction(QWebEnginePage::Reload);
++        waitForSignal(&page, SIGNAL(loadFinished(bool)));
++    }
+     page.runJavaScript(QLatin1String(
+                                 "new QWebChannel(qt.webChannelTransport,"
+                                 "  function(channel) {"
+@@ -218,6 +228,17 @@ void tst_QWebEngineScript::webChannel()
+         QCOMPARE(evaluateJavaScriptSync(&page, "qt.webChannelTransport"), QVariant(QVariant::Invalid));
+ }
+ 
++void tst_QWebEngineScript::noTransportWithoutWebChannel()
++{
++    QWebEnginePage page;
++    page.setHtml(QStringLiteral("<html><body></body></html>"));
++
++    QCOMPARE(evaluateJavaScriptSync(&page, "qt.webChannelTransport"), QVariant(QVariant::Invalid));
++    page.triggerAction(QWebEnginePage::Reload);
++    waitForSignal(&page, SIGNAL(loadFinished(bool)));
++    QCOMPARE(evaluateJavaScriptSync(&page, "qt.webChannelTransport"), QVariant(QVariant::Invalid));
++}
++
+ QTEST_MAIN(tst_QWebEngineScript)
+ 
+ #include "tst_qwebenginescript.moc"
+-- 
+2.7.4
+
