@@ -1,0 +1,20 @@
+diff --git a/src/vaapi/SurfaceInteropVAAPI.cpp b/src/vaapi/SurfaceInteropVAAPI.cpp
+index d70a0b7..7bf898f 100644
+--- a/src/vaapi/SurfaceInteropVAAPI.cpp
++++ b/src/vaapi/SurfaceInteropVAAPI.cpp
+@@ -401,13 +401,13 @@ bool X11InteropResource::map(const surface_ptr& surface, GLuint tex, int w, int
+     if (!ensurePixmaps(w, h)) //pixmap with frame size
+         return false;
+     VAWARN(vaSyncSurface(surface->vadisplay(), surface->get()));
++    XSync((::Display*)xdisplay, False);
+     // FIXME: invalid surface at the first time vaPutSurface is called. If return false, vaPutSurface will always fail, why?
+     VAWARN(vaPutSurface(surface->vadisplay(), surface->get(), x11->pixmap
+                                 , 0, 0, w, h
+                                 , 0, 0, w, h
+                                 , NULL, 0, VA_FRAME_PICTURE | surface->colorSpace())
+                    );
+-    XSync((::Display*)xdisplay, False);
+     DYGL(glBindTexture(GL_TEXTURE_2D, tex));
+     x11->bindTexture();
+     DYGL(glBindTexture(GL_TEXTURE_2D, 0));
+
