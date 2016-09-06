@@ -12,7 +12,7 @@ bash prepare.sh
 bash fetch.sh
 bash build.sh
 
-cd $MY_ROOT/networkmanager-qt
+cd $MY_ROOT/../networkmanager-qt
 
 bash prepare.sh
 bash fetch.sh
