@@ -27,5 +27,6 @@ sudo apt-get install -y libxcb1-dev \
                       zip \
                       gtk-doc-tools \
                       gobject-introspection \
-                      libgtk2.0-dev
+                      libgtk2.0-dev \
+                      x11proto-randr-dev
 
