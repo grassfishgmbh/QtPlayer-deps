@@ -63,3 +63,7 @@ fi
 
 INSTALL_PREFIX="/opt/gf-builddeps"
 NMQT_INSTALL_PREFIX="/opt/gf-libnmqt"
+
+DBUS_VERSION="1.10.8"
+DBUS_FILENAME="dbus-$DBUS_VERSION.tar.gz"
+DBUS_URL="https://dbus.freedesktop.org/releases/dbus/$DBUS_FILENAME"
