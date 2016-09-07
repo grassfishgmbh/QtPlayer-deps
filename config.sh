@@ -62,11 +62,4 @@ if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
 fi
 
 INSTALL_PREFIX="/opt/gf-builddeps"
-
-LIBUSB_VERSION="1.0.20"
-LIBUSB_SHA256="cb057190ba0a961768224e4dc6883104c6f945b2bf2ef90d7da39e7c1834f7ff"
-LIBUSB_DIR=$CONFIG_DIR/libusb
-LIBUSB_FILENAME="libusb-$LIBUSB_VERSION.tar.bz2"
-LIBUSB_TAR_URL="http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-$LIBUSB_VERSION/$LIBUSB_FILENAME"
-LIBUSB_TARGET="$LIBUSB_DIR/buildspace/"
-LIBUSB_SRC_DIR="$LIBUSB_DIR/buildspace/libusb-$LIBUSB_VERSION"
+NMQT_INSTALL_PREFIX="/opt/gf-libnmqt"
