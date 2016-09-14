@@ -25,6 +25,12 @@ set LIB=%cd%\..\qtav-x86_64\lib;%cd%\..\qtav-x86_64\bin;%LIB%
 qmake ../QtAV/QtAV.pro CONFIG+=release
 jom -j8
 
+cd %WORKSPACE_ROOT%
+cd deps-buildspace\build-QtAV-dbg
+
+qmake ../QtAV/QtAV.pro
+jom -j8
+
 rem install QtAV into specific directory
 cd %WORKSPACE_ROOT%
 bash qtav_installation.sh x86_64

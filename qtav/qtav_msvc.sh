@@ -51,6 +51,7 @@ done
 
 cd ..
 mkdir build-QtAV
+mkdir build-QtAV-dbg
 #cd build-QtAV
 #qmake ../QtAV/QtAV.pro PREFIX="$INSTALL_PREFIX_WIN"
 #make -j`nproc`
