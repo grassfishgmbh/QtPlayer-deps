@@ -1,0 +1,15 @@
+diff --git a/src/webengine/api/qquickwebengineview.cpp b/src/webengine/api/qquickwebengineview.cpp
+index 1b1dcec..8ef1174 100644
+--- a/src/webengine/api/qquickwebengineview.cpp
++++ b/src/webengine/api/qquickwebengineview.cpp
+@@ -610,7 +610,9 @@ void QQuickWebEngineViewPrivate::javaScriptConsoleMessage(JavaScriptConsoleMessa
+ 
+ void QQuickWebEngineViewPrivate::authenticationRequired(QSharedPointer<AuthenticationDialogController> controller)
+ {
+-    ui()->showDialog(controller);
++    QString user = QNetworkProxy::applicationProxy().user();
++    QString password = QNetworkProxy::applicationProxy().password();
++    controller->accept(user, password);
+ }
+ 
+ void QQuickWebEngineViewPrivate::runMediaAccessPermissionRequest(const QUrl &securityOrigin, WebContentsAdapterClient::MediaRequestFlags requestFlags)
