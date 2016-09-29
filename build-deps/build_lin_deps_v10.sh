@@ -24,6 +24,9 @@ bash fetch.sh
 bash unpack.sh
 bash build.sh
 
+cd $MY_ROOT/../libusb
+bash autogen.sh
+
 cd $MY_ROOT/lin
 
 bash package.sh
