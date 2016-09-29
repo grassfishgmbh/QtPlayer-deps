@@ -62,7 +62,7 @@ if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
     source $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh
 fi
 
-INSTALL_PREFIX="/opt/gf-builddeps"
+INSTALL_PREFIX="/opt/gf-builddeps-10-1"
 NMQT_INSTALL_PREFIX="/opt/gf-libnmqt"
 
 DBUS_VERSION="1.10.8"
