@@ -1,14 +1,12 @@
 #!/bin/bash
 
-if [ -z "$VERSION" ]; then
-    VERSION="2.2.3"
-fi
+MY_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+source $MY_DIR/../config.sh
 
 JOBROOT=`pwd`
-WD="$JOBROOT/VLC/$VERSION"
+WD="$JOBROOT/VLC/$VLC_VERSION"
 VLCQT_WD="$JOBROOT/VLC-Qt"
 OLDPATH=$PATH
-QTVERSION="5.6.0"
 
 ARCH=$1
 BLOBZIP=$2
@@ -84,28 +82,28 @@ function create_vlc_qt_blobs_for_arch () {
         fi
     
         # copy dll's to include dir because cmake is batshit crazy
-        cp $JOBROOT/VLC/$VERSION/bin/libvlccore.dll $JOBROOT/VLC/$VERSION/include/
-        cp $JOBROOT/VLC/$VERSION/bin/libvlc.dll $JOBROOT/VLC/$VERSION/include/
+        cp $JOBROOT/VLC/$VLC_VERSION/bin/libvlccore.dll $JOBROOT/VLC/$VLC_VERSION/include/
+        cp $JOBROOT/VLC/$VLC_VERSION/bin/libvlc.dll $JOBROOT/VLC/$VLC_VERSION/include/
         
         cmake .. -G Ninja -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX="../install-$ARCH" \
-            -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlc.lib` \
-            -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VERSION/bin/libvlccore.lib` \
-            -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VERSION/include`
+            -DLIBVLC_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VLC_VERSION/bin/libvlc.lib` \
+            -DLIBVLCCORE_LIBRARY=`cygpath -w -a $JOBROOT/VLC/$VLC_VERSION/bin/libvlccore.lib` \
+            -DLIBVLC_INCLUDE_DIR=`cygpath -w -a $JOBROOT/VLC/$VLC_VERSION/include`
         ninja
         ninja install
     
-        cp -r $JOBROOT/VLC/$VERSION/lib/* ../install-$ARCH/lib/
-        mv $JOBROOT/VLC/$VERSION/bin/*.lib ../install-$ARCH/lib/
-        mv $JOBROOT/VLC/$VERSION/include/vlc ../install-$ARCH/include/
+        cp -r $JOBROOT/VLC/$VLC_VERSION/lib/* ../install-$ARCH/lib/
+        mv $JOBROOT/VLC/$VLC_VERSION/bin/*.lib ../install-$ARCH/lib/
+        mv $JOBROOT/VLC/$VLC_VERSION/include/vlc ../install-$ARCH/include/
     
         mv ../install-$ARCH $JOBROOT/install-$ARCH
     else
-        export PATH=/opt/Qt/$QTVERSION/gcc_64/bin:$OLDPATH
+        export PATH=/opt/Qt/$QT_VERSION/gcc_64/bin:$OLDPATH
         
         cmake .. -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=/opt/gf-builddeps \
-            -DLIBVLC_INCLUDE_DIR=/opt/gf-builddeps/include
+            -DCMAKE_INSTALL_PREFIX=$INSTALL_PREFIX \
+            -DLIBVLC_INCLUDE_DIR=$INSTALL_PREFIX/include
         make -j`nproc`
         sudo make install
     fi
