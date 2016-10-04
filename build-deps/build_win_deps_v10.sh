@@ -21,7 +21,9 @@ function build_vlc_for_target_arch () {
                                  --disable-qt5 --disable-lua \
                                  --disable-taglib --disable-projectM \
                                  --disable-vncserver --disable-gsm \
-                                 --disable-ass --disable-harfbuzz --disable-fontconfig --disable-freetype2
+                                 --disable-ass --disable-harfbuzz \
+                                 --disable-fontconfig --disable-freetype2 \
+                                 --disable-gme
     make fetch
     #sed -i "s/--enable-static --disable-shared/--disable-static --enable-shared/g" ../src/ffmpeg/rules.mak
     make -j`nproc`
