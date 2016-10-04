@@ -13,6 +13,9 @@ function build_vlc_for_target_arch () {
     fi
     
     mkdir -p contrib/$ARCH
+    
+    wget http://www.ijg.org/files/jpegsrc.v9a.tar.gz -P contrib/tarballs/
+    
     cd contrib/$ARCH
     ../bootstrap --host=$TRIPLET --disable-gpl --disable-qt4 --disable-qt \
                                  --disable-bluray --disable-libgcrypt \
