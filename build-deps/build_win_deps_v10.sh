@@ -2,7 +2,7 @@
 
 set -e
 
-VLC_VERSION="2.2.1"
+source ../config.sh
 
 function build_vlc_for_target_arch () {
     ARCH=$1
@@ -13,6 +13,12 @@ function build_vlc_for_target_arch () {
     fi
     
     mkdir -p contrib/$ARCH
+    
+    wget https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/libkate/libkate-0.4.1.tar.gz -P contrib/tarballs/
+    wget http://www.ijg.org/files/jpegsrc.v9a.tar.gz -P contrib/tarballs/
+    wget http://downloads.sourceforge.net/openjpeg.mirror/openjpeg-1.5.0.tar.gz -P contrib/tarballs/
+    wget http://pkgs.fedoraproject.org/repo/pkgs/libvpx/libvpx-v1.3.0.tar.bz2/14783a148872f2d08629ff7c694eb31f/libvpx-v1.3.0.tar.bz2 -P contrib/tarballs/
+    
     cd contrib/$ARCH
     ../bootstrap --host=$TRIPLET --disable-gpl --disable-qt4 --disable-qt \
                                  --disable-bluray --disable-libgcrypt \
@@ -21,7 +27,9 @@ function build_vlc_for_target_arch () {
                                  --disable-qt5 --disable-lua \
                                  --disable-taglib --disable-projectM \
                                  --disable-vncserver --disable-gsm \
-                                 --disable-ass --disable-harfbuzz --disable-fontconfig --disable-freetype2
+                                 --disable-ass --disable-harfbuzz \
+                                 --disable-fontconfig --disable-freetype2 \
+                                 --disable-gme
     make fetch
     #sed -i "s/--enable-static --disable-shared/--disable-static --enable-shared/g" ../src/ffmpeg/rules.mak
     make -j`nproc`

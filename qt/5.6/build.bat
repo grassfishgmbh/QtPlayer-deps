@@ -23,8 +23,3 @@ set PATH=%QT_DIR%\bin;%PATH%
 cd %BASEDIR%
 
 bash package-win.sh
-
-cd %CONFIG_DIR%
-
-echo %BUILD_VERSION% > version.txt
-md5sum Qt-%QT_VERSION%.zip > qtframework.txt
