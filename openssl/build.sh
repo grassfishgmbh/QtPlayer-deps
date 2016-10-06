@@ -13,7 +13,8 @@ fi
 
 cd openssl-$OPENSSL_VERSION
 
-./Configure enable-shared linux-x86_64
+./Configure enable-shared linux-x86_64 --prefix=$QT_DIR
 unset MAKEFLAGS
 unset CXXFLAGS
 make -j`nproc`
+sudo make install
