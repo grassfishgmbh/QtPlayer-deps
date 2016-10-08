@@ -21,5 +21,15 @@ create-iso/ubuntu-keyring_*.*
 qt/5.6/Qt-5.7.0.zip
 create-iso/update/*.zip
 create-iso/blobs/*/
+curl/buildspace/
 dbus/buildspace/
 libusb/buildspace/
+zlib/buildspace/
+libssh/build
+qtpdfium/build
+quazip/build
+QtWebApp/build
+kdsoap/.git/
+kdsoap/.gitignore
+*.o
+moc_*.cpp
