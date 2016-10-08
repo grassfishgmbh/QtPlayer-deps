@@ -9,3 +9,5 @@ if [ ! -e "$DBUS_TARGET$DBUS_FILENAME" ]; then
 fi
 
 tar -xvf "$DBUS_TARGET$DBUS_FILENAME" -C "$DBUS_TARGET"
+
+cp -r $DBUS_TARGET $DBUS_DIR/src
