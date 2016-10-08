@@ -13,7 +13,7 @@ fi
 
 cd openssl-$OPENSSL_VERSION
 
-./Configure enable-shared linux-x86_64
+./Configure --prefix=$INSTALL_PREFIX enable-shared linux-x86_64
 unset MAKEFLAGS
 unset CXXFLAGS
 make -j`nproc`
