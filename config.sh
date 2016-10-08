@@ -80,3 +80,11 @@ LIBUSB_FILENAME="libusb-$LIBUSB_VERSION.tar.bz2"
 LIBUSB_TAR_URL="http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-$LIBUSB_VERSION/$LIBUSB_FILENAME"
 LIBUSB_TARGET="$LIBUSB_DIR/buildspace/"
 LIBUSB_SRC_DIR="$LIBUSB_DIR/buildspace/libusb-$LIBUSB_VERSION"
+
+CURL_VERSION="7.50.3"
+CURL_SHA256="7b7347d976661d02c84a1f4d6daf40dee377efdc45b9e2c77dedb8acf140d8ec"
+CURL_DIR=$CONFIG_DIR/curl
+CURL_FILENAME="curl-$CURL_VERSION.tar.bz2"
+CURL_TAR_URL="https://curl.haxx.se/download/$CURL_FILENAME"
+CURL_TARGET="$CURL_DIR/buildspace/"
+CURL_SRC_DIR="$CURL_DIR/buildspace/curl-$CURL_VERSION"
