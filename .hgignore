@@ -33,3 +33,10 @@ kdsoap/.git/
 kdsoap/.gitignore
 *.o
 moc_*.cpp
+kdsoap/lib/libxmlschema.a
+kdsoap/lib/libkdsoap-server.so.1.4.50
+kdsoap/lib/libkdsoap.so.1.4.50
+kdsoap/lib/libkode.a
+kdsoap/lib/libwsdl.a
+kdsoap/lib/libxmlcommon.a
+kdsoap/bin/kdwsdl2cpp
