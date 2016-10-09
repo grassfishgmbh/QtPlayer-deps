@@ -16,3 +16,4 @@ qmake ../qtpdfium.pro PREFIX=$INSTALL_PREFIX CONFIG+=debug_and_release
 
 make -j`nproc`
 sudo cp -r {include,lib,mkspecs} $INSTALL_PREFIX/
+sudo cp ../src/pdfium/*.h $INSTALL_PREFIX/include/QtPdfium
