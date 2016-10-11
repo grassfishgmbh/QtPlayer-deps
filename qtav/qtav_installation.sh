@@ -1,6 +1,6 @@
 #!/bin/bash
 
-QT_VERSION="5.6.1-1"
+source ../config.sh
 
 if [ "$1" == "x86_64" ]; then
     OLD_INSTALL_TARGET="C:\Qt\\$QT_VERSION\msvc2013_64"
