@@ -27,6 +27,27 @@ bash build.sh
 cd $MY_ROOT/../libusb
 bash autogen.sh
 
+cd $MY_ROOT/../kdsoap
+bash build.sh
+
+cd $MY_ROOT/../zlib
+bash build.sh
+
+cd $MY_ROOT/../libssh
+bash build.sh
+
+cd $MY_ROOT/../curl
+bash build.sh
+
+cd $MY_ROOT/../QtWebApp
+bash build.sh
+
+cd $MY_ROOT/../qtpdfium
+bash build.sh
+
+cd $MY_ROOT/../quazip
+bash build.sh
+
 cd $MY_ROOT/lin
 
 bash package.sh
