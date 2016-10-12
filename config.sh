@@ -45,18 +45,19 @@ BASE_OS_VERSION="16.04.1"
 BASE_ISO_FILE="lubuntu-$BASE_OS_VERSION-desktop-amd64.iso"
 BASE_ISO_SERIES="xenial"
 BASE_OS_SHA256="1b91a43b0101e03b0890428d3e77198c0d35364cf35e38aaea2755d10ace26a7"
-ISO_BUILDSPACE=$CONFIG_DIR/create-iso/buildspace
+CREATE_ISO_DIR=$CONFIG_DIR/create-iso
+ISO_BUILDSPACE=$CREATE_ISO_DIR/buildspace
 ISO_CASPER_DIR=$ISO_BUILDSPACE/newIso/casper
 UPDEBS_CHROOT=$ISO_BUILDSPACE/chroot
-ISO_GENERIC_MODS_PATH=$CONFIG_DIR/create-iso/generic
-ISO_CUSTOMIZATION_PATH=$CONFIG_DIR/create-iso/custom
-UPDATE_ZIP_PATH=$CONFIG_DIR/create-iso/update
+ISO_GENERIC_MODS_PATH=$CREATE_ISO_DIR/generic
+ISO_CUSTOMIZATION_PATH=$CREATE_ISO_DIR/custom
+UPDATE_ZIP_PATH=$CREATE_ISO_DIR/update
 ISO_MOUNT=/mnt/gf_iso_mount
 ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
 ISO_DESKTOP_SESSION=Lubuntu
-ISO_KERNEL_FLAGS="quiet splash i915.enable_psr=0 i915.enable_fbc=0 intel_pstate=disable"
+ISO_KERNEL_FLAGS="i915.enable_psr=0 i915.enable_fbc=0 intel_pstate=disable"
 
-ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0v5 libgtkmm-3.0-1v5 xserver-xorg-video-intel ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver sqlite3 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad fail2ban xloadimage'
+ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0v5 libgtkmm-3.0-1v5 xserver-xorg-video-intel ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver sqlite3 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad fail2ban feh'
 ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker update-manager'
 ISO_INCLUDE_MIGRATOR=0
 
