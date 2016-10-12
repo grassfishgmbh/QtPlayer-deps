@@ -40,3 +40,4 @@ kdsoap/lib/libkode.a
 kdsoap/lib/libwsdl.a
 kdsoap/lib/libxmlcommon.a
 kdsoap/bin/kdwsdl2cpp
+create-iso/build.log
