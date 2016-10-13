@@ -10,6 +10,7 @@ if [ -e gf-builddeps.tar.gz ]; then
 fi
 
 sudo rm -rf $INSTALL_PREFIX/libexec || true
+sudo chmod 755 $INSTALL_PREFIX/lib/*.so*
 tar cvzf gf-builddeps.tar.gz $INSTALL_PREFIX $NMQT_INSTALL_PREFIX || true
 
 if [ -f gf-builddeps.tar.gz ]; then
