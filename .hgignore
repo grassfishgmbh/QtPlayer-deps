@@ -41,3 +41,16 @@ kdsoap/lib/libwsdl.a
 kdsoap/lib/libxmlcommon.a
 kdsoap/bin/kdwsdl2cpp
 create-iso/build.log
+*.tar.gz
+*.tar.bz2
+*.zip
+*.so
+*.so.*
+*.so.*.*
+*.so.*.*.*
+*.so.*.*.*.*
+QtWebApp/build
+qtpdfium/build
+networkmanager-qt/buildspace/extra-cmake-modules/build
+networkmanager-qt/buildspace/networkmanager-qt/build
+quazip/build
