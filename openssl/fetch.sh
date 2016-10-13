@@ -21,3 +21,5 @@ fi
 # fetch sources
 wget https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz
 tar xvzf openssl-$OPENSSL_VERSION.tar.gz
+mkdir src || true
+tar xvzf openssl-$OPENSSL_VERSION.tar.gz -C src/

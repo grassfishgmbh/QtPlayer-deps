@@ -13,7 +13,7 @@ export PKG_CONFIG_PATH=$INSTALL_PREFIX/lib/pkgconfig
 ./configure \
   	--with-random=/dev/urandom \
 	--prefix=$INSTALL_PREFIX \
-	--mandir=/share/man \
+	--mandir=$INSTALL_PREFIX/share/man \
 	--disable-dependency-tracking \
 	--enable-ipv6 \
 	--disable-ldaps \
