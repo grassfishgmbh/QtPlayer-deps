@@ -21,6 +21,12 @@ rm -f *.zip
 rm -rf qt-src
 rm -f *.txt
 
+cd $CONFIG_DIR/openssl
+bash fetch.sh
+bash build.sh qt
+
+cd $BASEDIR
+
 bash $BASEDIR/prepare.sh
 bash $BASEDIR/fetch.sh
 bash $BASEDIR/build.sh
