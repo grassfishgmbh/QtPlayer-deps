@@ -41,8 +41,8 @@ GTKGLEXT_VERSION="04131c5f69070b2f194f02edd45b0622ca03793c"
 
 NM_QT_VERSION="v5.21.0"
 
+ISO_PLAYER_VERSION="v10.1"
 BASE_OS_VERSION="16.04.1"
-
 BASE_ISO_FILE="lubuntu-$BASE_OS_VERSION-desktop-amd64.iso"
 BASE_ISO_SERIES="xenial"
 BASE_OS_SHA256="1b91a43b0101e03b0890428d3e77198c0d35364cf35e38aaea2755d10ace26a7"
@@ -59,7 +59,7 @@ ISO_DESKTOP_SESSION=Lubuntu
 ISO_KERNEL_FLAGS="i915.enable_psr=0 i915.enable_fbc=0 intel_pstate=disable"
 
 ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0v5 libgtkmm-3.0-1v5 xserver-xorg-video-intel ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver sqlite3 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad fail2ban feh'
-ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker update-manager'
+ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker update-manager cups'
 ISO_INCLUDE_MIGRATOR=0
 
 if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
