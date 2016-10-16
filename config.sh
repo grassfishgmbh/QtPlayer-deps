@@ -56,7 +56,7 @@ UPDATE_ZIP_PATH=$CREATE_ISO_DIR/update
 ISO_MOUNT=/mnt/gf_iso_mount
 ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
 ISO_DESKTOP_SESSION=Lubuntu
-ISO_KERNEL_FLAGS="i915.enable_psr=0 i915.enable_fbc=0 intel_pstate=disable"
+ISO_KERNEL_FLAGS="i915.enable_psr=0 i915.enable_fbc=0 intel_pstate=disable drm.vblankoffdelay=1"
 
 ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0v5 libgtkmm-3.0-1v5 xserver-xorg-video-intel ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver sqlite3 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad fail2ban feh'
 ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker update-manager cups'
@@ -100,3 +100,5 @@ CURL_FILENAME="curl-$CURL_VERSION.tar.bz2"
 CURL_TAR_URL="https://curl.haxx.se/download/$CURL_FILENAME"
 CURL_TARGET="$CURL_DIR/buildspace/"
 CURL_SRC_DIR="$CURL_DIR/buildspace/curl-$CURL_VERSION"
+
+OXIDE_BRANCH="1.18"
