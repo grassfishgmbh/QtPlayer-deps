@@ -54,3 +54,4 @@ qtpdfium/build
 networkmanager-qt/buildspace/extra-cmake-modules/build
 networkmanager-qt/buildspace/networkmanager-qt/build
 quazip/build
+oxide/
