@@ -1,0 +1,13 @@
+diff --git a/src/AVPlayer.cpp b/src/AVPlayer.cpp
+index 6035407..f6021a5 100644
+--- a/src/AVPlayer.cpp
++++ b/src/AVPlayer.cpp
+@@ -1253,7 +1253,7 @@ void AVPlayer::stopFromDemuxerThread()
+         if (stop_pts <= 0)
+             stop_pts = masterClock()->value();
+         masterClock()->reset();
+-        stopNotifyTimer();
++        QMetaObject::invokeMethod(this, "stopNotifyTimer");
+         // vars not set by user can be reset
+         d->repeat_current = -1;
+         d->start_position_norm = 0;
