@@ -69,3 +69,6 @@ kdsoap/kdwsdl2cpp/src/Makefile
 kdsoap/kdwsdl2cpp/wsdl/Makefile
 kdsoap/src/KDSoapClient/Makefile
 kdsoap/src/KDSoapServer/Makefile
+curl/src/buildspace
+zlib/src/buildspace
+zlib/src/-src/
