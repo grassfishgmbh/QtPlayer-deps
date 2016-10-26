@@ -29,4 +29,8 @@ sudo apt-get install -y libxcb1-dev \
                       gobject-introspection \
                       libgtk2.0-dev \
                       x11proto-randr-dev \
-                      git
+                      git \
+                      wget \
+                      libudev-dev \
+                      libqt5opengl5-dev
+

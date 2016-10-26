@@ -2,10 +2,11 @@
 
 set -e
 
+MY_ROOT=`pwd`/..
+
 source ../../config.sh
 
 cd deps-buildspace
-
 DEPS_BS_ROOT=`pwd`
 
 # Use the latest custom build Qt framework (for VLC-Qt)
@@ -85,7 +86,7 @@ fi
 cd QtAV
 
 find $QTAV_PATCH_DIR -type f -iname "*.patch" -print0 | while IFS= read -r -d $'\0' patchfile; do
-    patch -p1 < $patchfile
+    patch -p1 < $patchfile || true
 done
 
 cd ..
@@ -120,3 +121,47 @@ autoreconf --install
 make -j`nproc`
 sudo make install
 cd $DEPS_BS_ROOT
+
+cd $MY_ROOT/../networkmanager-qt
+bash prepare.sh
+bash fetch.sh
+bash build.sh
+
+cd $MY_ROOT/../dbus
+bash fetch.sh
+bash unpack.sh
+bash build.sh
+
+cd $MY_ROOT/../libusb
+bash autogen.sh
+
+cd $MY_ROOT/../kdsoap
+bash build.sh
+
+cd $MY_ROOT/../zlib
+bash fetch.sh
+bash unpack.sh
+bash build.sh
+
+cd $MY_ROOT/../libssh
+bash build.sh
+
+cd $MY_ROOT/../openssl
+bash fetch.sh
+bash build.sh
+
+cd $MY_ROOT/../curl
+bash fetch.sh
+bash unpack.sh
+bash build.sh
+
+cd $MY_ROOT/../QtWebApp
+bash build.sh
+
+cd $MY_ROOT/../qtpdfium
+bash build.sh
+
+cd $MY_ROOT/../quazip
+bash build.sh
+
+cd $MY_ROOT/lin
