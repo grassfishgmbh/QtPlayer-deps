@@ -72,3 +72,4 @@ kdsoap/src/KDSoapServer/Makefile
 curl/src/buildspace
 zlib/src/buildspace
 zlib/src/-src/
+.configure.log
