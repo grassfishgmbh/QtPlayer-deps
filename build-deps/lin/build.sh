@@ -132,6 +132,10 @@ bash fetch.sh
 bash unpack.sh
 bash build.sh
 
+cd $MY_ROOT/../openssl
+bash fetch.sh
+bash build.sh
+
 cd $MY_ROOT/../libusb
 bash autogen.sh
 
@@ -144,10 +148,6 @@ bash unpack.sh
 bash build.sh
 
 cd $MY_ROOT/../libssh
-bash build.sh
-
-cd $MY_ROOT/../openssl
-bash fetch.sh
 bash build.sh
 
 cd $MY_ROOT/../curl
