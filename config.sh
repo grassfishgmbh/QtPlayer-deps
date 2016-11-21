@@ -60,7 +60,7 @@ ISO_DESKTOP_SESSION=Lubuntu
 ISO_KERNEL_FLAGS="intel_pstate=disable i915.enable_psr=0 i915.enable_fbc=0 i915.enable_execlists=0 i915.nuclear_pageflip=1 drm.vblankoffdelay=1 nogpumanager fsck.mode=force fsck.repair=yes"
 
 ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0v5 libgtkmm-3.0-1v5 xserver-xorg-video-intel ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver sqlite3 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad fail2ban feh libkf5networkmanagerqt6 smartmontools tlp dconf-cli'
-ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker update-manager cups xfce4-power-manager alsamixergui transmission-gtk lubuntu-software-center usb-creator-gtk xpad'
+ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker update-manager cups xfce4-power-manager alsamixergui transmission-gtk lubuntu-software-center usb-creator-gtk xpad bluez bluez-obex blueman'
 ISO_INCLUDE_MIGRATOR=0
 
 if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
