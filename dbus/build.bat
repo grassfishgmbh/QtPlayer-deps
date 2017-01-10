@@ -1,6 +1,6 @@
 @echo off
 SET PATH=C:\cygwin64\bin;%PATH%
-CALL "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
+CALL "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
 if exist run.sh del run.sh
 
 echo ^
@@ -23,7 +23,7 @@ mkdir expat ^
 
 cd expat ^
 
-cmake ../../expat-2.1.1 -G "Visual Studio 12 Win64" ^
+cmake ../../expat-2.1.1 -G "Visual Studio 14 Win64" ^
 
 msbuild.exe expat.sln /p:Configuration=Release ^
 
@@ -33,7 +33,7 @@ mkdir dbus ^
 
 cd dbus ^
 
-cmake -DEXPAT_INCLUDE_DIR="../../expat-2.1.1/lib" -DEXPAT_LIBRARY="../expat/Release/expat.lib" ../../dbus/cmake -G "Visual Studio 12 Win64" ^
+cmake -DEXPAT_INCLUDE_DIR="../../expat-2.1.1/lib" -DEXPAT_LIBRARY="../expat/Release/expat.lib" ../../dbus/cmake -G "Visual Studio 14 Win64" ^
 
 msbuild.exe dbus.sln /p:Configuration=Release ^
 
