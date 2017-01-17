@@ -73,3 +73,7 @@ curl/src/buildspace
 zlib/src/buildspace
 zlib/src/-src/
 .configure.log
+qt-gstreamer/buildspace
+.git
+.gitignore
+.gitattributes
