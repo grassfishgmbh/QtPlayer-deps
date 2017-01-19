@@ -1,4 +1,4 @@
-set CONFIG_DIR=%CD%
+set CONFIG_DIR=%~dp0
 
 set VisualStudioVersion=14.0
 set VSCOMPILER=msvc2015
