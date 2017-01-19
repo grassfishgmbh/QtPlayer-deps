@@ -82,8 +82,8 @@ cd qtwebengine
 git checkout tags/v$QTWEBENGINE_VERSION
 git submodule update --init --recursive
 
-# apply proxy patch
-patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
+# apply proxy patch - should already be in 5.7.1
+#patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
 
 # apply http status code patch
 patch -f -Np1 -i "$QT_PATCH_DIR/0007-enableHttpStatusCode.patch"
