@@ -39,7 +39,11 @@ fi
 rm -f *.txt
 
 # get Qt5 main repo
-git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
+if [ "$QT_USE_GITHUB" == "1" ]; then
+    git clone https://github.com/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
+else
+    git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
+fi
 
 if [ `uname -o` == "Cygwin" ]; then
     chmod -R a+rwx $CLONE_QT_SRC
