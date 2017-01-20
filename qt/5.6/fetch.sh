@@ -83,22 +83,28 @@ git checkout tags/v$QTWEBENGINE_VERSION
 git submodule update --init --recursive
 
 # apply proxy patch - should already be in 5.7.1
+#echo "patching 0002-disable-proxy-for-localhost"
 #patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
 
 # apply http status code patch
+echo "patching 0007-enableHttpStatusCode"
 patch -f -Np1 -i "$QT_PATCH_DIR/0007-enableHttpStatusCode.patch"
 
 # apply webchannel transport patch
-patch -f -Np1 -i "$QT_PATCH_DIR/0005-qtwebengine-5.7-reload-channel.patch"
+#echo "patching 0005-qtwebengine-5.7-reload-channel"
+#patch -f -Np1 -i "$QT_PATCH_DIR/0005-qtwebengine-5.7-reload-channel.patch"
 
 # apply QtWebEngine proxy authentication bypass patch
+echo "patching 0008-webengine-application-proxy"
 patch -f -Np1 -i "$QT_PATCH_DIR/0008-webengine-application-proxy.patch"
 cd ..
 
 
 # apply in-process-gpu & vaapi patch
 cd qtwebengine/src/3rdparty/
-patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch"
+## FIXME: find new patch for enabling hw acceleration on linux
+#echo "patching 0001-qtwebengine-hwaccel"
+#patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch"
 
 #enable proprietary codecs in webengine
 cd ../../
