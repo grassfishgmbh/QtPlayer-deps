@@ -2,20 +2,21 @@
 
 CONFIG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-QT_VERSION="5.7.0"
-QTWEBENGINE_VERSION="5.7.0"
+QT_VERSION="5.7.1"
+QTWEBENGINE_VERSION="5.7.1"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
 QT_PATCH_DIR="$CONFIG_DIR/qt/patches"
 QT_NO_CLEAN_SRC=0
 PATH=$QT_DIR/bin:$PATH
 
 if [ `uname -o` != "GNU/Linux" ]; then
+    VSCOMPILER="msvc2015"
     alias sudo=
     if [ "$GF_QT_IS_32_BIT_BUILD" == "" ]; then
-        QT_DIR_WIN="C:\Qt\\$QT_VERSION\msvc2013_64"
+        QT_DIR_WIN="C:\Qt\\$QT_VERSION\\${VSCOMPILER}_64"
         OSSL_PREFIX="C:\openssl64"
     else
-        QT_DIR_WIN="C:\Qt\\$QT_VERSION\msvc2013"
+        QT_DIR_WIN="C:\Qt\\$QT_VERSION\\${VSCOMPILER}"
         OSSL_PREFIX="C:\openssl32"
     fi
 fi
@@ -32,7 +33,7 @@ QTAV_PATCH_DIR="$CONFIG_DIR/qtav/patches"
 
 FFMPEG_VERSION="2.8.6"
 
-OPENSSL_VERSION="1.0.2h"
+OPENSSL_VERSION="1.0.2j"
 OPENSSL_DIR=$CONFIG_DIR/openssl
 
 LIBVA_VERSION="1.7.2"
@@ -60,7 +61,7 @@ ISO_DESKTOP_SESSION=Lubuntu
 ISO_KERNEL_FLAGS="intel_pstate=disable i915.enable_psr=0 i915.enable_fbc=0 i915.enable_execlists=0 i915.nuclear_pageflip=1 drm.vblankoffdelay=1 nogpumanager fsck.mode=force fsck.repair=yes"
 ISO_DEFAULT_TIMEZONE="Europe\/Vienna"
 ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0v5 libgtkmm-3.0-1v5 xserver-xorg-video-intel ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver sqlite3 gstreamer1.0-plugins-good gstreamer1.0-plugins-bad fail2ban feh libkf5networkmanagerqt6 smartmontools tlp dconf-cli mesa-utils'
-ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker update-manager cups xfce4-power-manager alsamixergui transmission-gtk lubuntu-software-center usb-creator-gtk xpad bluez blueman'
+ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker update-manager ubuntu-release-upgrader-core update-manager-core cups xfce4-power-manager alsamixergui transmission-gtk lubuntu-software-center usb-creator-gtk xpad bluez blueman'
 ISO_INCLUDE_MIGRATOR=0
 
 if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
