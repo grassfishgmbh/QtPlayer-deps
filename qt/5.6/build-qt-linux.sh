@@ -2,7 +2,7 @@
 
 set -e
 
-BASEDIR=$(dirname "$0")
+BASEDIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 source $BASEDIR/../../config.sh
 
