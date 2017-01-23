@@ -77,4 +77,7 @@ dbus/archive/
 dbus/build/
 dbus/run.sh
 qtav/deps-buildspace
+qt-gstreamer/buildspace
 .git
+.gitignore
+.gitattributes

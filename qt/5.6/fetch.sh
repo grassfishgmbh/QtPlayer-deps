@@ -39,7 +39,11 @@ fi
 rm -f *.txt
 
 # get Qt5 main repo
-git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
+if [ "$QT_USE_GITHUB" == "1" ]; then
+    git clone https://github.com/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
+else
+    git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
+fi
 
 if [ `uname -o` == "Cygwin" ]; then
     chmod -R a+rwx $CLONE_QT_SRC
@@ -82,23 +86,29 @@ cd qtwebengine
 git checkout tags/v$QTWEBENGINE_VERSION
 git submodule update --init --recursive
 
-# apply proxy patch
-patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
+# apply proxy patch - should already be in 5.7.1
+#echo "patching 0002-disable-proxy-for-localhost"
+#patch -f -Np1 -i "$QT_PATCH_DIR/0002-disable-proxy-for-localhost.patch"
 
 # apply http status code patch
+echo "patching 0007-enableHttpStatusCode"
 patch -f -Np1 -i "$QT_PATCH_DIR/0007-enableHttpStatusCode.patch"
 
 # apply webchannel transport patch
-patch -f -Np1 -i "$QT_PATCH_DIR/0005-qtwebengine-5.7-reload-channel.patch"
+#echo "patching 0005-qtwebengine-5.7-reload-channel"
+#patch -f -Np1 -i "$QT_PATCH_DIR/0005-qtwebengine-5.7-reload-channel.patch"
 
 # apply QtWebEngine proxy authentication bypass patch
+echo "patching 0008-webengine-application-proxy"
 patch -f -Np1 -i "$QT_PATCH_DIR/0008-webengine-application-proxy.patch"
 cd ..
 
 
 # apply in-process-gpu & vaapi patch
 cd qtwebengine/src/3rdparty/
-patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch"
+## FIXME: find new patch for enabling hw acceleration on linux
+#echo "patching 0001-qtwebengine-hwaccel"
+#patch -f -Np1 -i "$QT_PATCH_DIR/0001-qtwebengine-hwaccel.patch"
 
 #enable proprietary codecs in webengine
 cd ../../

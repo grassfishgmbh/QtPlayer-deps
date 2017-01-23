@@ -2,20 +2,21 @@
 
 CONFIG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-QT_VERSION="5.7.0"
-QTWEBENGINE_VERSION="5.7.0"
+QT_VERSION="5.7.1"
+QTWEBENGINE_VERSION="5.7.1"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
 QT_PATCH_DIR="$CONFIG_DIR/qt/patches"
 QT_NO_CLEAN_SRC=0
 PATH=$QT_DIR/bin:$PATH
 
 if [ `uname -o` != "GNU/Linux" ]; then
+    VSCOMPILER="msvc2015"
     alias sudo=
     if [ "$GF_QT_IS_32_BIT_BUILD" == "" ]; then
-        QT_DIR_WIN="C:\Qt\\$QT_VERSION\msvc2013_64"
+        QT_DIR_WIN="C:\Qt\\$QT_VERSION\\${VSCOMPILER}_64"
         OSSL_PREFIX="C:\openssl64"
     else
-        QT_DIR_WIN="C:\Qt\\$QT_VERSION\msvc2013"
+        QT_DIR_WIN="C:\Qt\\$QT_VERSION\\${VSCOMPILER}"
         OSSL_PREFIX="C:\openssl32"
     fi
 fi
@@ -32,7 +33,7 @@ QTAV_PATCH_DIR="$CONFIG_DIR/qtav/patches"
 
 FFMPEG_VERSION="3.0.5"
 
-OPENSSL_VERSION="1.0.2h"
+OPENSSL_VERSION="1.0.2j"
 OPENSSL_DIR=$CONFIG_DIR/openssl
 
 LIBVA_VERSION="1.7.2"
