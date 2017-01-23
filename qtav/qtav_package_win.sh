@@ -3,6 +3,11 @@
 source ../config.sh
 
 cd deps-buildspace
+
+if [ -e QtAV/src ]; then
+    mv QtAV/src .
+fi
+
 if [ -e QtAV ]; then
     rm -rf QtAV
 fi
@@ -13,3 +18,4 @@ mv qtav-i686 QtAV/$QTAV_TAG/i686
 
 zip -r QtAV.zip QtAV
 mv QtAV.zip ../../QtAV-win.zip
+mv src QtAV
