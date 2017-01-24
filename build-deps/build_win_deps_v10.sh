@@ -185,9 +185,10 @@ cd vlc-$VLC_VERSION
 
 ORIGINAL_PWD=`pwd`
 
-build_vlc_for_target_arch "win64" "x86_64-w64-mingw32"
-build_vlc_for_target_arch "win32" "i686-w64-mingw32"
-echo "Building VLC DONE!"
+# NOTE: Disabled as of 24.01.2017 due to VLC/QtAV ffmpeg mismatch
+#build_vlc_for_target_arch "win64" "x86_64-w64-mingw32"
+#build_vlc_for_target_arch "win32" "i686-w64-mingw32"
+#echo "Building VLC DONE!"
 
 cd $BUILD_ROOT
 
