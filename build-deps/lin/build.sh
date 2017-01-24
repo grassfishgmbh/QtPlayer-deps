@@ -40,19 +40,19 @@ sudo make install
 cd ..
 
 # BUILD VLC
+# NOTE: Disabled as of 24.01.2017 due to VLC/QtAV ffmpeg mismatch
 cd vlc-$VLC_VERSION
 
-./configure --prefix=$INSTALL_PREFIX \
-            --enable-x11 --enable-xvideo --disable-gtk \
-            --disable-livedotcom --disable-skins --disable-skins2 --enable-alsa --disable-kde \
-            --disable-qt --disable-wxwindows --disable-ncurses \
-            --enable-release --disable-lua --disable-mad --disable-a52 \
-            --disable-libgcrypt --disable-update-check --disable-x265 \
-            --disable-taglib --disable-gnutls
+#./configure --prefix=$INSTALL_PREFIX \
+#            --enable-x11 --enable-xvideo --disable-gtk \
+#            --disable-livedotcom --disable-skins --disable-skins2 --enable-alsa --disable-kde \
+#            --disable-qt --disable-wxwindows --disable-ncurses \
+#            --enable-release --disable-lua --disable-mad --disable-a52 \
+#            --disable-libgcrypt --disable-update-check --disable-x265 \
+#            --disable-taglib --disable-gnutls
 
-make -j`nproc`
-
-sudo make install
+#make -j`nproc`
+#sudo make install
 
 # BUILD VLC-Qt
 #cd $DEPS_BS_ROOT
