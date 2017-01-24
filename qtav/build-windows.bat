@@ -2,9 +2,9 @@ rem bootstrap 64 bit build first
 
 call ..\config.bat
 
-set WORKSPACE_ROOT=%cd%
+set WORKSPACE_ROOT=%~dp0
 
-set PATH=C:\cygwin64\bin;C:\Qt\%QT_VERSION%\msvc2013_64\bin;%PATH%
+set PATH=C:\cygwin64\bin;%PATH%
 call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
 
 set ARCHLESS_INCLUDE=%INCLUDE%
@@ -19,16 +19,11 @@ bash qtav_msvc.sh x86_64
 rem build QtAV
 cd deps-buildspace\build-QtAV
 
+set PATH=C:\Qt\%QT_VERSION%\msvc2013_64\bin;%PATH%
 set INCLUDE=%cd%\..\qtav-x86_64\include;%INCLUDE%
 set LIB=%cd%\..\qtav-x86_64\lib;%cd%\..\qtav-x86_64\bin;%LIB%
 
 qmake ../QtAV/QtAV.pro CONFIG+=release
-jom -j8
-
-cd %WORKSPACE_ROOT%
-cd deps-buildspace\build-QtAV-dbg
-
-qmake ../QtAV/QtAV.pro
 jom -j8
 
 rem install QtAV into specific directory
