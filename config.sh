@@ -87,7 +87,7 @@ LIBUSB_TAR_URL="http://downloads.sourceforge.net/project/libusb/libusb-1.0/libus
 LIBUSB_TARGET="$LIBUSB_DIR/buildspace/"
 LIBUSB_SRC_DIR="$LIBUSB_DIR/buildspace/libusb-$LIBUSB_VERSION"
 
-ZLIB_VERSION="1.2.8"
+ZLIB_VERSION="1.2.11"
 ZLIB_SHA256="36658cb768a54c1d4dec43c3116c27ed893e88b02ecfcb44f2166f9c0b7f2a0d"
 ZLIB_DIR=$CONFIG_DIR/zlib
 ZLIB_FILENAME="zlib-$ZLIB_VERSION.tar.gz"
