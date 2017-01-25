@@ -4,7 +4,7 @@ source ../config.sh
 
 function download {
     if [ ! -f "$CURL_TARGET$CURL_FILENAME" ]; then
-        wget "$CURL_TAR_URL" -O $CURL_TARGET$CURL_FILENAME
+        wget --no-check-certificate "$CURL_TAR_URL" -O $CURL_TARGET$CURL_FILENAME
     fi
 }
 

@@ -4,7 +4,7 @@ source ../config.sh
 
 function downloadLibusb {
     if [ ! -f "$LIBUSB_TARGET$LIBUSB_FILENAME" ]; then
-        wget "$LIBUSB_TAR_URL" -O $LIBUSB_TARGET$LIBUSB_FILENAME
+        wget --no-check-certificate "$LIBUSB_TAR_URL" -O $LIBUSB_TARGET$LIBUSB_FILENAME
     fi
 }
 
