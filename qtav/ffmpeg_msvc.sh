@@ -4,9 +4,9 @@ source ../config.sh
 
 # additionally export PATH variables as suggested by the ffmpeg wiki 
 if [ "$1" == "x86_64" ]; then
-    export PATH="/cygdrive/c/Program Files (x86)/Microsoft Visual Studio 12.0/VC/BIN/amd64/":$PATH
+    export PATH="/cygdrive/c/Program Files (x86)/Microsoft Visual Studio ${VisualStudioVersion}/VC/BIN/amd64:$PATH"
 elif [ "$1" == "i686" ]; then
-    export PATH="/cygdrive/c/Program Files (x86)/Microsoft Visual Studio 12.0/VC/BIN/":$PATH
+    export PATH="/cygdrive/c/Program Files (x86)/Microsoft Visual Studio ${VisualStudioVersion}/VC/BIN/":$PATH
 else
     echo "No architecture set as argument, bailing."
     exit 1

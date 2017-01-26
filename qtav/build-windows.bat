@@ -5,7 +5,7 @@ call ..\config.bat
 set WORKSPACE_ROOT=%~dp0
 
 set PATH=C:\cygwin64\bin;%PATH%
-call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64
+call "C:\Program Files (x86)\Microsoft Visual Studio %VisualStudioVersion%\VC\vcvarsall.bat" amd64
 
 set ARCHLESS_INCLUDE=%INCLUDE%
 set ARCHLESS_LIB=%LIB%
@@ -19,7 +19,7 @@ bash qtav_msvc.sh x86_64
 rem build QtAV
 cd deps-buildspace\build-QtAV
 
-set PATH=C:\Qt\%QT_VERSION%\msvc2013_64\bin;%PATH%
+set PATH=C:\Qt\%QT_VERSION%\%VSCOMPILER%_64\bin;%PATH%
 set INCLUDE=%cd%\..\qtav-x86_64\include;%INCLUDE%
 set LIB=%cd%\..\qtav-x86_64\lib;%cd%\..\qtav-x86_64\bin;%LIB%
 
@@ -36,7 +36,7 @@ rem set LIB=%ARCHLESS_LIB%
 
 rem bootstrap 32 bit build now
 rem set PATH=C:\Qt\5.6\msvc2013\bin;%PATH%
-rem call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" amd64_x86
+rem call "C:\Program Files (x86)\Microsoft Visual Studio %VisualStudioVersion%\VC\vcvarsall.bat" amd64_x86
 
 rem build ffmpeg
 rem bash ffmpeg_msvc.sh i686
