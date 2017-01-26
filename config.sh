@@ -2,6 +2,9 @@
 
 CONFIG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+VisualStudioVersion=14.0
+VSCOMPILER=msvc2015
+
 QT_VERSION="5.7.1"
 QTWEBENGINE_VERSION="5.7.1"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
