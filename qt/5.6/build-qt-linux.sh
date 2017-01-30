@@ -29,4 +29,4 @@ cd $BASEDIR
 
 bash $BASEDIR/prepare.sh
 bash $BASEDIR/fetch.sh
-bash $BASEDIR/build.sh
+dbus-run-session bash $BASEDIR/build.sh
