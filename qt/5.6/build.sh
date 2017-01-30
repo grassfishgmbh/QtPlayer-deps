@@ -20,7 +20,7 @@ cd $QT_SRC_DIR
 # build qt
 #mkdir ../install
 #-prefix $WORKSPACE/install 
-./configure -prefix /opt/Qt/$QT_VERSION/gcc_64 -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb
+./configure -prefix /opt/Qt/$QT_VERSION/gcc_64 -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre
 make -j`nproc`
 
 if [ -e /opt/Qt/$QT_VERSION/ ]; then
@@ -30,8 +30,8 @@ fi
 sudo make install
 
 #add lib icu
-wget http://download.icu-project.org/files/icu4c/52.1/icu4c-52_1-RHEL6-x64.tgz
-tar -xzf icu4c-52_1-RHEL6-x64.tgz
+wget http://download.icu-project.org/files/icu4c/55.1/icu4c-55_1-RHEL6-x64.tgz
+tar -xzf icu4c-55_1-RHEL6-x64.tgz
 sudo cp -r usr/local/lib/*.so* /opt/Qt/$QT_VERSION/gcc_64/lib
 
 # zip archive for dev usage
