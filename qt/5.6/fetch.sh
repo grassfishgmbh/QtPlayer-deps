@@ -32,7 +32,7 @@ rm -f *.zip
 
 if [ "$QT_NO_CLEAN_SRC" != "1" ]; then
     if [ -e $CLONE_QT_SRC ]; then
-        rm -rf $CLONE_QT_SRC
+        sudo rm -rf $CLONE_QT_SRC
     fi
 fi
 
