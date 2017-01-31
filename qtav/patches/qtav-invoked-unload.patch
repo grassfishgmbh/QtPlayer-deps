@@ -11,3 +11,16 @@ index f6021a5..a5b664d 100644
      } else {
          d->repeat_current++;
          QMetaObject::invokeMethod(this, "play"); //ensure play() is called from player thread
+diff --git a/src/QtAV/AVPlayer.h b/src/QtAV/AVPlayer.h
+index 0dea54c..6f12767 100644
+--- a/src/QtAV/AVPlayer.h
++++ b/src/QtAV/AVPlayer.h
+@@ -595,7 +595,7 @@ private:
+      * \brief unload
+      * If the media is loading or loaded but not playing, unload it. Internall use only.
+      */
+-    void unload(); //TODO: private. call in stop() if not load() by user? or always unload() in stop()?
++    Q_INVOKABLE void unload(); //TODO: private. call in stop() if not load() by user? or always unload() in stop()?
+     qint64 normalizedPosition(qint64 pos);
+     class Private;
+     QScopedPointer<Private> d;
