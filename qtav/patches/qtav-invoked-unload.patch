@@ -1,0 +1,13 @@
+diff --git a/src/AVPlayer.cpp b/src/AVPlayer.cpp
+index f6021a5..a5b664d 100644
+--- a/src/AVPlayer.cpp
++++ b/src/AVPlayer.cpp
+@@ -1271,7 +1271,7 @@ void AVPlayer::stopFromDemuxerThread()
+         /*
+          * currently preload is not supported. so always unload. Then some properties will be reset, e.g. duration()
+          */
+-        unload(); //TODO: invoke?
++        QMetaObject::invokeMethod(this, "unload");
+     } else {
+         d->repeat_current++;
+         QMetaObject::invokeMethod(this, "play"); //ensure play() is called from player thread
