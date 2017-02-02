@@ -143,10 +143,10 @@ index 4c3fce6..be55bfe 100644
      // hwa extra finalize can be here
      flush();
 diff --git a/src/codec/audio/AudioDecoder.cpp b/src/codec/audio/AudioDecoder.cpp
-index f847657..3b741a9 100644
+index f847657..5884cdd 100644
 --- a/src/codec/audio/AudioDecoder.cpp
 +++ b/src/codec/audio/AudioDecoder.cpp
-@@ -41,15 +41,21 @@ void AudioDecoder::registerAll() {
+@@ -41,15 +41,23 @@ void AudioDecoder::registerAll() {
  QStringList AudioDecoder::supportedCodecs()
  {
      static QStringList codecs;
@@ -171,16 +171,18 @@ index f847657..3b741a9 100644
 +        }
 +    } catch (std::exception &x) {
 +        qWarning() << "caught exception" << x.what();
++    } catch (...) {
++        qWarning() << "Caught unknown exception.";
      }
 +
      return codecs;
  }
  
 diff --git a/src/codec/audio/AudioEncoder.cpp b/src/codec/audio/AudioEncoder.cpp
-index e9920c2..3d7a306 100644
+index e9920c2..053a843 100644
 --- a/src/codec/audio/AudioEncoder.cpp
 +++ b/src/codec/audio/AudioEncoder.cpp
-@@ -43,15 +43,21 @@ void AudioEncoder_RegisterAll()
+@@ -43,15 +43,23 @@ void AudioEncoder_RegisterAll()
  QStringList AudioEncoder::supportedCodecs()
  {
      static QStringList codecs;
@@ -205,16 +207,18 @@ index e9920c2..3d7a306 100644
 +        }
 +    } catch (std::exception &x) {
 +        qWarning() << "caught exception" << x.what();
++    } catch (...) {
++        qWarning() << "Caught unknown exception.";
      }
 +
      return codecs;
  }
  
 diff --git a/src/codec/video/VideoDecoder.cpp b/src/codec/video/VideoDecoder.cpp
-index bd7c4f9..18aaa9e 100644
+index bd7c4f9..fcb07af 100644
 --- a/src/codec/video/VideoDecoder.cpp
 +++ b/src/codec/video/VideoDecoder.cpp
-@@ -91,15 +91,21 @@ QVector<VideoDecoderId> VideoDecoder::registered()
+@@ -91,15 +91,23 @@ QVector<VideoDecoderId> VideoDecoder::registered()
  QStringList VideoDecoder::supportedCodecs()
  {
      static QStringList codecs;
@@ -239,6 +243,8 @@ index bd7c4f9..18aaa9e 100644
 +        }
 +    } catch (std::exception &x) {
 +        qWarning() << "Unhandled exception" << x.what();
++    } catch (...) {
++        qWarning() << "Caught unknown exception.";
      }
 +
      return codecs;
@@ -268,10 +274,10 @@ index 64b12f3..a325982 100644
      return guids;
  }
 diff --git a/src/codec/video/VideoEncoder.cpp b/src/codec/video/VideoEncoder.cpp
-index 353085d..7c5d304 100644
+index 353085d..9dbb42b 100644
 --- a/src/codec/video/VideoEncoder.cpp
 +++ b/src/codec/video/VideoEncoder.cpp
-@@ -44,15 +44,21 @@ QStringList VideoEncoder::supportedCodecs()
+@@ -44,15 +44,23 @@ QStringList VideoEncoder::supportedCodecs()
  {
      // should check every registered encoders
      static QStringList codecs;
@@ -296,6 +302,8 @@ index 353085d..7c5d304 100644
 +        }
 +    } catch (std::exception &x) {
 +        qWarning() << "caught exception" << x.what();
++    } catch (...) {
++        qWarning() << "Caught unknown exception.";
      }
 +
      return codecs;
