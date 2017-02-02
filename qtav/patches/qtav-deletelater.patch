@@ -1,5 +1,5 @@
 diff --git a/src/AVPlayer.cpp b/src/AVPlayer.cpp
-index f6021a5..de44142 100644
+index f6021a5..d316d09 100644
 --- a/src/AVPlayer.cpp
 +++ b/src/AVPlayer.cpp
 @@ -702,13 +702,9 @@ void AVPlayer::unload()
@@ -10,10 +10,9 @@ index f6021a5..de44142 100644
 -        d->adec = 0;
      }
      if (d->vdec) {
--        d->vdec->setCodecContext(0);
+         d->vdec->setCodecContext(0);
 -        delete d->vdec;
 -        d->vdec = 0;
-+        d->vdec->setCodecContext(0)
      }
      d->demuxer.unload();
      Q_EMIT durationChanged(0LL); // for ui, slider is invalid. use stopped instead, and remove this signal here?
