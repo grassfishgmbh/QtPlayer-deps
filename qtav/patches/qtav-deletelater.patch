@@ -26,7 +26,7 @@ index f6021a5..d316d09 100644
          d->repeat_current++;
          QMetaObject::invokeMethod(this, "play"); //ensure play() is called from player thread
 diff --git a/src/AVPlayerPrivate.cpp b/src/AVPlayerPrivate.cpp
-index f6cde62..341925c 100644
+index f6cde62..24e412b 100644
 --- a/src/AVPlayerPrivate.cpp
 +++ b/src/AVPlayerPrivate.cpp
 @@ -133,11 +133,11 @@ AVPlayer::Private::~Private() {
@@ -52,6 +52,15 @@ index f6cde62..341925c 100644
          adec = 0;
      }
      adec = AudioDecoder::create();
+@@ -522,7 +522,7 @@ bool AVPlayer::Private::tryApplyDecoderPriority(AVPlayer *player)
+     vthread->setDecoder(vd);
+     // MUST delete decoder after video thread set the decoder to ensure the deleted vdec will not be used in vthread!
+     if (vdec)
+-        delete vdec;
++        vdec->deleteLater();
+     vdec = vd;
+     QObject::connect(vdec, SIGNAL(error(QtAV::AVError)), player, SIGNAL(error(QtAV::AVError)));
+     initVideoStatistics(demuxer.videoStream());
 @@ -546,7 +546,7 @@ bool AVPlayer::Private::setupVideoThread(AVPlayer *player)
      }
      if (vdec) {
@@ -74,8 +83,21 @@ index 0dea54c..6f12767 100644
      qint64 normalizedPosition(qint64 pos);
      class Private;
      QScopedPointer<Private> d;
+diff --git a/src/QtAV/dptr.h b/src/QtAV/dptr.h
+index 7e054b0..d35ec0b 100644
+--- a/src/QtAV/dptr.h
++++ b/src/QtAV/dptr.h
+@@ -115,7 +115,7 @@
+     friend class Class;
+ 
+ #define DPTR_INIT_PRIVATE(Class) dptr.setPublic(this);
+-#define DPTR_D(Class) Class##Private& d = dptr.pri<Class##Private>()
++#define DPTR_D(Class) volatile Class##Private& d = dptr.pri<Class##Private>()
+ #define DPTR_P(Class) Class& p = *static_cast<Class*>(dptr_ptr())
+ 
+ //interface
 diff --git a/src/codec/AVDecoder.cpp b/src/codec/AVDecoder.cpp
-index 4c3fce6..687cea2 100644
+index 4c3fce6..be55bfe 100644
 --- a/src/codec/AVDecoder.cpp
 +++ b/src/codec/AVDecoder.cpp
 @@ -76,11 +76,16 @@ bool AVDecoder::open()
@@ -99,6 +121,19 @@ index 4c3fce6..687cea2 100644
          } else {
              es = es.arg(d.codec_name);
          }
+@@ -122,10 +127,10 @@ bool AVDecoder::open()
+ 
+ bool AVDecoder::close()
+ {
+-    if (!isOpen()) {
++    DPTR_D(AVDecoder);
++    if (Q_UNLIKELY(!isOpen())) {
+         return true;
+     }
+-    DPTR_D(AVDecoder);
+     d.is_open = false;
+     // hwa extra finalize can be here
+     flush();
 diff --git a/src/codec/video/VideoDecoderDXVA.cpp b/src/codec/video/VideoDecoderDXVA.cpp
 index 64b12f3..a325982 100644
 --- a/src/codec/video/VideoDecoderDXVA.cpp
