@@ -83,19 +83,6 @@ index 0dea54c..6f12767 100644
      qint64 normalizedPosition(qint64 pos);
      class Private;
      QScopedPointer<Private> d;
-diff --git a/src/QtAV/dptr.h b/src/QtAV/dptr.h
-index 7e054b0..d35ec0b 100644
---- a/src/QtAV/dptr.h
-+++ b/src/QtAV/dptr.h
-@@ -115,7 +115,7 @@
-     friend class Class;
- 
- #define DPTR_INIT_PRIVATE(Class) dptr.setPublic(this);
--#define DPTR_D(Class) Class##Private& d = dptr.pri<Class##Private>()
-+#define DPTR_D(Class) volatile Class##Private& d = dptr.pri<Class##Private>()
- #define DPTR_P(Class) Class& p = *static_cast<Class*>(dptr_ptr())
- 
- //interface
 diff --git a/src/codec/AVDecoder.cpp b/src/codec/AVDecoder.cpp
 index 4c3fce6..be55bfe 100644
 --- a/src/codec/AVDecoder.cpp
