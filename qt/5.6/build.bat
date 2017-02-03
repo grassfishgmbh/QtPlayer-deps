@@ -10,7 +10,7 @@ set INCLUDE=%OSSL_PREFIX%;%OSSL_PREFIX%\include;%OSSL_PREFIX%\inc32;%INCLUDE%
 rem set OPENSSL_LIBS=-L%OSSL_PREFIX%\lib -llibeay32
 nmake clean
 jom clean
-cmd /C configure -prefix %QT_DIR% -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -opengl dynamic
+cmd /C configure -prefix %QT_DIR% -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -opengl dynamic -wmf-backend
 jom
 
 if exist %QT_DIR% rd /q /s %QT_DIR%
