@@ -164,4 +164,10 @@ bash build.sh
 cd $MY_ROOT/../quazip
 bash build.sh
 
+cd $MY_ROOT/../protobuf
+bash prepare.sh
+bash fetch.sh
+bash unpack.sh
+bash build.sh
+
 cd $MY_ROOT/lin
