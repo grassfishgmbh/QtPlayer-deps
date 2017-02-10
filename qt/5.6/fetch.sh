@@ -101,10 +101,6 @@ patch -f -Np1 -i "$QT_PATCH_DIR/0007-enableHttpStatusCode.patch"
 # apply QtWebEngine proxy authentication bypass patch
 echo "patching 0008-webengine-application-proxy"
 patch -f -Np1 -i "$QT_PATCH_DIR/0008-webengine-application-proxy.patch"
-
-echo "patching 0010-qtwebengine-angle-force-gles"
-patch -f -Np1 -i "$QT_PATCH_DIR/0010-qtwebengine-angle-force-gles.patch"
-
 cd ..
 
 
