@@ -170,4 +170,9 @@ bash fetch.sh
 bash unpack.sh
 bash build.sh
 
+cd $MY_ROOT/../qtzeroconf
+bash prepare.sh
+bash fetch.sh
+bash build.sh
+
 cd $MY_ROOT/lin
