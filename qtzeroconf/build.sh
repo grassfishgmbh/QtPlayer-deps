@@ -15,3 +15,7 @@ cd build
 qmake PREFIX=$INSTALL_PREFIX ..
 make -j`nproc`
 sudo make install
+
+sudo mkdir -p ${INSTALL_PREFIX}/include/QtZeroConf
+sudo cp -v ../qzeroconf.h ${INSTALL_PREFIX}/include/QtZeroConf/
+echo '#include "qzeroconf.h"' | sudo tee ${INSTALL_PREFIX}/include/QtZeroConf/QtZeroConf.h
