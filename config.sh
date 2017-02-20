@@ -71,7 +71,15 @@ if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
     source $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh
 fi
 
-INSTALL_PREFIX="/opt/gfbuild/10.2"
+if [ "$GF_BUILD_OS" == "android" ]; then
+    ANDROID_NDK_ROOT="/opt/android/ndk-bundle"
+    export ANDROID_NDK_ROOT
+    PATH=/opt/android/Qt/5.8/android_armv7/bin:${PATH}
+    export PATH
+    INSTALL_PREFIX="/opt/gfandroid/10.2"
+else
+    INSTALL_PREFIX="/opt/gfbuild/10.2"
+fi
 NMQT_INSTALL_PREFIX="/opt/gf-libnmqt"
 
 DBUS_VERSION="1.10.8"
