@@ -25,4 +25,6 @@ else
 fi
 
 sudo cp -v ../qzeroconf.h ${INSTALL_PREFIX}/include/QtZeroConf/
-echo '#include "qzeroconf.h"' | sudo tee ${INSTALL_PREFIX}/include/QtZeroConf/QtZeroConf.h
+sudo sed -i "s/signals/Q_SIGNALS/g" ${INSTALL_PREFIX}/include/QtZeroConf/qzeroconf.h
+sudo sed -i "s/slots/Q_SLOTS/g" ${INSTALL_PREFIX}/include/QtZeroConf/qzeroconf.h
+
