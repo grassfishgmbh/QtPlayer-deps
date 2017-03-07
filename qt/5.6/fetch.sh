@@ -112,6 +112,9 @@ cd qtwebengine/src/3rdparty/chromium/
 echo "patching 0009-qtwebengine-hwaccel"
 patch -f -Np1 -i "$QT_PATCH_DIR/0009-qtwebengine-hwaccel.patch"
 
+echo "patching 0010-qtwebengine-mirects"
+patch -f -Np1 -i "$QT_PATCH_DIR/0010-qtwebengine-mirects.patch"
+
 #enable proprietary codecs in webengine
 cd ../../../
 grep use_proprietary_codecs .qmake.conf || echo "WEBENGINE_CONFIG+=use_proprietary_codecs">>.qmake.conf
