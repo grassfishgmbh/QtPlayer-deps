@@ -102,8 +102,8 @@ patch -f -Np1 -i "$QT_PATCH_DIR/0007-enableHttpStatusCode.patch"
 #patch -f -Np1 -i "$QT_PATCH_DIR/0005-qtwebengine-5.7-reload-channel.patch"
 
 # apply QtWebEngine proxy authentication bypass patch
-echo "patching 0008-webengine-application-proxy"
-patch -f -Np1 -i "$QT_PATCH_DIR/0008-webengine-application-proxy.patch"
+#echo "patching 0008-webengine-application-proxy"
+#patch -f -Np1 -i "$QT_PATCH_DIR/0008-webengine-application-proxy.patch"
 cd ..
 
 
