@@ -69,7 +69,7 @@ cp ../build/dbus/bin/Release/dbus* ./ ^
 
 cp ../build/expat/Release/expat.dll ./ ^
 
-zip -y ../dbus.zip * ^
+zip -y ../../dbus.zip * ^
 
 cd .. ^
 
@@ -81,7 +81,7 @@ cp ../build/dbusd/bin/Debug/dbus* ./ ^
 
 cp ../build/expatd/Debug/expat.dll ./ ^
 
-zip -y ../dbus-dbg.zip * ^
+zip -y ../../dbus-dbg.zip * ^
 
 echo Done > run.sh
 
