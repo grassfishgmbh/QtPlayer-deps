@@ -7,7 +7,7 @@ echo ^
 
 set -e ^
 
-rm -rf archive build dbus* expat* *.zip ^
+rm -rf archive archive-dbg build dbus* expat* *.zip ^
 
 wget http://downloads.sourceforge.net/project/expat/expat/2.1.1/expat-2.1.1.tar.bz2 ^
 
