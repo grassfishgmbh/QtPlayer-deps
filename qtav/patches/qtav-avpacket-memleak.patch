@@ -1,0 +1,52 @@
+From b670eff0ff90a911811432401b0620d1ed68f74f Mon Sep 17 00:00:00 2001
+From: wang-bin <wbsecg1@gmail.com>
+Date: Thu, 9 Mar 2017 13:26:55 +0800
+Subject: [PATCH] fix avpacket memory leak #774 #672 #441
+
+patch is from https://github.com/fmoyaarnao/QtAV/commit/
+158a0235a44dc90b1a01d82344ec79523070e5b3#diff-
+d70d26eb6c75b9a043dcb8e8419fad0a
+---
+ src/AVDemuxer.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/AVDemuxer.cpp b/src/AVDemuxer.cpp
+index e00065d..314f4f8 100644
+--- a/src/AVDemuxer.cpp
++++ b/src/AVDemuxer.cpp
+@@ -425,6 +425,7 @@ bool AVDemuxer::readFrame()
+     d->pkt = Packet();
+     // no lock required because in AVDemuxThread read and seek are in the same thread
+     AVPacket packet;
++    av_init_packet(&packet);
+     d->interrupt_hanlder->begin(InterruptHandler::Read);
+     int ret = av_read_frame(d->format_ctx, &packet); //0: ok, <0: error/end
+     d->interrupt_hanlder->end();
+@@ -450,16 +451,19 @@ bool AVDemuxer::readFrame()
+                     qDebug("End of file. erreof=%d feof=%d", ret == AVERROR_EOF, avio_feof(d->format_ctx->pb));
+                 }
+             }
++            av_packet_unref(&packet); //important!
+             return false;
+         }
+         if (ret == AVERROR(EAGAIN)) {
+             qWarning("demuxer EAGAIN :%s", av_err2str(ret));
++            av_packet_unref(&packet); //important!
+             return false;
+         }
+         AVError::ErrorCode ec(AVError::ReadError);
+         QString msg(tr("error reading stream data"));
+         handleError(ret, &ec, msg);
+         qWarning("[AVDemuxer] error: %s", av_err2str(ret));
++        av_packet_unref(&packet); //important!
+         return false;
+     }
+     d->stream = packet.stream_index;
+@@ -470,6 +474,7 @@ bool AVDemuxer::readFrame()
+     }
+     if (d->stream != videoStream() && d->stream != audioStream() && d->stream != subtitleStream()) {
+         //qWarning("[AVDemuxer] unknown stream index: %d", stream);
++        av_packet_unref(&packet); //important!
+         return false;
+     }
+     // TODO: v4l2 copy

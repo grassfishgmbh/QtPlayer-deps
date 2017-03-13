@@ -97,6 +97,10 @@ git submodule update --init --recursive
 echo "patching 0007-enableHttpStatusCode"
 patch -f -Np1 -i "$QT_PATCH_DIR/0007-enableHttpStatusCode.patch"
 
+# fix QtWebEngine 5.8.0 build with 5.7.1 Qt framework
+echo "patching 0011-qtwebengine-versionFixup"
+patch -f -Np1 -i "$QT_PATCH_DIR/0011-qtwebengine-versionFixup.patch"
+
 # apply webchannel transport patch
 #echo "patching 0005-qtwebengine-5.7-reload-channel"
 #patch -f -Np1 -i "$QT_PATCH_DIR/0005-qtwebengine-5.7-reload-channel.patch"
