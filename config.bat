@@ -3,7 +3,7 @@ set CONFIG_DIR=%~dp0
 set VisualStudioVersion=14.0
 set VSCOMPILER=msvc2015
 
-set QT_VERSION=5.7.1
+set QT_VERSION=5.8.0
 set QTWEBENGINE_VERSION=5.8.0
 set QT_PATCH_DIR=%CONFIG_DIR%\qt\patches
 if "%QT_SRC_DIR%"=="" (set QT_SRC_DIR=%CONFIG_DIR%\qt\5.6\qt-src)
