@@ -20,7 +20,7 @@ cd $QT_SRC_DIR
 # build qt
 #mkdir ../install
 #-prefix $WORKSPACE/install 
-./configure -prefix /opt/Qt/$QT_VERSION/gcc_64 -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -gstreamer 1.0 -qt-freetype -qt-harfbuzz
+./configure -prefix /opt/Qt/$QT_VERSION/gcc_64 -opensource -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -gstreamer 1.0 -qt-harfbuzz
 make -j`nproc`
 
 if [ -e /opt/Qt/$QT_VERSION/ ]; then
