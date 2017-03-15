@@ -1,0 +1,135 @@
+From a56dd03e4852113a107fcedc59b88a5a17d9ae17 Mon Sep 17 00:00:00 2001
+From: wang-bin <wbsecg1@gmail.com>
+Date: Sun, 5 Mar 2017 14:17:22 +0800
+Subject: [PATCH] do not notify EndOfMedia if stopped by user #833
+
+---
+ src/AVDemuxThread.cpp | 18 +++++++++---------
+ src/AVDemuxThread.h   |  3 +--
+ src/AVDemuxer.cpp     | 16 +++++++++-------
+ 3 files changed, 19 insertions(+), 18 deletions(-)
+
+diff --git a/src/AVDemuxThread.cpp b/src/AVDemuxThread.cpp
+index febe87d..a51f4d7 100644
+--- a/src/AVDemuxThread.cpp
++++ b/src/AVDemuxThread.cpp
+@@ -1,6 +1,6 @@
+ /******************************************************************************
+     QtAV:  Multimedia framework based on Qt and FFmpeg
+-    Copyright (C) 2012-2016 Wang Bin <wbsecg1@gmail.com>
++    Copyright (C) 2012-2017 Wang Bin <wbsecg1@gmail.com>
+ 
+ *   This file is part of QtAV
+ 
+@@ -513,11 +513,6 @@ bool AVDemuxThread::waitForStarted(int msec)
+     return true;
+ }
+ 
+-void AVDemuxThread::eofDecoded()
+-{
+-    Q_EMIT mediaStatusChanged(QtAV::EndOfMedia);
+-}
+-
+ void AVDemuxThread::run()
+ {
+     m_buffering = false;
+@@ -546,7 +541,6 @@ void AVDemuxThread::run()
+         vqueue->setBlocking(true);
+     }
+     connect(thread, SIGNAL(seekFinished(qint64)), this, SIGNAL(seekFinished(qint64)), Qt::DirectConnection);
+-    connect(thread, SIGNAL(eofDecoded()), this, SLOT(eofDecoded()));
+     seek_tasks.clear();
+     int was_end = 0;
+     if (ademuxer) {
+@@ -585,7 +579,6 @@ void AVDemuxThread::run()
+             if (m_buffering) {
+                 m_buffering = false;
+                 Q_EMIT mediaStatusChanged(QtAV::BufferedMedia);
+-                Q_EMIT mediaStatusChanged(QtAV::EndOfMedia);
+             }
+             was_end = qMin(was_end + 1, kMaxEof);
+             bool exit_thread = !user_paused;
+@@ -607,6 +600,10 @@ void AVDemuxThread::run()
+             msleep(100);
+             continue;
+         }
++        if (demuxer->mediaStatus() == StalledMedia) {
++            qDebug("stalled media. exiting demuxing thread");
++            break;
++        }
+         was_end = 0;
+         if (tryPause()) {
+             continue; //the queue is empty and will block
+@@ -717,9 +714,12 @@ void AVDemuxThread::run()
+         video_thread->pause(false);
+         video_thread->wait(500);
+     }
+-    thread->disconnect(this, SIGNAL(eofDecoded()));
+     thread->disconnect(this, SIGNAL(seekFinished(qint64)));
+     qDebug("Demux thread stops running....");
++    if (demuxer->atEnd())
++        Q_EMIT mediaStatusChanged(QtAV::EndOfMedia);
++    else
++        Q_EMIT mediaStatusChanged(QtAV::StalledMedia);
+ }
+ 
+ bool AVDemuxThread::tryPause(unsigned long timeout)
+diff --git a/src/AVDemuxThread.h b/src/AVDemuxThread.h
+index 41dc053..3509620 100644
+--- a/src/AVDemuxThread.h
++++ b/src/AVDemuxThread.h
+@@ -1,6 +1,6 @@
+ /******************************************************************************
+     QtAV:  Multimedia framework based on Qt and FFmpeg
+-    Copyright (C) 2012-2016 Wang Bin <wbsecg1@gmail.com>
++    Copyright (C) 2012-2017 Wang Bin <wbsecg1@gmail.com>
+ 
+ *   This file is part of QtAV
+ 
+@@ -71,7 +71,6 @@ private slots:
+     void frameDeliveredOnStepForward();
+     void eofDecodedOnStepForward();
+     void onAVThreadQuit();
+-    void eofDecoded();
+ 
+ protected:
+     virtual void run();
+diff --git a/src/AVDemuxer.cpp b/src/AVDemuxer.cpp
+index 4e8be71..e00065d 100644
+--- a/src/AVDemuxer.cpp
++++ b/src/AVDemuxer.cpp
+@@ -1,6 +1,6 @@
+ /******************************************************************************
+     QtAV:  Multimedia framework based on Qt and FFmpeg
+-    Copyright (C) 2012-2016 Wang Bin <wbsecg1@gmail.com>
++    Copyright (C) 2012-2017 Wang Bin <wbsecg1@gmail.com>
+ 
+ *   This file is part of QtAV
+ 
+@@ -435,18 +435,20 @@ bool AVDemuxer::readFrame()
+         if (ret == AVERROR_EOF
+                 || avio_feof(d->format_ctx->pb)) {
+             if (!d->eof) {
+-                if (getInterruptStatus()) { //eof error if interrupted!
++                if (getInterruptStatus()) {
+                     AVError::ErrorCode ec(AVError::ReadError);
+                     QString msg(tr("error reading stream data"));
+                     handleError(ret, &ec, msg);
+                 }
+-                d->eof = true;
++                if (mediaStatus() != StalledMedia) {
++                    d->eof = true;
+ #if 0 // EndOfMedia when demux thread finished
+-                d->started = false;
+-                setMediaStatus(EndOfMedia);
+-                Q_EMIT finished();
++                    d->started = false;
++                    setMediaStatus(EndOfMedia);
++                    Q_EMIT finished();
+ #endif
+-                qDebug("End of file. erreof=%d feof=%d", ret == AVERROR_EOF, avio_feof(d->format_ctx->pb));
++                    qDebug("End of file. erreof=%d feof=%d", ret == AVERROR_EOF, avio_feof(d->format_ctx->pb));
++                }
+             }
+             return false;
+         }

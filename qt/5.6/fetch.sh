@@ -63,7 +63,7 @@ else
     # init subsubrepos
     cd qtxmlpatterns; git submodule update --init; cd ..
     cd qtdeclarative; git submodule update --init; cd ..
-    
+
     # independently pull QtWebEngine based on the version defined in config.sh
     if [ -e qtwebengine ]; then
         rm -rf qtwebengine
@@ -74,6 +74,9 @@ fi
 
 # Enable GStreamer 1.0 support
 cd qtmultimedia
+grep GST_VERSION .qmake.conf || echo "GST_VERSION=1.0">>.qmake.conf
+cd ..
+cd qtwebkit
 grep GST_VERSION .qmake.conf || echo "GST_VERSION=1.0">>.qmake.conf
 cd ..
 
@@ -94,13 +97,17 @@ git submodule update --init --recursive
 echo "patching 0007-enableHttpStatusCode"
 patch -f -Np1 -i "$QT_PATCH_DIR/0007-enableHttpStatusCode.patch"
 
+# fix QtWebEngine 5.8.0 build with 5.7.1 Qt framework
+echo "patching 0011-qtwebengine-versionFixup"
+patch -f -Np1 -i "$QT_PATCH_DIR/0011-qtwebengine-versionFixup.patch"
+
 # apply webchannel transport patch
 #echo "patching 0005-qtwebengine-5.7-reload-channel"
 #patch -f -Np1 -i "$QT_PATCH_DIR/0005-qtwebengine-5.7-reload-channel.patch"
 
 # apply QtWebEngine proxy authentication bypass patch
-echo "patching 0008-webengine-application-proxy"
-patch -f -Np1 -i "$QT_PATCH_DIR/0008-webengine-application-proxy.patch"
+#echo "patching 0008-webengine-application-proxy"
+#patch -f -Np1 -i "$QT_PATCH_DIR/0008-webengine-application-proxy.patch"
 cd ..
 
 
@@ -108,6 +115,9 @@ cd ..
 cd qtwebengine/src/3rdparty/chromium/
 echo "patching 0009-qtwebengine-hwaccel"
 patch -f -Np1 -i "$QT_PATCH_DIR/0009-qtwebengine-hwaccel.patch"
+
+echo "patching 0010-qtwebengine-mirects"
+patch -f -Np1 -i "$QT_PATCH_DIR/0010-qtwebengine-mirects.patch"
 
 #enable proprietary codecs in webengine
 cd ../../../

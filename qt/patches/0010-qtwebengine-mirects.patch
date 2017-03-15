@@ -1,0 +1,119 @@
+diff --git a/media/renderers/skcanvas_video_renderer.cc b/media/renderers/skcanvas_video_renderer.cc
+index 3a2a354..bca39a9 100644
+--- a/media/renderers/skcanvas_video_renderer.cc
++++ b/media/renderers/skcanvas_video_renderer.cc
+@@ -787,6 +787,7 @@
+       auto* video_generator = new VideoImageGenerator(video_frame);
+       last_image_ = SkImage::MakeFromGenerator(video_generator);
+     }
++    CorrectLastImageDimensions(gfx::RectToSkIRect(video_frame->visible_rect()));
+     if (!last_image_)  // Couldn't create the SkImage.
+       return false;
+     last_timestamp_ = video_frame->timestamp();
+@@ -796,4 +797,19 @@
+   return true;
+ }
+ 
++void SkCanvasVideoRenderer::CorrectLastImageDimensions(
++    const SkIRect& visible_rect) {
++  last_image_dimensions_for_testing_ = visible_rect.size();
++  if (!last_image_)
++    return;
++  if (last_image_->dimensions() != visible_rect.size() &&
++      last_image_->bounds().contains(visible_rect)) {
++    last_image_ = last_image_->makeSubset(visible_rect);
++  }
++}
++
++SkISize SkCanvasVideoRenderer::LastImageDimensionsForTesting() {
++  return last_image_dimensions_for_testing_;
++}
++
+ }  // namespace media
+diff --git a/media/renderers/skcanvas_video_renderer.h b/media/renderers/skcanvas_video_renderer.h
+index 86222fb..9323a82 100644
+--- a/media/renderers/skcanvas_video_renderer.h
++++ b/media/renderers/skcanvas_video_renderer.h
+@@ -99,6 +99,11 @@
+   // never be painted again, so we can release the resource.
+   void ResetCache();
+ 
++  void CorrectLastImageDimensions(const SkIRect& visible_rect);
++
++  // Used for unit test.
++  SkISize LastImageDimensionsForTesting();
++
+  private:
+   // Update the cache holding the most-recently-painted frame. Returns false
+   // if the image couldn't be updated.
+@@ -115,6 +120,9 @@
+   // Used for DCHECKs to ensure method calls executed in the correct thread.
+   base::ThreadChecker thread_checker_;
+ 
++  // Used for unit test.
++  SkISize last_image_dimensions_for_testing_;
++
+   DISALLOW_COPY_AND_ASSIGN(SkCanvasVideoRenderer);
+ };
+ 
+diff --git a/media/renderers/skcanvas_video_renderer_unittest.cc b/media/renderers/skcanvas_video_renderer_unittest.cc
+index 55ab3b1..fe4ceff 100644
+--- a/media/renderers/skcanvas_video_renderer_unittest.cc
++++ b/media/renderers/skcanvas_video_renderer_unittest.cc
+@@ -15,7 +15,9 @@
+ #include "testing/gtest/include/gtest/gtest.h"
+ #include "third_party/libyuv/include/libyuv/convert.h"
+ #include "third_party/skia/include/core/SkCanvas.h"
++#include "third_party/skia/include/core/SkImage.h"
+ #include "third_party/skia/include/core/SkRefCnt.h"
++#include "third_party/skia/include/core/SkSurface.h"
+ #include "third_party/skia/include/gpu/GrContext.h"
+ #include "third_party/skia/include/gpu/gl/GrGLInterface.h"
+ #include "ui/gfx/geometry/rect_f.h"
+@@ -546,4 +548,46 @@
+   renderer_.Paint(video_frame, &canvas, kNaturalRect, paint, VIDEO_ROTATION_90,
+                   context_3d);
+ }
++
++void EmptyCallback(const gpu::SyncToken& sync_token) {}
++
++TEST_F(SkCanvasVideoRendererTest, CorrectFrameSizeToVisibleRect) {
++  int fWidth{16}, fHeight{16};
++  SkImageInfo imInfo =
++      SkImageInfo::MakeN32(fWidth, fHeight, kOpaque_SkAlphaType);
++
++  sk_sp<const GrGLInterface> glInterface(GrGLCreateNullInterface());
++  sk_sp<GrContext> grContext(
++      GrContext::Create(kOpenGL_GrBackend,
++                        reinterpret_cast<GrBackendContext>(glInterface.get())));
++
++  sk_sp<SkSurface> skSurface =
++      SkSurface::MakeRenderTarget(grContext.get(), SkBudgeted::kYes, imInfo);
++  SkCanvas* canvas = skSurface->getCanvas();
++
++  TestGLES2Interface gles2;
++  Context3D context_3d(&gles2, grContext.get());
++  gfx::Size coded_size(fWidth, fHeight);
++  gfx::Size visible_size(fWidth / 2, fHeight / 2);
++
++  gpu::MailboxHolder mailbox_holders[VideoFrame::kMaxPlanes];
++  for (size_t i = 0; i < VideoFrame::kMaxPlanes; i++) {
++    mailbox_holders[i] = gpu::MailboxHolder(
++        gpu::Mailbox::Generate(), gpu::SyncToken(), GL_TEXTURE_RECTANGLE_ARB);
++  }
++
++  auto video_frame = VideoFrame::WrapNativeTextures(
++      PIXEL_FORMAT_I420, mailbox_holders, base::Bind(EmptyCallback), coded_size,
++      gfx::Rect(visible_size), visible_size,
++      base::TimeDelta::FromMilliseconds(4));
++
++  gfx::RectF visible_rect(visible_size.width(), visible_size.height());
++  SkPaint paint;
++  renderer_.Paint(video_frame, canvas, visible_rect, paint, VIDEO_ROTATION_0,
++                  context_3d);
++
++  EXPECT_EQ(fWidth / 2, renderer_.LastImageDimensionsForTesting().width());
++  EXPECT_EQ(fWidth / 2, renderer_.LastImageDimensionsForTesting().height());
++}
++
+ }  // namespace media
