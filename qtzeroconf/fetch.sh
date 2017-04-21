@@ -10,6 +10,9 @@ git clone https://github.com/jbagg/QtZeroConf buildspace
 cd $QTZEROCONF_TARGET
 git checkout $QTZEROCONF_VERSION
 
+sed -i "s/signals/Q_SIGNALS/g" qzeroconf.h
+sed -i "s/slots/Q_SLOTS/g" qzeroconf.h
+
 cp -r $QTZEROCONF_TARGET $QTZEROCONF_SRC_DIR
 
 echo "src fetch successful"
