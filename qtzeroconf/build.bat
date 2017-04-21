@@ -20,6 +20,6 @@ qmake CONFIG+=release
 rem jom -j8
 nmake
 nmake install
-if not exists C:\\include mkdir C:\\include\\
-if exists C:\\include\\qzeroconf.h del C:\\include\\qzeroconf.h
-copy qzeroconf.h C:\\include\\
+if not exist C:\include mkdir C:\include
+if exist C:\include\qzeroconf.h del C:\include\qzeroconf.h
+copy qzeroconf.h C:\\include
