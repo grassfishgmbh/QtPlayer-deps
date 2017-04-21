@@ -2,11 +2,11 @@
 
 source ../config.sh
 
-if [ -e $QTZEROCONF_TARGET ]; then
+if [ -d $QTZEROCONF_TARGET ]; then
     rm -rf $QTZEROCONF_TARGET
 fi
 
-git clone https://github.com/jbagg/QtZeroConf $QTZEROCONF_TARGET
+git clone https://github.com/jbagg/QtZeroConf buildspace
 cd $QTZEROCONF_TARGET
 git checkout $QTZEROCONF_VERSION
 
