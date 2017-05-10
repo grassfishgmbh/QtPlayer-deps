@@ -1,0 +1,31 @@
+diff --git a/qml/QmlAVPlayer.cpp b/qml/QmlAVPlayer.cpp
+index 82b57c2..721589c 100644
+--- a/qml/QmlAVPlayer.cpp
++++ b/qml/QmlAVPlayer.cpp
+@@ -759,7 +759,7 @@ void QmlAVPlayer::seek(int offset)
+ {
+     if (!mpPlayer)
+         return;
+-    mpPlayer->setSeekType(isFastSeek() ? KeyFrameSeek : AccurateSeek);
++    mpPlayer->setSeekType(isFastSeek() ? AnyFrameSeek : AccurateSeek);
+     mpPlayer->seek(qint64(offset));
+ }
+ 
+@@ -767,7 +767,7 @@ void QmlAVPlayer::seekForward()
+ {
+     if (!mpPlayer)
+         return;
+-    mpPlayer->setSeekType(isFastSeek() ? KeyFrameSeek : AccurateSeek);
++    mpPlayer->setSeekType(isFastSeek() ? AnyFrameSeek : AccurateSeek);
+     mpPlayer->seekForward();
+ }
+ 
+@@ -775,7 +775,7 @@ void QmlAVPlayer::seekBackward()
+ {
+     if (!mpPlayer)
+         return;
+-    mpPlayer->setSeekType(isFastSeek() ? KeyFrameSeek : AccurateSeek);
++    mpPlayer->setSeekType(isFastSeek() ? AnyFrameSeek : AccurateSeek);
+     mpPlayer->seekBackward();
+ }
+
