@@ -12,7 +12,7 @@ cd ..
 
 export PKG_CONFIG_PATH=/opt/hwsupport/lib/pkgconfig
 
-cd libva-intel-driver-$LIBVA_VERSION
+cd intel-vaapi-driver-$LIBVA_VERSION
 ./configure --prefix=/opt/hwsupport
 make
 sudo make install
