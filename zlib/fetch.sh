@@ -4,7 +4,7 @@ source ../config.sh
 
 function download {
     if [ ! -f "$ZLIB_TARGET$ZLIB_FILENAME" ]; then
-        wget "$ZLIB_TAR_URL" -O $ZLIB_TARGET$ZLIB_FILENAME
+        wget "$ZLIB_TAR_URL" -O $ZLIB_TARGET$ZLIB_FILENAME --no-check-certificate
     fi
 }
 
