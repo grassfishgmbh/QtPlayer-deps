@@ -4,7 +4,7 @@ set -e
 BASEDIR=$(dirname "$0")
 source $BASEDIR/../config.sh
 
-rm -rf /opt/hwsupport || true
+sudo rm -rf /opt/hwsupport || true
 
 cd libva-$LIBVA_VERSION
 ./configure --prefix=/opt/hwsupport
