@@ -175,4 +175,17 @@ bash prepare.sh
 bash fetch.sh
 bash build.sh
 
+cd $MY_ROOT/../qbs
+bash build.sh
+
+cd $MY_ROOT/../libqtxdg
+bash prepare.sh
+bash fetch.sh
+bash build.sh
+
+cd $MY_ROOT/../lirios-wayland
+bash prepare.sh
+bash fetch.sh
+bash build.sh
+
 cd $MY_ROOT/lin
