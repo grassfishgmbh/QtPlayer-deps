@@ -82,3 +82,13 @@ protobuf/buildspace
 .git
 .gitignore
 .gitattributes
+qt/5.6/usr/local/
+lirios-wayland/buildspace
+qtzeroconf/buildspace
+libqtxdg/buildspace
+qt/5.6/icu4c-*.tgz
+qt/5.6/readme.txt
+kdsoap/src/KDSoapServer/.moc/moc_predefs.h
+kdsoap/kdwsdl2cpp/common/.moc/moc_predefs.h
+kdsoap/kdwsdl2cpp/src/.moc/moc_predefs.h
+kdsoap/src/KDSoapClient/.moc/moc_predefs.h
