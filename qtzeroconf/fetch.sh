@@ -6,6 +6,9 @@ if [ -d $QTZEROCONF_TARGET ]; then
     rm -rf $QTZEROCONF_TARGET
 fi
 
+rm -rf src || true
+mkdir src
+
 git clone https://github.com/jbagg/QtZeroConf buildspace
 cd $QTZEROCONF_TARGET
 git checkout $QTZEROCONF_VERSION

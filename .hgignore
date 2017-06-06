@@ -82,3 +82,9 @@ protobuf/buildspace
 .git
 .gitignore
 .gitattributes
+qt/5.6/usr/local/
+lirios-wayland/buildspace
+qtzeroconf/buildspace
+libqtxdg/buildspace
+qt/5.6/icu4c-*.tgz
+qt/5.6/readme.txt
