@@ -101,6 +101,10 @@ patch -f -Np1 -i "$QT_PATCH_DIR/0007-enableHttpStatusCode.patch"
 echo "patching 0011-qtwebengine-versionFixup"
 patch -f -Np1 -i "$QT_PATCH_DIR/0011-qtwebengine-versionFixup.patch"
 
+echo "patching 0012-qtwebengine-hidewincrash.patch"
+patch -f -Np1 -i "$QT_PATCH_DIR/0012-qtwebengine-hidewincrash.patch"
+
+
 # apply webchannel transport patch
 #echo "patching 0005-qtwebengine-5.7-reload-channel"
 #patch -f -Np1 -i "$QT_PATCH_DIR/0005-qtwebengine-5.7-reload-channel.patch"
@@ -119,8 +123,8 @@ patch -f -Np1 -i "$QT_PATCH_DIR/0009-qtwebengine-hwaccel.patch"
 echo "patching 0010-qtwebengine-mirects"
 patch -f -Np1 -i "$QT_PATCH_DIR/0010-qtwebengine-mirects.patch"
 
-echo "patching 0012-qtwebengine-hidewincrash.patch"
-patch -f -Np1 -i "$QT_PATCH_DIR/0012-qtwebengine-hidewincrash.patch"
+echo "patching 0013-qtwebengine-getlasterrorwgl.patch"
+patch -f -Np1 -i "$QT_PATCH_DIR/0013-qtwebengine-getlasterrorwgl.patch"
 
 #enable proprietary codecs in webengine
 cd ../../../

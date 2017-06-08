@@ -1,0 +1,30 @@
+diff --git a/chromium/ui/gl/gl_context_wgl.cc b/chromium/ui/gl/gl_context_wgl.cc
+index 68775e3..3698b89 100644
+--- a/chromium/ui/gl/gl_context_wgl.cc
++++ b/chromium/ui/gl/gl_context_wgl.cc
+@@ -19,6 +19,16 @@ GLContextWGL::GLContextWGL(GLShareGroup* share_group)
+     : GLContextReal(share_group), context_(nullptr) {
+ }
+ 
++const char* GetLastErrorAsString()
++{
++    DWORD errorMessageID = GetLastError();
++    LPSTR messageBuffer = nullptr;
++    FormatMessageA(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
++                   NULL, errorMessageID, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPSTR)&messageBuffer, 0, NULL);
++
++    return messageBuffer;
++}
++
+ bool GLContextWGL::Initialize(
+     GLSurface* compatible_surface, GpuPreference gpu_preference) {
+   // Get the handle of another initialized context in the share group _before_
+@@ -70,7 +80,7 @@ bool GLContextWGL::Initialize(
+ 
+   if (share_handle) {
+     if (!wglShareLists(share_handle, context_)) {
+-      LOG(ERROR) << "Could not share GL contexts.";
++      LOG(ERROR) << "Could not share GL contexts." << GetLastErrorAsString();
+       Destroy();
+       return false;
+     }
