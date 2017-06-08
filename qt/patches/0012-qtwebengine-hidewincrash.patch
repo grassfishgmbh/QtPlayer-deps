@@ -1,0 +1,12 @@
+diff --git a/src/process/support_win.cpp b/src/process/support_win.cpp
+index 21481ce..2107df2 100644
+--- a/src/process/support_win.cpp
++++ b/src/process/support_win.cpp
+@@ -135,6 +135,7 @@ static DWORD getParentProcessId()
+ 
+ void initDpiAwareness()
+ {
++    SetErrorMode(GetErrorMode () | SEM_NOGPFAULTERRORBOX); // Hide crash dialogs
+     ShcoreDLL shcore;
+     if (shcore.isValid()) {
+         DpiAwareness dpiAwareness = PROCESS_PER_MONITOR_DPI_AWARE;
