@@ -1,7 +1,7 @@
-diff --git a/chromium/ui/gl/gl_context_wgl.cc b/chromium/ui/gl/gl_context_wgl.cc
+diff --git a/ui/gl/gl_context_wgl.cc b/chromium/ui/gl/gl_context_wgl.cc
 index 68775e3..3698b89 100644
---- a/chromium/ui/gl/gl_context_wgl.cc
-+++ b/chromium/ui/gl/gl_context_wgl.cc
+--- a/ui/gl/gl_context_wgl.cc
++++ b/ui/gl/gl_context_wgl.cc
 @@ -19,6 +19,16 @@ GLContextWGL::GLContextWGL(GLShareGroup* share_group)
      : GLContextReal(share_group), context_(nullptr) {
  }
