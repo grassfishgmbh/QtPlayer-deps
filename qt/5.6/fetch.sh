@@ -82,7 +82,7 @@ cd ..
 
 # apply patch: protection against accessing destroyed QDBusConnectionManager
 cd qtbase
-patch -f -Np1 -i "$QT_PATCH_DIR/0006-dbus-connectionmanager-destroy.patch"
+# patch -f -Np1 -i "$QT_PATCH_DIR/0006-dbus-connectionmanager-destroy.patch"
 cd ..
 
 cd qtwebengine
