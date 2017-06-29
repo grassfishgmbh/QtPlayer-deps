@@ -85,6 +85,11 @@ cd qtbase
 patch -f -Np1 -i "$QT_PATCH_DIR/0006-dbus-connectionmanager-destroy.patch"
 cd ..
 
+# fix memory leaks regarding QtWaylandCompositors handling of shell integration objects
+cd qtwayland
+patch -f -Np1 -i "$QT_PATCH_DIR/0015-qtwaylandcomp-shellintegrationleak.patch"
+cd ..
+
 cd qtwebengine
 git checkout tags/v$QTWEBENGINE_VERSION
 git submodule update --init --recursive
@@ -130,4 +135,3 @@ patch -f -Np1 -i "$QT_PATCH_DIR/0013-qtwebengine-getlasterrorwgl.patch"
 cd ../../../
 grep use_proprietary_codecs .qmake.conf || echo "WEBENGINE_CONFIG+=use_proprietary_codecs">>.qmake.conf
 cd ..
-
