@@ -32,6 +32,5 @@ sudo apt-get install -y libxcb1-dev \
                       git \
                       wget \
                       libudev-dev \
-                      libqt5opengl5-dev \
                       libsystemd-dev
 
