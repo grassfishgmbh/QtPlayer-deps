@@ -72,6 +72,12 @@ cd vlc-$VLC_VERSION
 #cd .. # vlc-qt
 #cd .. # deps-buildspace
 
+# Build OpenAL-soft
+cd $MY_ROOT/../openal-soft
+bash prepare.sh
+bash fetch.sh
+bash build.sh
+
 # BUILD QtAV
 cd $DEPS_BS_ROOT
 
