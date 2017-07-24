@@ -17,6 +17,10 @@ git clone git://anongit.kde.org/networkmanager-qt.git
 cd networkmanager-qt
 git checkout tags/$NM_QT_VERSION
 
+find $NM_QT_PATCH_DIR -type f -iname "*.patch" -print0 | while IFS= read -r -d $'\0' patchfile; do
+    patch -p1 < $patchfile || true
+done
+
 cd $BUILDSPACE_WD
 git clone git://anongit.kde.org/extra-cmake-modules
 

@@ -11,7 +11,7 @@ fi
 
 git clone --recursive https://github.com/lirios/wayland buildspace
 cd $LIRIOSWAYLAND_TARGET
-git checkout $LIRIOSWAYLAND_VERSION
+#git checkout $LIRIOSWAYLAND_VERSION
 
 cp -r $LIRIOSWAYLAND_TARGET $LIRIOSWAYLAND_SRC_DIR
 

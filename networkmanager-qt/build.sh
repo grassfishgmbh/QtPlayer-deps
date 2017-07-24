@@ -2,7 +2,11 @@
 
 source ../config.sh
 
+unset LD_LIBRARY_PATH
+
 MY_ROOT=`pwd`
+
+which qmake
 
 cd buildspace/extra-cmake-modules
 mkdir build

@@ -17,6 +17,22 @@ if [ -d $INSTALL_PREFIX ]; then
     sudo rm -rf $INSTALL_PREFIX
 fi
 
+cd $MY_ROOT/../zlib
+bash fetch.sh
+bash unpack.sh
+bash build.sh
+
+cd $MY_ROOT/../openssl
+bash fetch.sh
+bash build.sh
+
+cd $MY_ROOT/../curl
+bash fetch.sh
+bash unpack.sh
+bash build.sh
+
+cd $DEPS_BS_ROOT
+
 # BUILD FFMPEG
 cd ffmpeg-$FFMPEG_VERSION
 ./configure --extra-version=Grassfish \
@@ -30,18 +46,14 @@ cd ffmpeg-$FFMPEG_VERSION
 
 make -j`nproc`
 
-if [ -e $INSTALL_PREFIX ]; then
-    rm -rf $INSTALL_PREFIX
-fi
-
 sudo make install
 
 # GO BACK
-cd ..
+# cd ..
 
 # BUILD VLC
 # NOTE: Disabled as of 24.01.2017 due to VLC/QtAV ffmpeg mismatch
-cd vlc-$VLC_VERSION
+# cd vlc-$VLC_VERSION
 
 #./configure --prefix=$INSTALL_PREFIX \
 #            --enable-x11 --enable-xvideo --disable-gtk \
@@ -120,13 +132,13 @@ find -iname "*.pri" -type f -exec sed -i "s/$QT_DIR_ESCAPED/$INSTALL_PREFIX_ESCA
 
 cd $DEPS_BS_ROOT
 
-cd gtkglext
-export LDFLAGS="-lm -lGL "`pkg-config --libs-only-l gmodule-2.0 gtk+-2.0 gthread-2.0`
-autoreconf --install
-./configure --prefix=$INSTALL_PREFIX --disable-static --disable-gtk-doc
-make -j`nproc`
-sudo make install
-cd $DEPS_BS_ROOT
+#cd gtkglext
+#export LDFLAGS="-lm -lGL "`pkg-config --libs-only-l gmodule-2.0 gtk+-2.0 gthread-2.0`
+#autoreconf --install
+#./configure --prefix=$INSTALL_PREFIX --disable-static --disable-gtk-doc
+#make -j`nproc`
+#sudo make install
+#cd $DEPS_BS_ROOT
 
 cd $MY_ROOT/../networkmanager-qt
 bash prepare.sh
@@ -138,27 +150,13 @@ bash build.sh
 #bash unpack.sh
 #bash build.sh
 
-cd $MY_ROOT/../openssl
-bash fetch.sh
-bash build.sh
-
 cd $MY_ROOT/../libusb
 bash autogen.sh
 
 cd $MY_ROOT/../kdsoap
 bash build.sh
 
-cd $MY_ROOT/../zlib
-bash fetch.sh
-bash unpack.sh
-bash build.sh
-
 cd $MY_ROOT/../libssh
-bash build.sh
-
-cd $MY_ROOT/../curl
-bash fetch.sh
-bash unpack.sh
 bash build.sh
 
 cd $MY_ROOT/../QtWebApp
@@ -184,14 +182,14 @@ bash build.sh
 cd $MY_ROOT/../qbs
 bash build.sh
 
-cd $MY_ROOT/../libqtxdg
-bash prepare.sh
-bash fetch.sh
-bash build.sh
+#cd $MY_ROOT/../libqtxdg
+#bash prepare.sh
+#bash fetch.sh
+#bash build.sh
 
-cd $MY_ROOT/../lirios-wayland
-bash prepare.sh
-bash fetch.sh
-bash build.sh
+#cd $MY_ROOT/../lirios-wayland
+#bash prepare.sh
+#bash fetch.sh
+#bash build.sh
 
 cd $MY_ROOT/lin

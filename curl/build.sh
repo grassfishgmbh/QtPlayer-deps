@@ -6,7 +6,7 @@ BASEDIR=$(dirname "$0")
 
 source $BASEDIR/../config.sh
 
-cd $CURL_SRC_DIR
+cd $CURL_TARGET
 
 export PKG_CONFIG_PATH=$INSTALL_PREFIX/lib/pkgconfig
 

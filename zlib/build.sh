@@ -6,7 +6,7 @@ BASEDIR=$(dirname "$0")
 
 source $BASEDIR/../config.sh
 
-cd $ZLIB_TARGET
+cd $ZLIB_TARGET/zlib-$ZLIB_VERSION
 
 export PKG_CONFIG_PATH=$INSTALL_PREFIX/lib/pkgconfig
 
