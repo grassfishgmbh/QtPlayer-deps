@@ -47,7 +47,7 @@ NM_QT_VERSION="v5.21.0"
 
 ISO_IMAGE_NAME="GrassfishPlayerImage"
 GF_DEFAULT_HOSTNAME="GrassfishPlayer"
-ISO_PRESCRIPT="pre.sh"
+ISO_PRESCRIPT="pre-iot.sh"
 ISO_POSTSCRIPT="post.sh"
 ISO_PLAYER_VERSION="v10.1"
 BASE_OS_VERSION="16.04.2"
@@ -65,13 +65,14 @@ UPDATE_ZIP_PATH=$CREATE_ISO_DIR/update
 ISO_MOUNT=/mnt/gf_iso_mount
 ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
 ISO_DESKTOP_SESSION=Lubuntu
-ISO_KERNEL_FLAGS="intel_pstate=disable i915.enable_psr=0 i915.enable_fbc=0 i915.enable_execlists=0 i915.nuclear_pageflip=1 drm.vblankoffdelay=1 nogpumanager fsck.mode=force fsck.repair=yes"
+ISO_KERNEL_FLAGS="quiet splash intel_pstate=disable i915.enable_psr=0 i915.enable_fbc=0 i915.enable_execlists=0 i915.nuclear_pageflip=1 drm.vblankoffdelay=1 nogpumanager fsck.mode=force fsck.repair=yes"
 ISO_DEFAULT_TIMEZONE="Europe\/Vienna"
-ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0v5 libgtkmm-3.0-1v5 ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver sqlite3 libxvidcore4 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad gstreamer1.0-alsa gstreamer1.0-fluendo-mp3 gstreamer1.0-libav fail2ban feh libkf5networkmanagerqt6 smartmontools tlp dconf-cli mesa-utils libvdpau-va-gl1 gstreamer0.10-alsa avahi-utils mpv'
+ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0v5 libgtkmm-3.0-1v5 ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver sqlite3 libxvidcore4 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad gstreamer1.0-alsa gstreamer1.0-fluendo-mp3 gstreamer1.0-libav fail2ban feh libkf5networkmanagerqt6 smartmontools tlp dconf-cli mesa-utils libvdpau-va-gl1 gstreamer0.10-alsa avahi-utils mpv gdisk dialog'
 ISO_REMOVE_PKGS='firefox abiword gnumeric simple-scan mtpaint xfburn guvcview transmission pidgin sylpheed gnome-mplayer audacious light-locker update-manager ubuntu-release-upgrader-core update-manager-core cups xfce4-power-manager alsamixergui transmission-gtk lubuntu-software-center usb-creator-gtk xpad bluez blueman ntp'
 ISO_INCLUDE_MIGRATOR=0
-ISO_DEFAULT_SYSTEMDTARGET=""
+ISO_DEFAULT_SYSTEMDTARGET="gf-install.target"
 GF_DEFAULT_SYSTEMDTARGET="graphical.target"
+GF_IMAGE_LABEL="GrassfishPlayer"
 
 if [ -f $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh ]; then
     source $ISO_CUSTOMIZATION_PATH/$GF_ISO_CUSTOMER/config-override.sh

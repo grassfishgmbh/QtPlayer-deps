@@ -1,0 +1,147 @@
+diff --git a/src/opengl/GeometryRenderer.cpp b/src/opengl/GeometryRenderer.cpp
+index fff5ce6..111b664 100644
+--- a/src/opengl/GeometryRenderer.cpp
++++ b/src/opengl/GeometryRenderer.cpp
+@@ -29,6 +29,9 @@ GeometryRenderer::GeometryRenderer()
+     , try_vao(true)
+     , try_ibo(true)
+     , ibo(QOpenGLBuffer::IndexBuffer)
++    , is_vbo_alloc(false)
++    , is_vao_alloc(false)
++    , is_ibo_alloc(false)
+ {
+     static bool disable_vbo = qgetenv("QTAV_NO_VBO").toInt() > 0;
+     try_vbo = !disable_vbo;
+@@ -43,6 +46,7 @@ void GeometryRenderer::setShaderProgram(QOpenGLShaderProgram *sp)
+ 
+ bool GeometryRenderer::updateBuffers(Geometry *geo)
+ {
++    bool updateGeo = (geo != g);
+     g = geo;
+     if (!g) {
+         vbo.destroy();
+@@ -52,6 +56,18 @@ bool GeometryRenderer::updateBuffers(Geometry *geo)
+         ibo.destroy();
+         return true;
+     }
++#if QT_VAO
++    if (try_vao) {
++        qDebug("updating vao...");
++        if (!vao.isCreated()) {
++            if (!vao.create()) {
++                try_vao = false;
++                qDebug("VAO is not supported");
++            }
++        }
++    }
++    vao.bind();
++#endif
+     if (try_ibo && g->indexCount() > 0) {
+         if (!ibo.isCreated()) {
+             if (!ibo.create()) {
+@@ -61,25 +77,14 @@ bool GeometryRenderer::updateBuffers(Geometry *geo)
+         }
+         if (ibo.isCreated()) {
+             ibo.bind();
+-            ibo.allocate(g->indexData(), g->indexDataSize());
+-            ibo.release();
+-        }
+-    }
+-    if (!try_vbo)
+-        return false;
+-#if QT_VAO
+-    if (try_vao) {
+-        qDebug("updating vao...");
+-        if (!vao.isCreated()) {
+-            if (!vao.create()) {
+-                try_vao = false;
+-                qDebug("VAO is not supported");
++            if (!is_ibo_alloc) {
++                ibo.allocate(g->indexData(), g->indexDataSize());
++                is_ibo_alloc = true;
++            } else if (updateGeo) {
++                ibo.write(0, g->indexData(), g->indexDataSize());
+             }
+         }
+     }
+-    QOpenGLVertexArrayObject::Binder vao_bind(&vao);
+-    Q_UNUSED(vao_bind);
+-#endif
+     if (!vbo.isCreated()) {
+         if (!vbo.create()) {
+             try_vbo = false; // not supported by OpenGL
+@@ -90,7 +95,12 @@ bool GeometryRenderer::updateBuffers(Geometry *geo)
+     }
+     //qDebug("updating vbo...");
+     vbo.bind(); //check here
+-    vbo.allocate(g->vertexData(), g->vertexCount()*g->stride());
++    if (!is_vbo_alloc) {
++        vbo.allocate(g->vertexData(), g->vertexCount()*g->stride());
++        is_vbo_alloc = true;
++    } else if (updateGeo) {
++        vbo.write(0, g->vertexCount(), g->vertexCount() * g->stride());
++    }
+     //qDebug("allocate(%p, %d*%d)", g->vertexData(), g->vertexCount(), g->stride());
+ #if QT_VAO
+     if (try_vao) {
+@@ -105,24 +115,20 @@ bool GeometryRenderer::updateBuffers(Geometry *geo)
+         }
+     }
+ #endif
+-    vbo.release();
+     return true;
+ }
+ 
+ void GeometryRenderer::bindBuffers()
+ {
+-    if (!g)
+-        return;
+-    if (try_ibo && ibo.isCreated())
++/*    if (try_ibo && ibo.isCreated())
+         ibo.bind();
+ #if QT_VAO
+     if (try_vao && vao.isCreated()) {
+         vao.bind();
+         return;
+     }
+-#endif
++#endif*/
+     if (try_vbo && vbo.isCreated()) {
+-        vbo.bind();
+         // normalized
+         for (int an = 0; an < g->attributes().size(); ++an) {
+             const Attribute& a = g->attributes().at(an);
+@@ -144,10 +150,8 @@ void GeometryRenderer::bindBuffers()
+ 
+ void GeometryRenderer::unbindBuffers()
+ {
+-    if (!g)
+-        return;
+-    if (try_ibo && ibo.isCreated())
+-        ibo.release();
++//    if (try_ibo && ibo.isCreated())
++//        ibo.release();
+ #if QT_VAO
+     if (try_vao && vao.isCreated()) {
+         vao.release();
+@@ -158,15 +162,15 @@ void GeometryRenderer::unbindBuffers()
+     if (try_vbo && vbo.isCreated()) {
+         vbo.release();
+     }
+-    for (int an = 0; an < g->attributes().size(); ++an) {
+-        program->disableAttributeArray(an); //TODO: in setActiveShader
+-    }
++
++    // disableAttribArray makes changes to the VAO -> not bound at this point, though -> unnecessary and noobish code. fucking chinese
++    //for (int an = 0; an < g->attributes().size(); ++an) {
++    //    program->disableAttributeArray(an); //TODO: in setActiveShader
++    //}
+ }
+ 
+ void GeometryRenderer::render()
+ {
+-    if (!g)
+-        return;
+     if (g->indexCount() > 0) {
+         DYGL(glDrawElements(g->primitive(), g->indexCount(), g->indexType(), g->indexData()));
+     } else {

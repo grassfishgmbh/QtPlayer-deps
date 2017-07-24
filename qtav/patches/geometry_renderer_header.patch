@@ -1,0 +1,14 @@
+diff --git a/src/opengl/GeometryRenderer.h b/src/opengl/GeometryRenderer.h
+index 1f311df..93d82d6 100644
+--- a/src/opengl/GeometryRenderer.h
++++ b/src/opengl/GeometryRenderer.h
+@@ -51,6 +51,9 @@ private:
+     bool try_vao;
+     bool try_ibo;
+     QOpenGLBuffer vbo; //VertexBuffer
++    bool is_vbo_alloc;
++    bool is_vao_alloc;
++    bool is_ibo_alloc;
+ #if QT_VAO
+     QOpenGLVertexArrayObject vao;
+ #endif //QT_VAO
