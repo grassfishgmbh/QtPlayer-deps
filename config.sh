@@ -5,8 +5,8 @@ CONFIG_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 VisualStudioVersion=14.0
 VSCOMPILER=msvc2015
 
-QT_VERSION="5.8.0"
-QTWEBENGINE_VERSION="5.8.0"
+QT_VERSION="5.9.1"
+QTWEBENGINE_VERSION="5.9.1"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
 QT_PATCH_DIR="$CONFIG_DIR/qt/patches"
 QT_NO_CLEAN_SRC=0
@@ -84,11 +84,11 @@ if [ "$GF_BUILD_OS" == "android" ]; then
     export ANDROID_NDK_ROOT
     PATH=/opt/android/Qt/5.8/android_armv7/bin:${PATH}
     export PATH
-    INSTALL_PREFIX="/opt/gfandroid/10.2"
+    INSTALL_PREFIX="/opt/gfandroid/11.0"
 else
-    INSTALL_PREFIX="/opt/gfbuild/10.2"
+    INSTALL_PREFIX="/opt/gfbuild/11.0"
 fi
-NMQT_INSTALL_PREFIX="/opt/gf-libnmqt"
+NMQT_INSTALL_PREFIX=$INSTALL_PREFIX
 
 DBUS_VERSION="1.10.8"
 DBUS_SHA256="baf3d22baa26d3bdd9edc587736cd5562196ce67996d65b82103bedbe1f0c014"
