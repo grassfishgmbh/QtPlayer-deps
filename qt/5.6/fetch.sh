@@ -39,11 +39,14 @@ fi
 rm -f *.txt
 
 # get Qt5 main repo
+QT_GIT_REPO=http://code.qt.io/cgit/qt/qt5.git
 if [ "$QT_USE_GITHUB" == "1" ]; then
-    git clone https://github.com/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
-else
-    git clone http://code.qt.io/cgit/qt/qt5.git --branch v$QT_VERSION $CLONE_QT_SRC
+    QT_GIT_REPO=https://github.com/qt/qt5.git
+elif [ "$QT_GIT_REPO_OVERRIDE" != "" ]; then
+    QT_GIT_REPO=$QT_GIT_REPO_OVERRIDE
 fi
+
+git clone $QT_GIT_REPO --branch v$QT_VERSION $CLONE_QT_SRC
 
 if [ `uname -o` == "Cygwin" ]; then
     chmod -R a+rwx $CLONE_QT_SRC
@@ -81,14 +84,14 @@ grep GST_VERSION .qmake.conf || echo "GST_VERSION=1.0">>.qmake.conf
 cd ..
 
 # apply patch: protection against accessing destroyed QDBusConnectionManager
-cd qtbase
-patch -f -Np1 -i "$QT_PATCH_DIR/0006-dbus-connectionmanager-destroy.patch"
-cd ..
+#cd qtbase
+#patch -f -Np1 -i "$QT_PATCH_DIR/0006-dbus-connectionmanager-destroy.patch"
+#cd ..
 
 # fix memory leaks regarding QtWaylandCompositors handling of shell integration objects
-cd qtwayland
-patch -f -Np1 -i "$QT_PATCH_DIR/0015-qtwaylandcomp-shellintegrationleak.patch"
-cd ..
+#cd qtwayland
+#patch -f -Np1 -i "$QT_PATCH_DIR/0015-qtwaylandcomp-shellintegrationleak.patch"
+#cd ..
 
 cd qtwebengine
 git checkout tags/v$QTWEBENGINE_VERSION
@@ -103,8 +106,8 @@ echo "patching 0007-enableHttpStatusCode"
 patch -f -Np1 -i "$QT_PATCH_DIR/0007-enableHttpStatusCode.patch"
 
 # fix QtWebEngine 5.8.0 build with 5.7.1 Qt framework
-echo "patching 0011-qtwebengine-versionFixup"
-patch -f -Np1 -i "$QT_PATCH_DIR/0011-qtwebengine-versionFixup.patch"
+#echo "patching 0011-qtwebengine-versionFixup"
+#patch -f -Np1 -i "$QT_PATCH_DIR/0011-qtwebengine-versionFixup.patch"
 
 echo "patching 0012-qtwebengine-hidewincrash.patch"
 patch -f -Np1 -i "$QT_PATCH_DIR/0012-qtwebengine-hidewincrash.patch"
@@ -125,11 +128,11 @@ cd qtwebengine/src/3rdparty/chromium/
 echo "patching 0009-qtwebengine-hwaccel"
 patch -f -Np1 -i "$QT_PATCH_DIR/0009-qtwebengine-hwaccel.patch"
 
-echo "patching 0010-qtwebengine-mirects"
-patch -f -Np1 -i "$QT_PATCH_DIR/0010-qtwebengine-mirects.patch"
+# echo "patching 0010-qtwebengine-mirects"
+# patch -f -Np1 -i "$QT_PATCH_DIR/0010-qtwebengine-mirects.patch"
 
-echo "patching 0013-qtwebengine-getlasterrorwgl.patch"
-patch -f -Np1 -i "$QT_PATCH_DIR/0013-qtwebengine-getlasterrorwgl.patch"
+# echo "patching 0013-qtwebengine-getlasterrorwgl.patch"
+# patch -f -Np1 -i "$QT_PATCH_DIR/0013-qtwebengine-getlasterrorwgl.patch"
 
 #enable proprietary codecs in webengine
 cd ../../../
