@@ -1,0 +1,55 @@
+diff --git a/src/vaapi/vaapi_helper.cpp b/src/vaapi/vaapi_helper.cpp
+index ccf7986a..bf983974 100644
+--- a/src/vaapi/vaapi_helper.cpp
++++ b/src/vaapi/vaapi_helper.cpp
+@@ -29,8 +29,12 @@ bool isEGL();
+ }
+ namespace vaapi {
+ 
++QMutex dll_helper::s_loadMutex(QMutex::NonRecursive);
++
+ dll_helper::dll_helper(const QString &soname, int version)
+ {
++    QMutexLocker locker(&dll_helper::s_loadMutex);
++
+     if (version >= 0)
+         m_lib.setFileNameAndVersion(soname, version);
+     else
+diff --git a/src/vaapi/vaapi_helper.h b/src/vaapi/vaapi_helper.h
+index 8d375185..7f15f125 100644
+--- a/src/vaapi/vaapi_helper.h
++++ b/src/vaapi/vaapi_helper.h
+@@ -26,6 +26,8 @@
+ #include <va/va.h>
+ #include <QtCore/QLibrary>
+ #include <QtCore/QSharedPointer>
++#include <QtCore/QMutex>
++#include <QtCore/QMutexLocker>
+ #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+ #include <qopengl.h>
+ #elif defined(QT_OPENGL_LIB)
+@@ -76,9 +78,21 @@ VAImageFormat va_new_image(VADisplay display, const unsigned int* fourccs, VAIma
+ class dll_helper {
+ public:
+     dll_helper(const QString& soname, int version = -1);
+-    virtual ~dll_helper() { m_lib.unload();}
+-    bool isLoaded() const { return m_lib.isLoaded(); }
+-    void* resolve(const char *symbol) { return (void*)m_lib.resolve(symbol);}
++    static QMutex s_loadMutex;
++    virtual ~dll_helper() {
++        QMutexLocker locker(&dll_helper::s_loadMutex);
++        m_lib.unload();
++    }
++
++    bool isLoaded() const {
++        QMutexLocker locker(&dll_helper::s_loadMutex);
++        return m_lib.isLoaded();
++    }
++
++    void* resolve(const char *symbol) {
++        QMutexLocker locker(&dll_helper::s_loadMutex);
++        return (void*)m_lib.resolve(symbol);
++    }
+ private:
+     QLibrary m_lib;
+ };

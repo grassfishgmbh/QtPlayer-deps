@@ -2,7 +2,7 @@
 
 source ../config.sh
 
-cd $LIBUSB_SRC_DIR
+cd $LIBUSB_TARGET
 ./configure --prefix=$INSTALL_PREFIX
 make -j`nproc`
 sudo make install

@@ -19,12 +19,12 @@ if [ ! -e ffmpeg-$FFMPEG_VERSION.tar.bz2 ]; then
     wget http://ffmpeg.org/releases/ffmpeg-$FFMPEG_VERSION.tar.bz2
 fi
 
-if [ ! -e vlc-$VLC_VERSION.tar.xz ]; then
-    wget http://get.videolan.org/vlc/$VLC_VERSION/vlc-$VLC_VERSION.tar.xz
-fi
+#if [ ! -e vlc-$VLC_VERSION.tar.xz ]; then
+#    wget http://get.videolan.org/vlc/$VLC_VERSION/vlc-$VLC_VERSION.tar.xz
+#fi
 
 tar xvf ffmpeg-$FFMPEG_VERSION.tar.bz2
-tar xvf vlc-$VLC_VERSION.tar.xz
+#tar xvf vlc-$VLC_VERSION.tar.xz
 
 if [ -d QtAV ]; then
     rm -rf QtAV
@@ -43,8 +43,8 @@ if [ -d gtkglext ]; then
     rm -rf gtkglext
 fi
 
-git clone git://git.gnome.org/gtkglext
-cd gtkglext
-git checkout $GTKGLEXT_VERSION
-cd ..
+#git clone git://git.gnome.org/gtkglext
+#cd gtkglext
+#git checkout $GTKGLEXT_VERSION
+#cd ..
 

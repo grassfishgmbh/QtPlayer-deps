@@ -12,10 +12,10 @@ if [[ -z "$OPENSSL_VERSION" ]]; then
 fi
 
 # clean up
-rm -f *.zip
-rm -f *.tar.gz
+sudo rm -f *.zip
+sudo rm -f *.tar.gz
 if [ -e openssl-$OPENSSL_VERSION ]; then
-    rm -rf openssl-$OPENSSL_VERSION
+    sudo rm -rf openssl-$OPENSSL_VERSION
 fi
 
 # fetch sources

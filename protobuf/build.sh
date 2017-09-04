@@ -6,9 +6,10 @@ BASEDIR=$(dirname "$0")
 
 source $BASEDIR/../config.sh
 
-cd $PROTOBUF_SRC_DIR
+cd $PROTOBUF_TARGET
 
-./configure --prefix=$INSTALL_PREFIX --disable-shared
+export CXXFLAGS="$CXXFLAGS -fPIC"
+./configure --prefix=$INSTALL_PREFIX --enable-shared
 
 make -j`nproc` CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
 sudo make install

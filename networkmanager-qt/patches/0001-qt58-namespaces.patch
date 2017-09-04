@@ -1,0 +1,12 @@
+diff --git a/src/manager.h b/src/manager.h
+index f7bb90c..ef21a91 100644
+--- a/src/manager.h
++++ b/src/manager.h
+@@ -43,6 +43,7 @@
+  */
+ namespace NetworkManager
+ {
++Q_NAMESPACE
+ 
+ enum Status {
+     Unknown, /**< the networking system is not active or unable to report its status - proceed with caution */
