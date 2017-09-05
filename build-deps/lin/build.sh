@@ -84,6 +84,35 @@ sudo make install
 #cd .. # vlc-qt
 #cd .. # deps-buildspace
 
+cd $MY_ROOT/../libusb
+bash autogen.sh
+
+cd $MY_ROOT/../kdsoap
+bash build.sh
+
+cd $MY_ROOT/../libssh
+bash build.sh
+
+cd $MY_ROOT/../QtWebApp
+bash build.sh
+
+cd $MY_ROOT/../qtpdfium
+bash build.sh
+
+cd $MY_ROOT/../quazip
+bash build.sh
+
+cd $MY_ROOT/../protobuf
+bash prepare.sh
+bash fetch.sh
+bash unpack.sh
+bash build.sh
+
+cd $MY_ROOT/../qtzeroconf
+bash prepare.sh
+bash fetch.sh
+bash build.sh
+
 # Build OpenAL-soft
 cd $MY_ROOT/../openal-soft
 bash prepare.sh
@@ -150,37 +179,8 @@ bash build.sh
 #bash unpack.sh
 #bash build.sh
 
-cd $MY_ROOT/../libusb
-bash autogen.sh
-
-cd $MY_ROOT/../kdsoap
-bash build.sh
-
-cd $MY_ROOT/../libssh
-bash build.sh
-
-cd $MY_ROOT/../QtWebApp
-bash build.sh
-
-cd $MY_ROOT/../qtpdfium
-bash build.sh
-
-cd $MY_ROOT/../quazip
-bash build.sh
-
-cd $MY_ROOT/../protobuf
-bash prepare.sh
-bash fetch.sh
-bash unpack.sh
-bash build.sh
-
-cd $MY_ROOT/../qtzeroconf
-bash prepare.sh
-bash fetch.sh
-bash build.sh
-
-cd $MY_ROOT/../qbs
-bash build.sh
+#cd $MY_ROOT/../qbs
+#bash build.sh
 
 #cd $MY_ROOT/../libqtxdg
 #bash prepare.sh
