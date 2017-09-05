@@ -22,7 +22,8 @@ export PKG_CONFIG_PATH=$INSTALL_PREFIX/lib/pkgconfig
 	--enable-versioned-symbols \
 	--with-ca-path=/etc/ssl/certs \
 	--without-libidn \
-	--with-ssl
+	--with-ssl \
+	--without-libssh2
 
 make -j`nproc`
 sudo make install
