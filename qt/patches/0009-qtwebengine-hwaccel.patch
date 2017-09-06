@@ -209,7 +209,7 @@ Index: dev/content/common/sandbox_linux/bpf_gpu_policy_linux.cc
 +        if (!va_driver_name) {
 +          VADisplayContextP pDisplayContext =
 +            static_cast<VADisplayContextP>(va_display);
-+          pDisplayContext->vaGetDriverName(pDisplayContext, &va_driver_name);
++          if (pDisplayContext) pDisplayContext->vaGetDriverName(pDisplayContext, &va_driver_name);
 +        }
 +
 +        if (!va_driver_name) {
