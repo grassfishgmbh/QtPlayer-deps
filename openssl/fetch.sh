@@ -19,7 +19,7 @@ if [ -e openssl-$OPENSSL_VERSION ]; then
 fi
 
 # fetch sources
-wget https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz
+wget --no-check-certificate https://www.openssl.org/source/openssl-$OPENSSL_VERSION.tar.gz
 tar xvzf openssl-$OPENSSL_VERSION.tar.gz
 mkdir src || true
 tar xvzf openssl-$OPENSSL_VERSION.tar.gz -C src/
