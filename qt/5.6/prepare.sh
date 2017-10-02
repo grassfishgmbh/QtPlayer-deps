@@ -17,8 +17,8 @@ sudo apt-get install -y libssl-dev libxcursor-dev libxcomposite-dev libxdamage-d
 sudo apt-get install -y libasound2-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev
 sudo apt-get install -y libdbus-1-dev
 
-sudo add-apt-repository -y ppa:wsnipex/vaapi
-sudo apt-get update
+#sudo add-apt-repository -y ppa:wsnipex/vaapi
+#sudo apt-get update
 sudo apt-get install -y libva-dev
 
 #webengine:
