@@ -17,7 +17,7 @@ fi
 
 cd $QT_SRC_DIR
 
-OPENGL_IMPLEMENTATION=desktop
+OPENGL_IMPLEMENTATION=es2
 if [ `uname -o` != "GNU/Linux" ]; then
     OPENGL_IMPLEMENTATION=dynamic
 fi
