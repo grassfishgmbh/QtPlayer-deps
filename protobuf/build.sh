@@ -6,7 +6,7 @@ BASEDIR=$(dirname "$0")
 
 source $BASEDIR/../config.sh
 
-cd $PROTOBUF_TARGET
+cd $PROTOBUF_TARGET/protobuf-$PROTOBUF_VERSION
 
 export CXXFLAGS="$CXXFLAGS -fPIC"
 ./configure --prefix=$INSTALL_PREFIX --enable-shared
