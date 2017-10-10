@@ -60,7 +60,7 @@ if [ "$QT_NO_CLEAN_SRC" == "1" ]; then
 else
     git submodule init qtbase qtconnectivity qtdeclarative qtdoc qtgraphicaleffects qtimageformats qtlocation qtmultimedia qtqa 
     git submodule init qtquickcontrols qtquickcontrols2 qtrepotools qtscript qtsensors  qtserialbus qtserialport qtsvg qttools
-    git submodule init qttranslations qtwayland qtwebchannel qtwebkit qtwebsockets qtwebview qtwinextras qtx11extras qtxmlpatterns
+    git submodule init qttranslations qtwayland qtwebchannel qtwebsockets qtwebview qtwinextras qtx11extras qtxmlpatterns
     git submodule update
 
     # init subsubrepos
@@ -71,8 +71,13 @@ else
     if [ -e qtwebengine ]; then
         rm -rf qtwebengine
     fi
+    
+    if [ -e qtwebkit ]; then
+        rm -rf qtwebkit
+    fi
 
     git clone https://github.com/qt/qtwebengine.git qtwebengine
+    git clone https://github.com/qt/qtwebkit.git qtwebkit -b $QTWEBKIT_VERSION
 fi
 
 # Enable GStreamer 1.0 support
