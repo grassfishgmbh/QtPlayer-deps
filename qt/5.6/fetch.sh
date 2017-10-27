@@ -132,6 +132,7 @@ cd ..
 cd qtwebengine/src/3rdparty/chromium/
 echo "patching 0009-qtwebengine-hwaccel"
 patch -f -Np1 -i "$QT_PATCH_DIR/0009-qtwebengine-hwaccel.patch"
+patch -f -Np2 -i "$QT_PATCH_DIR/0009-qtwebengine-hwaccel2.patch"
 
 # echo "patching 0010-qtwebengine-mirects"
 # patch -f -Np1 -i "$QT_PATCH_DIR/0010-qtwebengine-mirects.patch"
