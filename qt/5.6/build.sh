@@ -25,7 +25,7 @@ fi
 # build qt
 #mkdir ../install
 #-prefix $WORKSPACE/install 
-./configure -prefix /opt/Qt/$QT_VERSION/gcc_64 -opensource -debug -nomake examples -nomake tests -confirm-license -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -gstreamer 1.0 -qt-harfbuzz -opengl $OPENGL_IMPLEMENTATION
+./configure -prefix /opt/Qt/$QT_VERSION/gcc_64 -opensource -debug -debug-and-release -nomake examples -nomake tests -confirm-license -journald -qt-zlib -qt-libpng -qt-libjpeg -qt-xcb -qt-pcre -gstreamer 1.0 -qt-harfbuzz -opengl $OPENGL_IMPLEMENTATION
 make -j`nproc`
 
 if [ -e /opt/Qt/$QT_VERSION/ ]; then
