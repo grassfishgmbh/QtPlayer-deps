@@ -67,7 +67,7 @@ UPDATE_ZIP_PATH=$CREATE_ISO_DIR/update
 ISO_MOUNT=/mnt/gf_iso_mount
 ISO_DESKTOP_ENVIRONMENT=lubuntu-desktop
 ISO_DESKTOP_SESSION=Lubuntu
-ISO_KERNEL_FLAGS="quiet splash intel_pstate=disable i915.nuclear_pageflip=1 fsck.mode=force fsck.repair=yes"
+ISO_KERNEL_FLAGS="quiet splash intel_pstate=disable i915.nuclear_pageflip=1 fsck.mode=force fsck.repair=yes softlockup_panic=1 nmi_watchdog=panic"
 ISO_DEFAULT_TIMEZONE="Europe\/Vienna"
 ISO_FORCE_HDMI=1
 ISO_ADDITIONAL_PKGS='openssh-server libxss1 lm-sensors pulseaudio pavucontrol libsigc++-2.0-0v5 libgtkmm-3.0-1v5 ubuntu-restricted-extras gstreamer1.0-vaapi i965-va-driver sqlite3 libxvidcore4 gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-ugly gstreamer1.0-plugins-bad gstreamer1.0-alsa gstreamer1.0-fluendo-mp3 gstreamer1.0-libav fail2ban feh libkf5networkmanagerqt6 smartmontools tlp dconf-cli mesa-utils libvdpau-va-gl1 gstreamer0.10-alsa avahi-utils mpv gdisk dialog grub-common grub-efi-amd64 os-prober xdotool'
