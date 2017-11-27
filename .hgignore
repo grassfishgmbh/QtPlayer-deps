@@ -92,3 +92,5 @@ kdsoap/src/KDSoapServer/.moc/moc_predefs.h
 kdsoap/kdwsdl2cpp/common/.moc/moc_predefs.h
 kdsoap/kdwsdl2cpp/src/.moc/moc_predefs.h
 kdsoap/src/KDSoapClient/.moc/moc_predefs.h
+gstreamer/build
+gstreamer/src

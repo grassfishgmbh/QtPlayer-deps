@@ -192,4 +192,10 @@ bash build.sh
 #bash fetch.sh
 #bash build.sh
 
+# custom (updated) gstreamer for qt multimedia
+cd $MY_ROOT/../gstreamer
+bash prepare.sh
+bash fetch.sh
+bash build.sh
+
 cd $MY_ROOT/lin
