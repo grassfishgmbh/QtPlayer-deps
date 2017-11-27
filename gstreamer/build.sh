@@ -1,56 +1,64 @@
 #!/bin/bash
 
 set -e
-BASEDIR=$(dirname "$0")
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $BASEDIR/../config.sh
 
-sudo rm -rf /opt/gstreamer || true
 
-export PATH=/opt/gstreamer/bin:$PATH
-export LD_LIBRARY_PATH=/opt/gstreamer/lib:$LD_LIBRARY_PATH
-export PKG_CONFIG_PATH=/opt/gstreamer/lib/pkgconfig:$PKG_CONFIG_PATH
+SOURCEDIR=$BASEDIR/src
+PROC=`nproc`
+DESTDIR=$INSTALL_PREFIX/gstreamer
 
-cd gstreamer-$GSTREAMER_VERSION
-./autogen.sh --prefix=/opt/gstreamer --disable-examples --disable-gtk-doc-html --disable-debug --disable-tests --disable-failing-tests --disable-benchmarks --disable-gtk-doc --disable-gst-debug
-make -j4
+
+export PATH=$DESTDIR/bin:$PATH
+export LD_LIBRARY_PATH=$DESTDIR/lib:$LD_LIBRARY_PATH
+export PKG_CONFIG_PATH=$DESTDIR/lib/pkgconfig:$PKG_CONFIG_PATH
+
+sudo rm -rf $DESTDIR || true
+sudo rm -rf build || true
+mkdir $BASEDIR/build && cd $BASEDIR/build
+
+mkdir gstreamer-$GSTREAMER_VERSION && cd gstreamer-$GSTREAMER_VERSION
+$SOURCEDIR/gstreamer-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --disable-examples --disable-gtk-doc-html --disable-debug --disable-tests --disable-failing-tests --disable-benchmarks --disable-gtk-doc --disable-gst-debug
+make -j$PROC
 sudo make install
 cd ..
 
-cd gst-plugins-base-$GSTREAMER_VERSION
-./autogen.sh --prefix=/opt/gstreamer --enable-iso-codes --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
-make -j4
+mkdir gst-plugins-base-$GSTREAMER_VERSION && cd gst-plugins-base-$GSTREAMER_VERSION
+$SOURCEDIR/gst-plugins-base-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-iso-codes --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+make -j$PROC
 sudo make install
 cd ..
 
-cd gst-plugins-good-$GSTREAMER_VERSION
-./autogen.sh --prefix=/opt/gstreamer --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
-make -j4
+mkdir gst-plugins-good-$GSTREAMER_VERSION && cd gst-plugins-good-$GSTREAMER_VERSION
+$SOURCEDIR/gst-plugins-good-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+make -j$PROC
 sudo make install
 cd ..
 
-cd gst-plugins-ugly-$GSTREAMER_VERSION
-./autogen.sh --prefix=/opt/gstreamer --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
-make -j4
+mkdir gst-plugins-ugly-$GSTREAMER_VERSION && cd gst-plugins-ugly-$GSTREAMER_VERSION
+$SOURCEDIR/gst-plugins-ugly-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+make -j$PROC
 sudo make install
 cd ..
 
-cd gst-libav-$GSTREAMER_VERSION
-./autogen.sh --prefix=/opt/gstreamer --enable-orc --disable-gtk-doc-html --disable-gtk-doc --disable-debug
-make -j4
+mkdir gst-libav-$GSTREAMER_VERSION && cd gst-libav-$GSTREAMER_VERSION
+$SOURCEDIR/gst-libav-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-orc --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+make -j$PROC
 sudo make install
 cd ..
 
-cd gst-plugins-bad-$GSTREAMER_VERSION
-./autogen.sh --prefix=/opt/gstreamer --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
-make -j4
+mkdir gst-plugins-bad-$GSTREAMER_VERSION && cd gst-plugins-bad-$GSTREAMER_VERSION
+$SOURCEDIR/gst-plugins-bad-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+make -j$PROC
 sudo make install
 cd ..
 
-cd gstreamer-vaapi-$GSTREAMER_VERSION
-./autogen.sh --prefix=/opt/gstreamer --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
-make -j4
+mkdir gstreamer-vaapi-$GSTREAMER_VERSION && cd gstreamer-vaapi-$GSTREAMER_VERSION
+$SOURCEDIR/gstreamer-vaapi-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+make -j$PROC
 sudo make install
 cd ..
 
-tar cvzf gf-gstreamer.tar.gz /opt/gstreamer
+tar cvzf gf-gstreamer.tar.gz $DESTDIR
 mv gf-gstreamer.tar.gz ..
