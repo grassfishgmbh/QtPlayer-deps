@@ -1,0 +1,66 @@
+[submodule "curl/src"]
+	path = curl/src
+	url = git://github.com/grassfishgmbh/curl
+[submodule "dbus/src"]
+	path = dbus/src
+	url = git://github.com/grassfishgmbh/dbus
+[submodule "gstreamer/src/gst-libav"]
+	path = gstreamer/src/gst-libav
+	url = git://github.com/grassfishgmbh/gst-libav
+[submodule "gstreamer/src/gst-plugins-bad"]
+	path = gstreamer/src/gst-plugins-bad
+	url = git://github.com/grassfishgmbh/gst-plugins-bad
+[submodule "gstreamer/src/gst-plugins-base"]
+	path = gstreamer/src/gst-plugins-base
+	url = git://github.com/grassfishgmbh/gst-plugins-base
+[submodule "gstreamer/src/gst-plugins-good"]
+	path = gstreamer/src/gst-plugins-good
+	url = git://github.com/grassfishgmbh/gst-plugins-good
+[submodule "gstreamer/src/gst-plugins-ugly"]
+	path = gstreamer/src/gst-plugins-ugly
+	url = git://github.com/grassfishgmbh/gst-plugins-ugly
+[submodule "gstreamer/src/gstreamer"]
+	path = gstreamer/src/gstreamer
+	url = git://github.com/grassfishgmbh/gstreamer
+[submodule "gstreamer/src/gstreamer-vaapi"]
+	path = gstreamer/src/gstreamer-vaapi
+	url = git://github.com/grassfishgmbh/gstreamer-vaapi
+[submodule "hwsupport/src/intel-vaapi-driver"]
+	path = hwsupport/src/intel-vaapi-driver
+	url = git://github.com/grassfishgmbh/intel-vaapi-driver
+[submodule "hwsupport/src/libva"]
+	path = hwsupport/src/libva
+	url = git://github.com/grassfishgmbh/libva
+[submodule "kdsoap/src"]
+	path = kdsoap/src
+    url = git://github.com/grassfishgmbh/kdsoap
+[submodule "libusb/src"]
+	path = libusb/src
+	url = git://github.com/grassfishgmbh/libusb
+[submodule "openssl/src"]
+	path = openssl/src
+	url = git://github.com/grassfishgmbh/openssl
+[submodule "protobuf/src"]
+	path = protobuf/src
+	url = git://github.com/grassfishgmbh/protobuf
+[submodule "openal-soft/src"]
+	path = openal-soft/src
+	url = git://github.com/grassfishgmbh/openal-soft
+[submodule "qt/src"]
+	path = qt/src
+	url = git://github.com/grassfishgmbh/qt5
+[submodule "qtav/src"]
+	path = qtav/src
+	url = git://github.com/grassfishgmbh/qtAV
+[submodule "qtpdfium/src"]
+	path = qtpdfium/src
+	url = git://github.com/grassfishgmbh/qtpdfium
+[submodule "QtWebApp/src"]
+	path = QtWebApp/src
+	url = git://github.com/grassfishgmbh/QtWebApp
+[submodule "qtzeroconf/src"]
+	path = qtzeroconf/src
+	url = git://github.com/grassfishgmbh/qtzeroconf
+[submodule "quazip/src"]
+	path = quazip/src
+	url = git://github.com/grassfishgmbh/quazip
