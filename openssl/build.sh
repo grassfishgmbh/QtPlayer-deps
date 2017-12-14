@@ -1,18 +1,11 @@
 #!/bin/bash
 
 set -e
-
 BASEDIR=$(dirname "$0")
-
 source $BASEDIR/../config.sh
+cd $BASEDIR
 
-if [[ -z "$OPENSSL_VERSION" ]]; then
-	echo "OPENSSL_VERSION not set";
-    exit -1
-fi
-
-cd openssl-$OPENSSL_VERSION
-
+cd src
 if [ "$1" == "qt" ]; then
     ./Configure enable-shared linux-x86_64 --prefix=$QT_DIR
 else
