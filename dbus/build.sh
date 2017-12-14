@@ -1,8 +1,11 @@
 #!/bin/bash
+set -e
+BASEDIR=$(dirname "$0")
 
-source ../config.sh
+source $BASEDIR/../config.sh
 
-cd $DBUS_SRC_DIR
+cd $BASEDIR/src
+./autogen.sh --no-configure
 ./configure --prefix=$INSTALL_PREFIX --disable-doxygen-docs --disable-xml-docs --disable-static --disable-systemd --localstatedir=/var
 make -j`nproc`
 sudo make install

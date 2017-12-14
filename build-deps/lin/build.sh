@@ -175,7 +175,6 @@ bash build.sh
 
 #cd $MY_ROOT/../dbus
 #bash fetch.sh
-#bash unpack.sh
 #bash build.sh
 
 #cd $MY_ROOT/../qbs
