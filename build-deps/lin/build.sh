@@ -28,7 +28,6 @@ bash build.sh
 
 cd $MY_ROOT/../curl
 bash fetch.sh
-bash unpack.sh
 bash build.sh
 
 cd $DEPS_BS_ROOT
