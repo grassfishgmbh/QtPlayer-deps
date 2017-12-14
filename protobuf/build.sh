@@ -1,14 +1,13 @@
 #!/bin/bash
 
 set -e
-
 BASEDIR=$(dirname "$0")
-
 source $BASEDIR/../config.sh
+cd $BASEDIR
 
-cd $PROTOBUF_TARGET/protobuf-$PROTOBUF_VERSION
-
+cd src
 export CXXFLAGS="$CXXFLAGS -fPIC"
+./autogen.sh
 ./configure --prefix=$INSTALL_PREFIX --enable-shared
 
 make -j`nproc` CXXFLAGS=-D_GLIBCXX_USE_CXX11_ABI=0

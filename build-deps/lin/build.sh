@@ -104,7 +104,6 @@ bash build.sh
 cd $MY_ROOT/../protobuf
 bash prepare.sh
 bash fetch.sh
-bash unpack.sh
 bash build.sh
 
 cd $MY_ROOT/../qtzeroconf
@@ -115,7 +114,6 @@ bash build.sh
 # Build OpenAL-soft
 cd $MY_ROOT/../openal-soft
 bash prepare.sh
-bash fetch.sh
 bash build.sh
 
 # BUILD QtAV
