@@ -3,20 +3,21 @@
 set -e
 BASEDIR=$(dirname "$0")
 source $BASEDIR/../config.sh
+cd $BASEDIR/src
 
 sudo rm -rf /opt/hwsupport || true
 
-cd libva-$LIBVA_VERSION
-./configure --prefix=/opt/hwsupport
-make
+cd libva
+./autogen.sh --prefix=/opt/hwsupport
+make -j`nproc`
 sudo make install
 cd ..
 
 export PKG_CONFIG_PATH=/opt/hwsupport/lib/pkgconfig
 
-cd intel-vaapi-driver-$LIBVA_VERSION
+cd intel-vaapi-driver
 ./configure --prefix=/opt/hwsupport
-make
+make -j `nproc`
 sudo make install
 cd ..
 
