@@ -18,44 +18,44 @@ sudo rm -rf $DESTDIR || true
 sudo rm -rf build || true
 mkdir $BASEDIR/build && cd $BASEDIR/build
 
-mkdir gstreamer-$GSTREAMER_VERSION && cd gstreamer-$GSTREAMER_VERSION
-$SOURCEDIR/gstreamer-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --disable-examples --disable-gtk-doc-html --disable-debug --disable-tests --disable-failing-tests --disable-benchmarks --disable-gtk-doc --disable-gst-debug
+mkdir gstreamer && cd gstreamer
+$SOURCEDIR/gstreamer/autogen.sh --prefix=$DESTDIR --disable-examples --disable-gtk-doc-html --disable-debug --disable-tests --disable-failing-tests --disable-benchmarks --disable-gtk-doc --disable-gst-debug
 make -j$PROC
 sudo make install
 cd ..
 
-mkdir gst-plugins-base-$GSTREAMER_VERSION && cd gst-plugins-base-$GSTREAMER_VERSION
-$SOURCEDIR/gst-plugins-base-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-iso-codes --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+mkdir gst-plugins-base && cd gst-plugins-base
+$SOURCEDIR/gst-plugins-base/autogen.sh --prefix=$DESTDIR --enable-iso-codes --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
 make -j$PROC
 sudo make install
 cd ..
 
-mkdir gst-plugins-good-$GSTREAMER_VERSION && cd gst-plugins-good-$GSTREAMER_VERSION
-$SOURCEDIR/gst-plugins-good-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+mkdir gst-plugins-good && cd gst-plugins-good
+$SOURCEDIR/gst-plugins-good/autogen.sh --prefix=$DESTDIR --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
 make -j$PROC
 sudo make install
 cd ..
 
-mkdir gst-plugins-ugly-$GSTREAMER_VERSION && cd gst-plugins-ugly-$GSTREAMER_VERSION
-$SOURCEDIR/gst-plugins-ugly-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+mkdir gst-plugins-ugly && cd gst-plugins-ugly
+$SOURCEDIR/gst-plugins-ugly/autogen.sh --prefix=$DESTDIR --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
 make -j$PROC
 sudo make install
 cd ..
 
-mkdir gst-libav-$GSTREAMER_VERSION && cd gst-libav-$GSTREAMER_VERSION
-$SOURCEDIR/gst-libav-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-orc --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+mkdir gst-libav && cd gst-libav
+$SOURCEDIR/gst-libav/autogen.sh --prefix=$DESTDIR --enable-orc --disable-gtk-doc-html --disable-gtk-doc --disable-debug
 make -j$PROC
 sudo make install
 cd ..
 
-mkdir gst-plugins-bad-$GSTREAMER_VERSION && cd gst-plugins-bad-$GSTREAMER_VERSION
-$SOURCEDIR/gst-plugins-bad-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+mkdir gst-plugins-bad && cd gst-plugins-bad
+$SOURCEDIR/gst-plugins-bad/autogen.sh --prefix=$DESTDIR --enable-orc --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
 make -j$PROC
 sudo make install
 cd ..
 
-mkdir gstreamer-vaapi-$GSTREAMER_VERSION && cd gstreamer-vaapi-$GSTREAMER_VERSION
-$SOURCEDIR/gstreamer-vaapi-$GSTREAMER_VERSION/autogen.sh --prefix=$DESTDIR --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
+mkdir gstreamer-vaapi && cd gstreamer-vaapi
+$SOURCEDIR/gstreamer-vaapi/autogen.sh --prefix=$DESTDIR --disable-examples --disable-gtk-doc-html --disable-gtk-doc --disable-debug
 make -j$PROC
 sudo make install
 cd ..
