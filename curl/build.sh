@@ -10,6 +10,7 @@ cd $BASEDIR/src
 
 export PKG_CONFIG_PATH=$INSTALL_PREFIX/lib/pkgconfig
 
+./buildconf
 ./configure \
   	--with-random=/dev/urandom \
 	--prefix=$INSTALL_PREFIX \
