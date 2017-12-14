@@ -1,8 +1,11 @@
 #!/bin/bash
 
-source ../config.sh
+set -e
+BASEDIR=$(dirname "$0")
+source $BASEDIR/../config.sh
+cd $BASEDIR/src
 
-cd $LIBUSB_TARGET/libusb-$LIBUSB_VERSION
+NOCONFIGURE=1 ./autogen.sh
 ./configure --prefix=$INSTALL_PREFIX
 make -j`nproc`
 sudo make install
