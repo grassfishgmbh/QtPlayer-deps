@@ -1,10 +1,9 @@
 #!/bin/bash
 
-source ../config.sh
-
 set -e
-
-cd $QTZEROCONF_TARGET
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $BASEDIR
+source $BASEDIR/../config.sh
 
 if [ -d build ]; then
     rm -rf build
@@ -12,7 +11,7 @@ fi
 mkdir build
 
 cd build
-qmake PREFIX=$INSTALL_PREFIX ..
+qmake PREFIX=$INSTALL_PREFIX ../src
 make -j`nproc`
 
 sudo mkdir -p ${INSTALL_PREFIX}/include/QtZeroConf
