@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-BASEDIR=$(dirname "$0")
-
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $BASEDIR/src
 source $BASEDIR/../../config.sh
 
 if [[ -z "$QT_VERSION" ]]; then
@@ -15,7 +15,6 @@ if [[ -z "$BUILD_VERSION" ]]; then
     exit -1
 fi
 
-cd $QT_SRC_DIR
 
 OPENGL_IMPLEMENTATION=desktop
 if [ `uname -o` != "GNU/Linux" ]; then
