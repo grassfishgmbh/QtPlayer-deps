@@ -10,7 +10,6 @@ QTWEBENGINE_VERSION="5.9.2"
 QTWEBKIT_VERSION="5.212"
 QT_DIR="/opt/Qt/$QT_VERSION/gcc_64"
 QT_PATCH_DIR="$CONFIG_DIR/qt/patches"
-QT_NO_CLEAN_SRC=0
 PATH=$QT_DIR/bin:$PATH
 
 if [ `uname -o` != "GNU/Linux" ]; then
