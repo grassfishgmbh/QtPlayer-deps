@@ -1,9 +1,8 @@
 #!/bin/bash
 
 set -e
-
-BASEDIR=$(dirname "$0")
-
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $BASEDIR
 source $BASEDIR/../config.sh
 
 if [ -e build ]; then
@@ -12,7 +11,7 @@ fi
 mkdir build
 cd build
 
-qmake ../QtWebApp.pro PREFIX=$INSTALL_PREFIX CONFIG+=debug_and_release
+qmake ../src/QtWebApp/QtWebApp.pro PREFIX=$INSTALL_PREFIX CONFIG+=debug_and_release
 
 make -j`nproc`
 sudo cp -r libQtWebApp*.so* $INSTALL_PREFIX/lib/
