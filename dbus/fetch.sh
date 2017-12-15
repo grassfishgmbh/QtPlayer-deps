@@ -1,7 +1,8 @@
 #!/bin/bash
 
 set -e
-BASEDIR=$(dirname "$0")
+BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $BASEDIR
 source $BASEDIR/../config.sh
 
 git submodule init src
